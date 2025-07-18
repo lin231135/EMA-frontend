@@ -1,0 +1,151 @@
+import React, { useState } from 'react';
+
+const Login = () => {
+  // Estado para los campos de email y contraseña
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: ''
+  });
+  
+  // Estado para el checkbox "Recordar sesión"
+  const [rememberMe, setRememberMe] = useState(false);
+  // Estado para mostrar mensajes de error
+  const [error, setError] = useState('');
+
+  // Maneja el cambio en los inputs de email y contraseña
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Maneja el envío del formulario
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Validación: campos obligatorios
+    if (!credentials.email || !credentials.password) {
+      setError('Por favor completa todos los campos');
+      return;
+    }
+    
+    // Validación básica de formato de email
+    if (!/^\S+@\S+\.\S+$/.test(credentials.email)) {
+      setError('Por favor ingresa un email válido');
+      return;
+    }
+    
+  };
+
+  // Formulario de login
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+        <div>
+          {/* Ícono de usuario */}
+          <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-indigo-100">
+            <svg 
+              className="h-8 w-8 text-indigo-600" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          {/* Título */}
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Inicia sesión en tu cuenta
+          </h2>
+        </div>
+
+        {/* Mensaje de error si existe */}
+        {error && (
+          <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Formulario de login */}
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md -space-y-px">
+            {/* Campo de email */}
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Correo electrónico
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={credentials.email}
+                onChange={handleChange}
+                className="appearance-none relative block w-full px-3 py-2.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="tu@email.com"
+              />
+            </div>
+            {/* Campo de contraseña */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={credentials.password}
+                onChange={handleChange}
+                className="appearance-none relative block w-full px-3 py-2.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="••••••••"
+              />
+            </div>
+          </div>
+
+          {/* Checkbox "Recordar sesión" y enlace para recuperar contraseña */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                Recordar sesión
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
+          </div>
+
+          
+        </form>
+        
+        {/* Enlace para registrarse */}
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">
+            ¿No tienes cuenta?{' '}
+            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Regístrate
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Exporta el componente Login
+export default Login;   
