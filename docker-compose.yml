@@ -8,3 +8,11 @@ services:
     ports:
       - "5173:5173"
     command: sh -c "bun install && bun run dev --host"
+
+  frontend-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: ema-frontend-test
+    volumes:
+      - .:/app

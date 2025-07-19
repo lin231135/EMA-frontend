@@ -13,5 +13,7 @@ RUN bun install
 # Exponer puerto de desarrollo de Vite
 EXPOSE 5173
 
+ENV BUN_INSTALL_GLOBAL_BIN=true
+
 # Comando para iniciar Vite con acceso externo
 CMD ["bun", "run", "dev", "--host"]

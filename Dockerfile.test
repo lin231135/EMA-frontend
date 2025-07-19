@@ -1,0 +1,16 @@
+# Dockerfile.test
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY . .
+
+# Instala solo lo necesario para pruebas
+RUN npm install \
+  vitest \
+  @testing-library/react \
+  jsdom \
+  @vitejs/plugin-react
+
+CMD ["npx", "vitest", "run"]
