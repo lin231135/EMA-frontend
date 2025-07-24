@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./Home.css";
-import { Navbar, NavbarDivider, NavbarItem, NavbarSection } from './navbar'
-import { Logo } from './Logo'
-import { translations } from '../translations'
+import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo } from '../layout'
+import { translations } from '../../translations'
 
 export default function Home() {
   const [lang, setLang] = useState("es");
