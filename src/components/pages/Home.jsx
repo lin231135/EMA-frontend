@@ -1,11 +1,31 @@
 import { useState } from "react";
 import "./Home.css";
-import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo } from '../layout'
+import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown } from '../layout'
 import { translations } from '../../translations'
 
 export default function Home() {
   const [lang, setLang] = useState("es");
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
+  const [user, setUser] = useState(null); // Datos del usuario
   const t = translations[lang];
+
+  // Funciones para manejar la autenticación
+  const handleLogin = () => {
+    // Aquí redirigirías a la página de login
+    window.location.href = '/login';
+  };
+
+  const handleRegister = () => {
+    // Aquí redirigirías a la página de registro
+    window.location.href = '/register';
+  };
+
+  const handleLogout = () => {
+    // Aquí harías logout del usuario
+    setIsAuthenticated(false);
+    setUser(null);
+    console.log('Usuario cerró sesión');
+  };
 
   return (
     <div className="home-container">
@@ -23,10 +43,18 @@ export default function Home() {
         <NavbarSection>
           <button 
             onClick={() => setLang(lang === "es" ? "en" : "es")} 
-            className="text-gray-200 hover:text-white px-3 py-2 rounded-md text-base font-medium"
+            className="text-gray-200 hover:text-white px-3 py-2 rounded-md text-base font-medium mr-4"
           >
             {t.langToggle}
           </button>
+          <AvatarDropdown
+            isAuthenticated={isAuthenticated}
+            user={user}
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+            onLogout={handleLogout}
+            translations={t}
+          />
         </NavbarSection>
       </Navbar>
 

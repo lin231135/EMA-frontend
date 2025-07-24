@@ -8,4 +8,10 @@ export const en = {
   packageB: "Package B",
   lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh.",
   langToggle: "ES",
+  // Avatar Dropdown
+  login: "Sign In",
+  register: "Sign Up",
+  profile: "My Profile",
+  settings: "Settings",
+  logout: "Sign Out",
 };
