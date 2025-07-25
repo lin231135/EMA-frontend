@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PasswordModal from './Popup'; 
+import { useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
@@ -8,6 +9,8 @@ const Login = () => {
     email: '',
     password: ''
   });
+
+  const navigate = useNavigate();
   
   // Estado para el checkbox "Recordar sesión"
   const [rememberMe, setRememberMe] = useState(false);
@@ -70,6 +73,7 @@ const Login = () => {
         setShowResetPopup(true);
       } else {
         alert(`¡Bienvenido/a, ${data.user.name}!`);
+        navigate('/'); // Redirige a la página de inicio
       }
 
       setError('');
@@ -186,9 +190,9 @@ const Login = () => {
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200"
-            >
+              href="./pages/Home.jsx"            >
               Iniciar sesión
-            </button>
+            </button >
           </div>
         </form>
         
