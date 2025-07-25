@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import PasswordModal from './Popup'; 
+
 
 const Login = () => {
   // Estado para los campos de email y contraseña
@@ -11,6 +13,11 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   // Estado para mostrar mensajes de error
   const [error, setError] = useState('');
+
+  const [showResetPopup, setShowResetPopup] = useState(false);
+  console.log('showResetPopup:', showResetPopup);
+
+  const [isFirstLogin, setIsFirstLogin] = useState(false); // Estado para simular primer acceso
 
   // Maneja el cambio en los inputs de email y contraseña
   const handleChange = (e) => {
@@ -37,6 +44,35 @@ const Login = () => {
       return;
     }
     
+    // Aquí iría la lógica de autenticación real
+    // Simulamos una respuesta exitosa
+    console.log('Credenciales:', credentials);
+    console.log('Recordar sesión:', rememberMe);
+    setError('');
+    
+    // Simulamos que el servidor nos dice si es primer acceso
+    // En una aplicación real, esto vendría de la respuesta del backend
+    const mockIsFirstLogin = true; // Cambiar a false para probar el flujo normal
+    
+    if (mockIsFirstLogin) {
+      console.log('Activando popup de restablecimiento');
+
+      setIsFirstLogin(true);
+      setShowResetPopup(true);
+    } else {
+      alert('Login exitoso!');
+    }
+  };
+
+  const handlePasswordUpdate = (data) => {
+    console.log('Nueva contraseña establecida:', data);
+    // Aquí iría la lógica para actualizar la contraseña en el backend
+    
+    // Cerramos el popup y mostramos mensaje de éxito
+    setShowResetPopup(false);
+    setIsFirstLogin(false);
+    alert('¡Contraseña actualizada correctamente! Bienvenido/a.');
+  
   };
 
   // Formulario de login
@@ -150,6 +186,15 @@ const Login = () => {
           </p>
         </div>
       </div>
+      {/* Popup de restablecimiento de contraseña */}
+      <PasswordModal
+        isOpen={showResetPopup}
+        onClose={() => {
+          setShowResetPopup(false);
+          setIsFirstLogin(false);
+        }}
+        onSubmit={handlePasswordUpdate}
+      />
     </div>
   );
 };
