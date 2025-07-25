@@ -7,7 +7,7 @@ export function Dropdown({ children }) {
 export function DropdownButton({ children, className = "", ...props }) {
   return (
     <button
-      className={`flex items-center text-gray-200 hover:text-white focus:outline-none ${className}`}
+      className={`flex items-center text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 rounded-lg transition-all duration-200 ${className}`}
       {...props}
     >
       {children}
@@ -25,7 +25,7 @@ export function DropdownMenu({ children, isOpen, className = "", anchor = "botto
 
   return (
     <div
-      className={`${anchorClasses[anchor]} z-50 bg-white rounded-lg shadow-lg border border-gray-200 py-2 ${className}`}
+      className={`${anchorClasses[anchor]} z-50 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[12rem] sm:min-w-[14rem] max-w-xs animate-in slide-in-from-top-2 fade-in duration-200 ${className}`}
     >
       {children}
     </div>
@@ -33,7 +33,7 @@ export function DropdownMenu({ children, isOpen, className = "", anchor = "botto
 }
 
 export function DropdownItem({ href, children, onClick, className = "" }) {
-  const baseClasses = "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer";
+  const baseClasses = "flex items-center px-3 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150 first:rounded-t-md last:rounded-b-md";
   
   if (href) {
     return (
@@ -51,7 +51,7 @@ export function DropdownItem({ href, children, onClick, className = "" }) {
 }
 
 export function DropdownLabel({ children }) {
-  return <span className="ml-3">{children}</span>;
+  return <span className="ml-2 sm:ml-3 truncate">{children}</span>;
 }
 
 export function DropdownDivider() {

@@ -36,10 +36,11 @@ export function AvatarDropdown({ isAuthenticated = false, user = null, onLogin, 
             src={user?.avatar} 
             alt={user?.name || "User"} 
             square 
+            size="md"
           />
         </DropdownButton>
         
-        <DropdownMenu isOpen={isOpen} className="min-w-48" anchor="bottom end">
+        <DropdownMenu isOpen={isOpen} anchor="bottom end">
           {!isAuthenticated ? (
             // Usuario no autenticado
             <>

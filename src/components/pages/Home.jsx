@@ -43,7 +43,7 @@ export default function Home() {
         <NavbarSection>
           <button 
             onClick={() => setLang(lang === "es" ? "en" : "es")} 
-            className="text-gray-200 hover:text-white px-3 py-2 rounded-md text-base font-medium mr-4"
+            className="text-gray-200 hover:text-white px-2 py-2 sm:px-3 sm:py-2 rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
           >
             {t.langToggle}
           </button>
