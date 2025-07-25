@@ -84,16 +84,35 @@ const Login = () => {
   };
 
 
-  const handlePasswordUpdate = (data) => {
-    console.log('Nueva contraseña establecida:', data);
-    // Aquí iría la lógica para actualizar la contraseña en el backend
-    
-    // Cerramos el popup y mostramos mensaje de éxito
-    setShowResetPopup(false);
-    setIsFirstLogin(false);
-    alert('¡Contraseña actualizada correctamente! Bienvenido/a.');
-  
+  const handlePasswordUpdate = async (data) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user'));
+
+      const response = await fetch('http://localhost:5000/api/auth/update-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          currentPassword: data.current,
+          newPassword: data.new
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.message);
+
+      alert('¡Contraseña actualizada correctamente!');
+      setTimeout(() => navigate('/'), 1000);
+
+      setShowResetPopup(false);
+      setIsFirstLogin(false);
+    } catch (err) {
+      console.error(err.message);
+      alert('Error: ' + err.message);
+    }
   };
+
 
   // Formulario de login
   return (
