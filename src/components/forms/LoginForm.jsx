@@ -29,40 +29,56 @@ const Login = () => {
   };
 
   // Maneja el envío del formulario
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validación: campos obligatorios
+
     if (!credentials.email || !credentials.password) {
       setError('Por favor completa todos los campos');
       return;
     }
-    
-    // Validación básica de formato de email
+
     if (!/^\S+@\S+\.\S+$/.test(credentials.email)) {
       setError('Por favor ingresa un email válido');
       return;
     }
-    
-    // Aquí iría la lógica de autenticación real
-    // Simulamos una respuesta exitosa
-    console.log('Credenciales:', credentials);
-    console.log('Recordar sesión:', rememberMe);
-    setError('');
-    
-    // Simulamos que el servidor nos dice si es primer acceso
-    // En una aplicación real, esto vendría de la respuesta del backend
-    const mockIsFirstLogin = true; // Cambiar a false para probar el flujo normal
-    
-    if (mockIsFirstLogin) {
-      console.log('Activando popup de restablecimiento');
 
-      setIsFirstLogin(true);
-      setShowResetPopup(true);
-    } else {
-      alert('Login exitoso!');
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al iniciar sesión');
+      }
+
+      // Guardar token en localStorage (o sessionStorage si no se marca "Recordar sesión")
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem('token', data.token);
+      storage.setItem('user', JSON.stringify(data.user));
+
+      // Verifica si es el primer acceso desde el backend (opcional)
+      const isFirst = data.user.is_first_login || false;
+
+      if (isFirst) {
+        setIsFirstLogin(true);
+        setShowResetPopup(true);
+      } else {
+        alert(`¡Bienvenido/a, ${data.user.name}!`);
+      }
+
+      setError('');
+    } catch (err) {
+      console.error('Error al iniciar sesión:', err.message);
+      setError(err.message);
     }
   };
+
 
   const handlePasswordUpdate = (data) => {
     console.log('Nueva contraseña establecida:', data);
