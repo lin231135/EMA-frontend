@@ -116,7 +116,15 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
             />
           </div>
           {error && <div className="text-xs text-red-500 text-center">{error}</div>}
-          
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-2 rounded bg-indigo-600 text-white text-sm font-medium mt-2 transition ${
+              loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-indigo-700'
+            }`}
+          >
+            {loading ? 'Cambiando...' : 'Cambiar Contraseña'}
+          </button>
         </form>
       </div>
     </div>
