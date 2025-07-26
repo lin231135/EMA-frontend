@@ -35,8 +35,8 @@ export default function Home() {
         </a>
         <NavbarDivider />
         <NavbarSection>
-          <NavbarItem href="#home">{lang === "es" ? "Inicio" : "Home"}</NavbarItem>
-          <NavbarItem href="#about">{lang === "es" ? "Nosotros" : "About"}</NavbarItem>
+          <NavbarItem href="/">{lang === "es" ? "Inicio" : "Home"}</NavbarItem>
+          <NavbarItem href="/about">{lang === "es" ? "Nosotros" : "About"}</NavbarItem>
           <NavbarItem href="#content">{lang === "es" ? "Contenido" : "Services"}</NavbarItem>
           <NavbarItem href="#contact">{lang === "es" ? "Contacto" : "Contact"}</NavbarItem>
         </NavbarSection>

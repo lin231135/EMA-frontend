@@ -1,0 +1,252 @@
+.about-container {
+  font-family: sans-serif;
+  color: #1a1a1a;
+}
+
+.about-main {
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.about-hero {
+  background: linear-gradient(135deg, #2a7a6c 0%, #1e5e54 100%);
+  color: white;
+  padding: 6rem 2rem 4rem;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+/* Values Section */
+.values-section {
+  padding: 4rem 2rem;
+  background: #fdfdfd;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.value-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.value-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.value-card h3 {
+  color: #2a7a6c;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.value-card p {
+  line-height: 1.6;
+  color: #666;
+}
+
+/* Career Section */
+.career-section {
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.career-content {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.career-text {
+  flex: 1;
+}
+
+.career-text h2 {
+  color: #2a7a6c;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.career-text p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.achievements {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.achievement {
+  text-align: center;
+}
+
+.achievement-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2a7a6c;
+}
+
+.achievement-text {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.career-image {
+  flex: 0 0 300px;
+  text-align: center;
+}
+
+.teacher-placeholder {
+  font-size: 15rem;
+  background: linear-gradient(135deg, #2a7a6c, #1e5e54);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+/* Recitals Section */
+.recitals-section {
+  padding: 4rem 2rem;
+  background: #f8f9fa;
+}
+
+.recitals-section h2 {
+  text-align: center;
+  color: #2a7a6c;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-description {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.recitals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.testimonials-section h2 {
+  text-align: center;
+  color: #2a7a6c;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .career-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .career-image {
+    flex: none;
+  }
+  
+  .teacher-placeholder {
+    font-size: 8rem;
+  }
+  
+  .achievements {
+    justify-content: center;
+  }
+  
+  .values-grid,
+  .recitals-grid,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-hero {
+    padding: 4rem 1rem 3rem;
+  }
+  
+  .values-section,
+  .career-section,
+  .recitals-section,
+  .testimonials-section {
+    padding: 3rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .career-text h2,
+  .recitals-section h2,
+  .testimonials-section h2 {
+    font-size: 2rem;
+  }
+  
+  .teacher-placeholder {
+    font-size: 6rem;
+  }
+}
