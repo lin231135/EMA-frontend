@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import RegisterForm from '../components/Register-Form';
+import RegisterForm from '../components/forms/RegisterForm';
 import { vi } from 'vitest';
 
 // Simulamos la función global fetch
