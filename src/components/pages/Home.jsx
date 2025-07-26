@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Home.css";
-import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown } from '../layout'
+import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { translations } from '../../translations'
 
 export default function Home() {
@@ -89,6 +89,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <Footer lang={lang} />
     </div>
   );
 }

@@ -1,6 +1,9 @@
 .home-container {
   font-family: sans-serif;
   color: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .navbar {
@@ -80,6 +83,7 @@
 .features {
   padding: 2rem;
   text-align: center;
+  flex: 1;
 }
 
 .packages {

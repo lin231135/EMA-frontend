@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./About.css";
-import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown } from '../layout'
+import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { TestimonialCard, RecitalCard } from '../ui'
 import { translations } from '../../translations'
 
@@ -199,6 +199,8 @@ export default function About() {
           </div>
         </section>
       </main>
+
+      <Footer lang={lang} />
     </div>
   );
 }

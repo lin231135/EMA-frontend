@@ -90,6 +90,24 @@ export default function Footer({ lang = "es" }) {
         </div>
 
         <div className="footer-section">
+          <h4>{t.contact}</h4>
+          <div className="contact-info">
+            <div className="contact-item">
+              <span className="contact-icon">📞</span>
+              <span>+502 1234-5678</span>
+            </div>
+            <div className="contact-item">
+              <span className="contact-icon">✉️</span>
+              <span>info@emamusic.com</span>
+            </div>
+            <div className="contact-item">
+              <span className="contact-icon">📍</span>
+              <span>Zona 15, Guatemala</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-section">
           <h4>{t.newsletter}</h4>
           <p className="newsletter-text">{t.newsletterText}</p>
           <form className="newsletter-form">
