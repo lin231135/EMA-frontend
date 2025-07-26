@@ -14,4 +14,17 @@ export const es = {
   profile: "Mi Perfil",
   settings: "Configuración",
   logout: "Cerrar Sesión",
+  // About section
+  mission: "Misión",
+  vision: "Visión",
+  commitment: "Compromiso",
+  professionalCareer: "Carrera Profesional",
+  recitals: "Recitales",
+  testimonials: "Testimonios",
+  missionText: "Nuestra misión es brindar educación musical de excelencia, inspirando a cada estudiante a descubrir su potencial artístico y desarrollar una pasión duradera por la música.",
+  visionText: "Ser reconocidos como la institución líder en educación musical, formando músicos integrales que contribuyan al enriquecimiento cultural de nuestra sociedad.",
+  commitmentText: "Nos comprometemos a ofrecer una enseñanza personalizada, adaptada a las necesidades individuales de cada estudiante, en un ambiente de respeto, creatividad y excelencia académica.",
+  careerText: "La maestra Elizabeth Delgado cuenta con más de 10 años de experiencia en la enseñanza musical. Graduada con honores del Conservatorio Nacional, ha participado en numerosos festivales internacionales y ha formado a más de 200 estudiantes.",
+  recitalsText: "Organizamos recitales regulares donde nuestros estudiantes pueden mostrar sus avances y ganar experiencia en presentaciones públicas. Estos eventos fortalecen la confianza y el desarrollo artístico.",
+  testimonialsText: "Nuestros estudiantes y sus familias comparten sus experiencias y el impacto positivo que la música ha tenido en sus vidas.",
 };

@@ -14,4 +14,17 @@ export const en = {
   profile: "My Profile",
   settings: "Settings",
   logout: "Sign Out",
+  // About section
+  mission: "Mission",
+  vision: "Vision",
+  commitment: "Commitment",
+  professionalCareer: "Professional Career",
+  recitals: "Recitals",
+  testimonials: "Testimonials",
+  missionText: "Our mission is to provide excellence in music education, inspiring each student to discover their artistic potential and develop a lasting passion for music.",
+  visionText: "To be recognized as the leading institution in music education, training integral musicians who contribute to the cultural enrichment of our society.",
+  commitmentText: "We are committed to offering personalized teaching, adapted to the individual needs of each student, in an environment of respect, creativity and academic excellence.",
+  careerText: "Master Elizabeth Delgado has over 10 years of experience in music teaching. Graduated with honors from the National Conservatory, she has participated in numerous international festivals and has trained more than 200 students.",
+  recitalsText: "We organize regular recitals where our students can showcase their progress and gain experience in public presentations. These events strengthen confidence and artistic development.",
+  testimonialsText: "Our students and their families share their experiences and the positive impact that music has had on their lives.",
 };
