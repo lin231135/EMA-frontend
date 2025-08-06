@@ -51,6 +51,36 @@ export default function About() {
     }
   ];
 
+  const recitalEvents = [
+    {
+      date: lang === "es" ? "Diciembre 2024" : "December 2024",
+      title: lang === "es" ? "Recital de Fin de Año" : "End of Year Recital",
+      description: lang === "es" 
+        ? "Presentación de todos los estudiantes con piezas clásicas y contemporáneas"
+        : "Performance by all students with classical and contemporary pieces",
+      participants: 25,
+      image: "/RecitalDiciembre.jpg"
+    },
+    {
+      date: lang === "es" ? "Enero 2025" : "January 2025",
+      title: lang === "es" ? "Recital de Invierno" : "Winter Recital",
+      description: lang === "es"
+        ? "Recital especial de invierno con piezas clásicas y modernas"
+        : "Special winter recital with classical and modern pieces",
+      participants: 12,
+      image: "/RecitalInicio.jpg"
+    },
+    {
+      date: lang === "es" ? "Mayo 2024" : "May 2024",
+      title: lang === "es" ? "Concierto de Primavera" : "Spring Concert",
+      description: lang === "es"
+        ? "Recital temático con música de diferentes épocas y estilos"
+        : "Themed recital with music from different eras and styles",
+      participants: 18,
+      image: "/RecitalSpring.jpg"
+    }
+    
+  ];
   return (
     <div className="about-container">
       <Navbar>

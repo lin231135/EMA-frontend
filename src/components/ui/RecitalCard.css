@@ -1,11 +1,30 @@
 .recital-card {
-  background: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 15px;
   padding: 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   border: 1px solid #e0e0e0;
+  min-height: 350px;
+  position: relative;
+}
+
+.recital-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  border-radius: 15px;
 }
 
 .recital-card:hover {
@@ -14,52 +33,57 @@
 }
 
 .recital-header {
-  background: linear-gradient(135deg, #2a7a6c, #1e5e54);
+  background: rgba(1, 124, 153, 0.9);
   color: white;
   padding: 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  backdrop-filter: blur(5px);
 }
 
 .recital-date {
   font-weight: bold;
   font-size: 1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .recital-icon {
   font-size: 2rem;
-  opacity: 0.8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .recital-content {
   padding: 1.5rem;
+  margin-top: auto;
 }
 
 .recital-content h3 {
-  color: #1a1a1a;
+  color: #ffffff;
   margin-bottom: 1rem;
   font-size: 1.3rem;
   font-weight: 600;
 }
 
 .recital-content p {
-  color: #666;
+  color: #ffffff;
   line-height: 1.6;
   margin-bottom: 1rem;
+  font-weight: 500;
 }
 
 .participants {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid rgba(224, 224, 224, 0.7);
 }
 
 .participants-label {
-  background: #f0f9f7;
-  color: #2a7a6c;
+  background: #ffffff;
+  color: #011C33;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }

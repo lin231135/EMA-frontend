@@ -4,7 +4,7 @@
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-left: 4px solid #2a7a6c;
+  border-left: 4px solid #011C33;
 }
 
 .testimonial-card:hover {
@@ -43,7 +43,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2a7a6c, #1e5e54);
+  background: linear-gradient(135deg, #011C33, #022c52);
   color: white;
   display: flex;
   align-items: center;
@@ -58,7 +58,7 @@
 }
 
 .author-info strong {
-  color: #2a7a6c;
+  color: #011C33;
   font-size: 1rem;
 }
 
