@@ -24,6 +24,33 @@ export default function About() {
     console.log('Usuario cerró sesión');
   };
 
+  const testimonials = [
+    {
+      name: "María González",
+      text: lang === "es" 
+        ? "Las clases con la maestra Elena han sido transformadoras. Mi hija ha desarrollado no solo habilidades musicales, sino también disciplina y confianza en sí misma."
+        : "The classes with teacher Elena have been transformative. My daughter has developed not only musical skills, but also discipline and self-confidence.",
+      rating: 5,
+      role: lang === "es" ? "Madre de estudiante" : "Student's mother"
+    },
+    {
+      name: "Carlos Rodríguez",
+      text: lang === "es"
+        ? "Excelente metodología y paciencia. He aprendido más en 6 meses aquí que en años anteriores con otros profesores."
+        : "Excellent methodology and patience. I have learned more in 6 months here than in previous years with other teachers.",
+      rating: 5,
+      role: lang === "es" ? "Estudiante adulto" : "Adult student"
+    },
+    {
+      name: "Ana Martínez",
+      text: lang === "es"
+        ? "Los recitales han sido una experiencia increíble. Ver el progreso de mi hijo y su emoción al tocar en público no tiene precio."
+        : "The recitals have been an incredible experience. Seeing my son's progress and his excitement playing in public is priceless.",
+      rating: 5,
+      role: lang === "es" ? "Madre de estudiante" : "Student's mother"
+    }
+  ];
+
   return (
     <div className="about-container">
       <Navbar>
