@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./Home.css";
 import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { translations } from '../../translations'
 import { useAuth } from '../../contexts/AuthContext'
@@ -27,7 +26,7 @@ export default function Home() {
   };
 
   return (
-    <div className="home-container">
+    <div className="font-sans text-gray-900 min-h-screen flex flex-col">
       <Navbar>
         <a href="#" className="flex items-center">
           <Logo />
@@ -57,34 +56,38 @@ export default function Home() {
         </NavbarSection>
       </Navbar>
 
-      <main className="hero">
-        <div className="left">
-          <h1>{t.title}</h1>
-          <h3>{t.subtitle}</h3>
-          <p>{t.lorem}</p>
-          <div className="btn-group">
-            <button>{t.contact}</button>
-            <button className="outlined">{t.moreInfo}</button>
+      <main className="flex flex-col lg:flex-row justify-between items-center py-16 px-8 bg-gray-50 flex-1">
+        <div className="max-w-lg lg:max-w-1/2 mb-8 lg:mb-0">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4">{t.title}</h1>
+          <h3 className="text-xl lg:text-2xl text-teal-700 mb-4">{t.subtitle}</h3>
+          <p className="text-gray-600 mb-6 leading-relaxed">{t.lorem}</p>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <button className="px-6 py-3 bg-teal-700 text-white rounded-md hover:bg-teal-800 transition-colors duration-200 cursor-pointer">
+              {t.contact}
+            </button>
+            <button className="px-6 py-3 bg-white border border-teal-700 text-teal-700 rounded-md hover:bg-teal-50 transition-colors duration-200 cursor-pointer">
+              {t.moreInfo}
+            </button>
           </div>
-          <div className="socials">
+          <div className="text-2xl space-x-4">
             <span>🌐</span> <span>📷</span> <span>🐦</span> <span>✉️</span>
           </div>
         </div>
-        <div className="right">
-          <img src="/home.png" alt="music" />
+        <div className="flex-shrink-0">
+          <img src="/home.png" alt="music" className="max-w-sm lg:max-w-md xl:max-w-lg rounded-lg shadow-lg" />
         </div>
       </main>
 
-      <section className="features">
-        <h2>{t.features}:</h2>
-        <div className="packages">
-          <div>
-            <h4>{t.packageA}</h4>
-            <p>{t.lorem}</p>
+      <section className="py-16 px-8 text-center flex-1 bg-white">
+        <h2 className="text-2xl lg:text-3xl font-bold mb-8 text-gray-900">{t.features}:</h2>
+        <div className="flex flex-col md:flex-row justify-center gap-12 max-w-4xl mx-auto">
+          <div className="max-w-sm">
+            <h4 className="text-xl font-semibold mb-4 text-teal-700">{t.packageA}</h4>
+            <p className="text-gray-600 leading-relaxed">{t.lorem}</p>
           </div>
-          <div>
-            <h4>{t.packageB}</h4>
-            <p>{t.lorem}</p>
+          <div className="max-w-sm">
+            <h4 className="text-xl font-semibold mb-4 text-teal-700">{t.packageB}</h4>
+            <p className="text-gray-600 leading-relaxed">{t.lorem}</p>
           </div>
         </div>
       </section>

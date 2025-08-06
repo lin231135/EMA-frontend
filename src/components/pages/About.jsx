@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./About.css";
 import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { TestimonialCard, RecitalCard } from '../ui'
 import { translations } from '../../translations'
@@ -84,7 +83,7 @@ export default function About() {
     
   ];
   return (
-    <div className="about-container">
+    <div className="font-sans text-gray-900 min-h-screen flex flex-col">
       <Navbar>
         <a href="#" className="flex items-center">
           <Logo />
@@ -114,16 +113,16 @@ export default function About() {
         </NavbarSection>
       </Navbar>
 
-      <main className="about-main">
+      <main className="min-h-screen flex-1">
         {/* Hero Section */}
         <section 
           className="relative bg-cover bg-center bg-no-repeat h-[500px] flex items-center justify-center text-white"
           style={{ backgroundImage: "url('/Nosotros.jpg')" }}
         >
-          <div className="bg-black/60 absolute inset-0"></div> {/* overlay oscuro opcional */}
-          <div className="relative z-10 text-center p-8 text-6xl font-bold">
-            <h1>{lang === "es" ? "Nosotros" : "About Us"}</h1>
-            <p className="hero-subtitle">
+          <div className="bg-black/60 absolute inset-0"></div>
+          <div className="relative z-10 text-center p-8">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">{lang === "es" ? "Nosotros" : "About Us"}</h1>
+            <p className="text-lg md:text-xl max-w-2xl mx-auto opacity-90">
               {lang === "es" 
                 ? "Conoce acerca de nuestra misión, visión y compromiso con la educación musical"
                 : "Learn about our mission, vision, and commitment to music education."
@@ -132,82 +131,84 @@ export default function About() {
           </div>
         </section>
 
-
-        {/* Mision*/}
-        <section className="values-section">
-          <div className="values-grid">
-              <div className="value-card relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1/4 h-[8px] bg-[#01A6CC] "></div>
-                <div className="absolute bottom-0 left-0 w-full h-[80px] bg-[#011C33] flex items-center justify-center">
-                   <h3 className="text-white text-2xl font-bold">MISIÓN</h3>
-                </div>
-                <h3>{t.mission}</h3>
-                <p>{t.missionText}</p>
+        {/* Values Section */}
+        <section className="py-16 px-8 bg-gray-50">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Mission */}
+            <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
+              <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                <h3 className="text-white text-2xl font-bold">MISIÓN</h3>
               </div>
-
-              {/* Vision*/}
-              <div className="value-card relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1/4 h-[8px] bg-[#01A6CC] "></div>
-                <div className="absolute bottom-0 left-0 w-full h-[80px] bg-[#011C33] flex items-center justify-center">
-                   <h3 className="text-white text-2xl font-bold">VISIÓN</h3>
-                </div>
-                <h3>{t.vision}</h3>
-                <p>{t.visionText}</p>
+              <div className="pb-24">
+                <p className="leading-relaxed text-gray-600 text-center">{t.missionText}</p>
               </div>
+            </div>
 
-              {/*Compromiso*/}
-              <div className="value-card relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1/4 h-[8px] bg-[#01A6CC] "></div>
-                <div className="absolute bottom-0 left-0 w-full h-[80px] bg-[#011C33] flex items-center justify-center">
-                   <h3 className="text-white text-2xl font-bold">COMPROMISO</h3>
-                </div>
-                <h3>{t.commitment}</h3>
-                <p>{t.commitmentText}</p>
+            {/* Vision */}
+            <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
+              <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                <h3 className="text-white text-2xl font-bold">VISIÓN</h3>
               </div>
+              <div className="pb-24">
+                <p className="leading-relaxed text-gray-600 text-center">{t.visionText}</p>
+              </div>
+            </div>
+
+            {/* Commitment */}
+            <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
+              <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                <h3 className="text-white text-2xl font-bold">COMPROMISO</h3>
+              </div>
+              <div className="pb-24">
+                <p className="leading-relaxed text-gray-600 text-center">{t.commitmentText}</p>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Professional Career */}
-        <section className="career-section ">
-          <div className="career-content">
-            <div className="career-text text-2xl font-bold">
-              <h2>{t.professionalCareer}</h2>
-              <p>{t.careerText}</p>
-              <div className="achievements">
-                <div className="achievement">
-                  <span className="achievement-number">20+</span>
-                  <span className="achievement-text">
+        <section className="py-16 px-8 bg-blue-50">
+          <div className="flex flex-col lg:flex-row items-center gap-12 max-w-6xl mx-auto">
+            <div className="flex-1 text-center lg:text-left">
+              <h2 className="text-black text-3xl lg:text-4xl font-bold mb-6">{t.professionalCareer}</h2>
+              <p className="text-lg leading-relaxed mb-8 text-gray-600">{t.careerText}</p>
+              <div className="flex flex-wrap gap-8 justify-center lg:justify-start">
+                <div className="text-center">
+                  <span className="block text-4xl font-bold text-slate-800">20+</span>
+                  <span className="text-sm text-gray-600">
                     {lang === "es" ? "Años de experiencia" : "Years of experience"}
                   </span>
                 </div>
-                <div className="achievement">
-                  <span className="achievement-number">100+</span>
-                  <span className="achievement-text">
+                <div className="text-center">
+                  <span className="block text-4xl font-bold text-slate-800">100+</span>
+                  <span className="text-sm text-gray-600">
                     {lang === "es" ? "Estudiantes formados" : "Students trained"}
                   </span>
                 </div>
-                <div className="achievement">
-                  <span className="achievement-number">30+</span>
-                  <span className="achievement-text">
+                <div className="text-center">
+                  <span className="block text-4xl font-bold text-slate-800">30+</span>
+                  <span className="text-sm text-gray-600">
                     {lang === "es" ? "Recitales organizados" : "Recitals organized"}
                   </span>
                 </div>
               </div>
             </div>
-            <div className="value-card size-1/4 ">
-              <div className="career-image">
-                <img src="/teacher.jpg" alt="Teacher Elizabeth Delgado" />
+            <div className="flex-shrink-0 w-72">
+              <div className="text-center p-4">
+                <img src="/teacher.jpg" alt="Teacher Elizabeth Delgado" className="w-full h-auto rounded-lg shadow-lg" />
               </div>
             </div>
-            
           </div>
         </section>
 
         {/* Recitals */}
-        <section className="recitals-section">
-          <h2>{t.recitals}</h2>
-          <p className="section-description font-bold">{t.recitalsText}</p>
-          <div className="recitals-grid">
+        <section className="py-16 px-8">
+          <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.recitals}</h2>
+          <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed font-bold">{t.recitalsText}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {recitalEvents.map((event, index) => (
               <RecitalCard key={index} recital={event} />
             ))}
@@ -215,10 +216,10 @@ export default function About() {
         </section>
 
         {/* Testimonials */}
-        <section className="testimonials-section">
-          <h2>{t.testimonials}</h2>
-          <p className="section-description">{t.testimonialsText}</p>
-          <div className="testimonials-grid">
+        <section className="py-16 px-8 bg-blue-50">
+          <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.testimonials}</h2>
+          <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed">{t.testimonialsText}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {testimonials.map((testimonial, index) => (
               <TestimonialCard key={index} testimonial={testimonial} />
             ))}
