@@ -7,7 +7,8 @@ export const es = {
   packageA: "Paquete A",
   packageB: "Paquete B",
   lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh.",
-  langToggle: "EN",
+  // Language toggle
+  langToggle: "ES",
   // Avatar Dropdown
   login: "Iniciar Sesión",
   register: "Registrarse",

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PasswordModal from './Popup'; 
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 
 const Login = () => {
@@ -11,6 +12,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const { login } = useAuth();
   
   // Estado para el checkbox "Recordar sesión"
   const [rememberMe, setRememberMe] = useState(false);
@@ -60,10 +62,8 @@ const Login = () => {
         throw new Error(data.message || 'Error al iniciar sesión');
       }
 
-      // Guardar token en localStorage (o sessionStorage si no se marca "Recordar sesión")
-      const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem('token', data.token);
-      storage.setItem('user', JSON.stringify(data.user));
+      // Usar el contexto de autenticación para manejar el login
+      login(data.user, data.token, rememberMe);
 
       // Verifica si es el primer acceso desde el backend (opcional)
       const isFirst = data.user.is_first_login || false;

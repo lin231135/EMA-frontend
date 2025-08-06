@@ -3,24 +3,26 @@ import "./About.css";
 import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { TestimonialCard, RecitalCard } from '../ui'
 import { translations } from '../../translations'
+import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export default function About() {
   const [lang, setLang] = useState("es");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
   const t = translations[lang];
 
   const handleLogin = () => {
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   const handleRegister = () => {
-    window.location.href = '/register';
+    navigate('/register');
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
+    logout();
+    navigate('/');
     console.log('Usuario cerró sesión');
   };
 

@@ -2,28 +2,27 @@ import { useState } from "react";
 import "./Home.css";
 import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { translations } from '../../translations'
+import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
   const [lang, setLang] = useState("es");
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
-  const [user, setUser] = useState(null); // Datos del usuario
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
   const t = translations[lang];
 
   // Funciones para manejar la autenticación
   const handleLogin = () => {
-    // Aquí redirigirías a la página de login
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   const handleRegister = () => {
-    // Aquí redirigirías a la página de registro
-    window.location.href = '/register';
+    navigate('/register');
   };
 
   const handleLogout = () => {
-    // Aquí harías logout del usuario
-    setIsAuthenticated(false);
-    setUser(null);
+    logout();
+    navigate('/');
     console.log('Usuario cerró sesión');
   };
 
