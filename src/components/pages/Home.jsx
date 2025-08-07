@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "flowbite-react";
 import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { translations } from '../../translations'
 import { useAuth } from '../../contexts/AuthContext'
@@ -68,6 +69,7 @@ export default function Home() {
             <button className="px-6 py-3 bg-white border border-teal-700 text-teal-700 rounded-md hover:bg-teal-50 transition-colors duration-200 cursor-pointer">
               {t.moreInfo}
             </button>
+          <Button>Click me</Button>
           </div>
           <div className="text-2xl space-x-4">
             <span>🌐</span> <span>📷</span> <span>🐦</span> <span>✉️</span>
