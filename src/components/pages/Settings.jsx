@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
@@ -6,9 +6,10 @@ import { translations } from '../../translations'
 
 export default function Settings() {
   const [lang, setLang] = useState("es");
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, loading } = useAuth();
   const navigate = useNavigate();
   const t = translations[lang];
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Estados para las configuraciones
   const [settings, setSettings] = useState({
@@ -50,13 +51,29 @@ export default function Settings() {
   };
 
   const handleLogout = () => {
+    setIsLoggingOut(true);
     logout();
     navigate('/');
   };
 
-  // Redirigir si no está autenticado
-  if (!isAuthenticated) {
-    navigate('/login');
+  // Verificar autenticación en useEffect para evitar conflicto con logout
+  useEffect(() => {
+    if (!loading && !isAuthenticated && !isLoggingOut) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, loading, navigate, isLoggingOut]);
+
+  // Mostrar loading solo si realmente está cargando y no hay usuario
+  if (loading && !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-lg text-gray-600">Cargando...</div>
+      </div>
+    );
+  }
+
+  // Si no está autenticado y no está haciendo logout, no renderizar nada
+  if (!isAuthenticated && !isLoggingOut) {
     return null;
   }
 

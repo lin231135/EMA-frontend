@@ -85,9 +85,9 @@ export default function About() {
   return (
     <div className="font-sans text-gray-900 min-h-screen flex flex-col">
       <Navbar>
-        <a href="#" className="flex items-center">
+        <div className="flex items-center">
           <Logo />
-        </a>
+        </div>
         <NavbarDivider />
         <NavbarSection>
           <NavbarItem href="/">{lang === "es" ? "Inicio" : "Home"}</NavbarItem>
@@ -132,97 +132,110 @@ export default function About() {
         </section>
 
         {/* Values Section */}
-        <section className="py-16 px-8 bg-gray-50">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Mission */}
-            <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
-              <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
-                <h3 className="text-white text-2xl font-bold">MISIÓN</h3>
+        <section className="py-16 px-8 bg-gray-50 w-full">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Mission */}
+              <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
+                <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                  <h3 className="text-white text-2xl font-bold">MISIÓN</h3>
+                </div>
+                <div className="pb-24">
+                  <p className="leading-relaxed text-gray-600 text-center">{t.missionText}</p>
+                </div>
               </div>
-              <div className="pb-24">
-                <p className="leading-relaxed text-gray-600 text-center">{t.missionText}</p>
-              </div>
-            </div>
 
-            {/* Vision */}
-            <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
-              <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
-                <h3 className="text-white text-2xl font-bold">VISIÓN</h3>
+              {/* Vision */}
+              <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
+                <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                  <h3 className="text-white text-2xl font-bold">VISIÓN</h3>
+                </div>
+                <div className="pb-24">
+                  <p className="leading-relaxed text-gray-600 text-center">{t.visionText}</p>
+                </div>
               </div>
-              <div className="pb-24">
-                <p className="leading-relaxed text-gray-600 text-center">{t.visionText}</p>
-              </div>
-            </div>
 
-            {/* Commitment */}
-            <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
-              <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
-                <h3 className="text-white text-2xl font-bold">COMPROMISO</h3>
-              </div>
-              <div className="pb-24">
-                <p className="leading-relaxed text-gray-600 text-center">{t.commitmentText}</p>
+              {/* Commitment */}
+              <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
+                <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                  <h3 className="text-white text-2xl font-bold">COMPROMISO</h3>
+                </div>
+                <div className="pb-24">
+                  <p className="leading-relaxed text-gray-600 text-center">{t.commitmentText}</p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Professional Career */}
-        <section className="py-16 px-8 bg-blue-50">
-          <div className="flex flex-col lg:flex-row items-center gap-12 max-w-6xl mx-auto">
-            <div className="flex-1 text-center lg:text-left">
-              <h2 className="text-black text-3xl lg:text-4xl font-bold mb-6">{t.professionalCareer}</h2>
-              <p className="text-lg leading-relaxed mb-8 text-gray-600">{t.careerText}</p>
-              <div className="flex flex-wrap gap-8 justify-center lg:justify-start">
-                <div className="text-center">
-                  <span className="block text-4xl font-bold text-slate-800">20+</span>
-                  <span className="text-sm text-gray-600">
-                    {lang === "es" ? "Años de experiencia" : "Years of experience"}
-                  </span>
-                </div>
-                <div className="text-center">
-                  <span className="block text-4xl font-bold text-slate-800">100+</span>
-                  <span className="text-sm text-gray-600">
-                    {lang === "es" ? "Estudiantes formados" : "Students trained"}
-                  </span>
-                </div>
-                <div className="text-center">
-                  <span className="block text-4xl font-bold text-slate-800">30+</span>
-                  <span className="text-sm text-gray-600">
-                    {lang === "es" ? "Recitales organizados" : "Recitals organized"}
-                  </span>
+        <section className="py-16 px-8 bg-blue-50 w-full">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-center gap-12">
+              <div className="flex-1 text-center lg:text-left">
+                <h2 className="text-black text-3xl lg:text-4xl font-bold mb-6">{t.professionalCareer}</h2>
+                <p className="text-lg leading-relaxed mb-8 text-gray-600">{t.careerText}</p>
+                <div className="flex flex-wrap gap-8 justify-center lg:justify-start">
+                  <div className="text-center">
+                    <span className="block text-4xl font-bold text-slate-800">20+</span>
+                    <span className="text-sm text-gray-600">
+                      {lang === "es" ? "Años de experiencia" : "Years of experience"}
+                    </span>
+                  </div>
+                  <div className="text-center">
+                    <span className="block text-4xl font-bold text-slate-800">100+</span>
+                    <span className="text-sm text-gray-600">
+                      {lang === "es" ? "Estudiantes formados" : "Students trained"}
+                    </span>
+                  </div>
+                  <div className="text-center">
+                    <span className="block text-4xl font-bold text-slate-800">30+</span>
+                    <span className="text-sm text-gray-600">
+                      {lang === "es" ? "Recitales organizados" : "Recitals organized"}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex-shrink-0 w-72">
-              <div className="text-center p-4">
-                <img src="/teacher.jpg" alt="Teacher Elizabeth Delgado" className="w-full h-auto rounded-lg shadow-lg" />
+              <div className="flex-shrink-0 w-72">
+                <div className="h-96 w-full">
+                  <img 
+                    src="/teacher.jpg" 
+                    alt="Teacher Elizabeth Delgado" 
+                    className="w-full h-full object-cover rounded-lg shadow-lg"
+                    loading="eager"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Recitals */}
-        <section className="py-16 px-8">
-          <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.recitals}</h2>
-          <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed font-bold">{t.recitalsText}</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {recitalEvents.map((event, index) => (
-              <RecitalCard key={index} recital={event} />
-            ))}
+        <section className="py-16 px-8 w-full">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.recitals}</h2>
+            <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed font-bold">{t.recitalsText}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recitalEvents.map((event, index) => (
+                <RecitalCard key={index} recital={event} />
+              ))}
+            </div>
           </div>
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 px-8 bg-blue-50">
-          <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.testimonials}</h2>
-          <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed">{t.testimonialsText}</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <TestimonialCard key={index} testimonial={testimonial} />
-            ))}
+        <section className="py-16 px-8 bg-blue-50 w-full">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.testimonials}</h2>
+            <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed">{t.testimonialsText}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <TestimonialCard key={index} testimonial={testimonial} />
+              ))}
+            </div>
           </div>
         </section>
       </main>

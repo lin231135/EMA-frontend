@@ -6,10 +6,13 @@ export function Logo({ className = "", variant = "color", size = "h-20" }) {
   };
   
   return (
-    <img 
-      src={logoSources[variant] || logoSources.color}
-      alt="EMA Logo" 
-      className={`${size} w-auto ${className}`} 
-    />
+    <div className={`${size} w-20 flex-shrink-0 ${className}`}>
+      <img 
+        src={logoSources[variant] || logoSources.color}
+        alt="EMA Logo" 
+        className="h-full w-full object-contain" 
+        loading="eager"
+      />
+    </div>
   );
 }

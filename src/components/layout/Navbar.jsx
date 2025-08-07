@@ -1,12 +1,14 @@
 export function Navbar({ children, className = "" }) {
   return (
-    <nav className={`bg-gray-800 ${className}`}>
-      <div className="flex items-center justify-between py-0 px-0">
-        <div className="flex items-center">
-          {children.slice(0, -1)}
-        </div>
-        <div className="flex items-center pr-4">
-          {children.slice(-1)}
+    <nav className={`bg-gray-800 w-full ${className}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            {children.slice(0, -1)}
+          </div>
+          <div className="flex items-center">
+            {children.slice(-1)}
+          </div>
         </div>
       </div>
     </nav>

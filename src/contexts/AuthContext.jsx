@@ -26,8 +26,9 @@ export const AuthProvider = ({ children }) => {
       const userData = localStorage.getItem('user') || sessionStorage.getItem('user');
 
       if (token && userData) {
+        const parsedUser = JSON.parse(userData);
         setIsAuthenticated(true);
-        setUser(JSON.parse(userData));
+        setUser(parsedUser);
       }
     } catch (error) {
       console.error('Error checking auth status:', error);
@@ -43,8 +44,10 @@ export const AuthProvider = ({ children }) => {
     storage.setItem('token', token);
     storage.setItem('user', JSON.stringify(userData));
     
-    setIsAuthenticated(true);
+    // Actualizar estado de forma sincronizada
     setUser(userData);
+    setIsAuthenticated(true);
+    setLoading(false);
   };
 
   const logout = () => {
