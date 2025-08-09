@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LoginForm, RegisterForm } from "./components/forms";
-import { Home, About, Profile, Settings } from "./components/pages";
+import { Home, About, Profile, Settings, Contact } from "./components/pages";
 import { AuthProvider } from "./contexts/AuthContext";
 
 export function AppRoutes() {
@@ -8,6 +8,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/login" element={<LoginForm />} />

@@ -1,29 +1,11 @@
 import { useState } from "react";
-import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
+import { PageLayout } from '../layout'
 import { TestimonialCard, RecitalCard } from '../ui'
 import { translations } from '../../translations'
-import { useAuth } from '../../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
 
 export default function About() {
   const [lang, setLang] = useState("es");
-  const { isAuthenticated, user, logout } = useAuth();
-  const navigate = useNavigate();
   const t = translations[lang];
-
-  const handleLogin = () => {
-    navigate('/login');
-  };
-
-  const handleRegister = () => {
-    navigate('/register');
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-    console.log('Usuario cerró sesión');
-  };
 
   const testimonials = [
     {
@@ -83,36 +65,7 @@ export default function About() {
     
   ];
   return (
-    <div className="font-sans text-gray-900 min-h-screen flex flex-col">
-      <Navbar>
-        <div className="flex items-center">
-          <Logo />
-        </div>
-        <NavbarDivider />
-        <NavbarSection>
-          <NavbarItem href="/">{lang === "es" ? "Inicio" : "Home"}</NavbarItem>
-          <NavbarItem href="/about">{lang === "es" ? "Nosotros" : "About"}</NavbarItem>
-          <NavbarItem href="#content">{lang === "es" ? "Contenido" : "Services"}</NavbarItem>
-          <NavbarItem href="#contact">{lang === "es" ? "Contacto" : "Contact"}</NavbarItem>
-        </NavbarSection>
-        <NavbarSection>
-          <button 
-            onClick={() => setLang(lang === "es" ? "en" : "es")} 
-            className="text-gray-200 hover:text-white px-2 py-2 sm:px-3 sm:py-2 rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
-          >
-            {t.langToggle}
-          </button>
-          <AvatarDropdown
-            isAuthenticated={isAuthenticated}
-            user={user}
-            onLogin={handleLogin}
-            onRegister={handleRegister}
-            onLogout={handleLogout}
-            translations={t}
-          />
-        </NavbarSection>
-      </Navbar>
-
+    <PageLayout lang={lang} setLang={setLang} t={t}>
       <main className="min-h-screen flex-1">
         {/* Hero Section */}
         <section 
@@ -239,8 +192,6 @@ export default function About() {
           </div>
         </section>
       </main>
-
-      <Footer lang={lang} />
-    </div>
+    </PageLayout>
   );
 }
