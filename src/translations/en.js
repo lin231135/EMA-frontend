@@ -22,15 +22,23 @@ export const en = {
   professionalCareer: "Professional Career",
   recitals: "Recitals",
   testimonials: "Testimonials",
-  missionText: "Contribute to forming people who love music and who make the love of music part of family life.",
-  visionText: "Develop musical skills and contribute to artistic development and the growth of musical abilities, forming people sensitive to art and musical language through the personal and artistic development of children, adolescents, young adults, and adults.",
-  commitmentText: "We are committed to offering personalized teaching to the individual needs of each student, in an environment of respect, creativity and academic excellence.",
-  careerText: "Elizabeth Delgado has over 20 years of experience teaching music. She graduated with honors from the Universidad del Valle de Guatemala and has organized numerous recitals with national and international students, training over 100 students.",
-  recitalsText: "We organize regular recitals where our students can showcase their progress and gain experience in public presentations. These events strengthen confidence and artistic development.",
-  testimonialsText: "Our students and their families share their experiences and the positive impact that music has had on their lives.",
+  missionText:
+    "Contribute to forming people who love music and who make the love of music part of family life.",
+  visionText:
+    "Develop musical skills and contribute to artistic development and the growth of musical abilities, forming people sensitive to art and musical language through the personal and artistic development of children, adolescents, young adults, and adults.",
+  commitmentText:
+    "We are committed to offering personalized teaching to the individual needs of each student, in an environment of respect, creativity and academic excellence.",
+  careerText:
+    "Elizabeth Delgado has over 20 years of experience teaching music. She graduated with honors from the Universidad del Valle de Guatemala and has organized numerous recitals with national and international students, training over 100 students.",
+  recitalsText:
+    "We organize regular recitals where our students can showcase their progress and gain experience in public presentations. These events strengthen confidence and artistic development.",
+  testimonialsText:
+    "Our students and their families share their experiences and the positive impact that music has had on their lives.",
+
   // Contact page
   contactTitle: "Contact Us",
-  contactSubtitle: "We're here to help you with your questions about our music classes",
+  contactSubtitle:
+    "We're here to help you with your questions about our music classes",
   sendMessage: "Send us a message",
   name: "Name",
   namePlaceholder: "Your full name",
@@ -58,8 +66,10 @@ export const en = {
   quickInfo3: "Instruments: Piano, guitar, violin",
   quickInfo4: "Recital preparation",
   quickInfo5: "In-person and virtual classes",
+
   // Footer
-  footerDescription: "Music school dedicated to training artists with excellence and passion for music.",
+  footerDescription:
+    "Music school dedicated to training artists with excellence and passion for music.",
   quickLinks: "Quick Links",
   followUs: "Follow Us",
   newsletter: "Newsletter",
@@ -72,4 +82,35 @@ export const en = {
   terms: "Terms of Service",
   copyright: "All rights reserved.",
   madeWith: "Made with",
+
+  // --- Home Carousel (EMA-29) ---
+  homeCarousel: {
+    prev: "Previous",
+    next: "Next",
+    ctaPrimary: "Our Courses",
+    ctaSecondary: "Exams",
+    slides: [
+      {
+        title: "Take your career to the next level.",
+        subtitle: "With indispensable courses",
+        alt: "Students learning around a laptop",
+        image:
+          "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1400&auto=format&fit=crop"
+      },
+      {
+        title: "Learn with expert instructors.",
+        subtitle: "Personalized guidance for every level",
+        alt: "Teacher guiding a student at the piano",
+        image:
+          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1400&auto=format&fit=crop"
+      },
+      {
+        title: "Perform with confidence.",
+        subtitle: "Recitals and real presentation experience",
+        alt: "Recital stage with piano",
+        image:
+          "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1400&auto=format&fit=crop"
+      }
+    ]
+  }
 };

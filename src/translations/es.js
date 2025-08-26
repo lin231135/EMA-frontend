@@ -6,7 +6,8 @@ export const es = {
   features: "Características",
   packageA: "Paquete A",
   packageB: "Paquete B",
-  lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh.",
+  lorem:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh.",
   // Language toggle
   langToggle: "ES",
   // Avatar Dropdown
@@ -22,15 +23,23 @@ export const es = {
   professionalCareer: "Carrera Profesional",
   recitals: "Recitales",
   testimonials: "Testimonios",
-  missionText: "Contribuir a formar personas que amen la música y que el amor a la música sea parte de la vida familiar.",
-  visionText: "Desarrollar  Destrezas musicales y Contribuir al desarrollo artístico y al crecimiento de habilidades musicales, formando  personas sensibles al arte y al lenguaje musical a través del desarrollo personal y artístico de niños, adolescentes, jóvenes y adultos.",
-  commitmentText: "Nos comprometemos a ofrecer una enseñanza personalizada a las necesidades individuales de cada estudiante, en un ambiente de respeto, creatividad y excelencia académica.",
-  careerText: "La Licda. Elizabeth Delgado cuenta con más de 20 años de experiencia en la enseñanza musical. Graduada con honores de la Universidad del Valle de Guatemala, ha organizado numerosos recitales con estudiantes nacionales e internacionales, formando a más de 100 estudiantes.",
-  recitalsText: "Se han realizado varios recitales donde los estudiantes tienen la oportunidad de mostrar su progreso y talento musical de manera pública.",
-  testimonialsText: "Nuestros estudiantes y sus familias comparten sus experiencias y el impacto positivo que la música ha tenido en sus vidas.",
+  missionText:
+    "Contribuir a formar personas que amen la música y que el amor a la música sea parte de la vida familiar.",
+  visionText:
+    "Desarrollar  Destrezas musicales y Contribuir al desarrollo artístico y al crecimiento de habilidades musicales, formando  personas sensibles al arte y al lenguaje musical a través del desarrollo personal y artístico de niños, adolescentes, jóvenes y adultos.",
+  commitmentText:
+    "Nos comprometemos a ofrecer una enseñanza personalizada a las necesidades individuales de cada estudiante, en un ambiente de respeto, creatividad y excelencia académica.",
+  careerText:
+    "La Licda. Elizabeth Delgado cuenta con más de 20 años de experiencia en la enseñanza musical. Graduada con honores de la Universidad del Valle de Guatemala, ha organizado numerosos recitales con estudiantes nacionales e internacionales, formando a más de 100 estudiantes.",
+  recitalsText:
+    "Se han realizado varios recitales donde los estudiantes tienen la oportunidad de mostrar su progreso y talento musical de manera pública.",
+  testimonialsText:
+    "Nuestros estudiantes y sus familias comparten sus experiencias y el impacto positivo que la música ha tenido en sus vidas.",
+
   // Contact page
   contactTitle: "Contáctanos",
-  contactSubtitle: "Estamos aquí para ayudarte con tus preguntas sobre nuestras clases de música",
+  contactSubtitle:
+    "Estamos aquí para ayudarte con tus preguntas sobre nuestras clases de música",
   sendMessage: "Envíanos un mensaje",
   name: "Nombre",
   namePlaceholder: "Tu nombre completo",
@@ -58,8 +67,10 @@ export const es = {
   quickInfo3: "Instrumentos: Piano, guitarra, violín",
   quickInfo4: "Preparación para recitales",
   quickInfo5: "Clases presenciales y virtuales",
+
   // Footer
-  footerDescription: "Escuela de música dedicada a formar artistas con excelencia y pasión por la música.",
+  footerDescription:
+    "Escuela de música dedicada a formar artistas con excelencia y pasión por la música.",
   quickLinks: "Enlaces Rápidos",
   followUs: "Síguenos",
   newsletter: "Boletín",
@@ -72,4 +83,35 @@ export const es = {
   terms: "Términos de Servicio",
   copyright: "Todos los derechos reservados.",
   madeWith: "Hecho con",
+
+  // --- Home Carousel (EMA-29) ---
+  homeCarousel: {
+    prev: "Anterior",
+    next: "Siguiente",
+    ctaPrimary: "Nuestros Cursos",
+    ctaSecondary: "Exámenes",
+    slides: [
+      {
+        title: "Lleva tu carrera al siguiente nivel.",
+        subtitle: "Con cursos indispensables",
+        alt: "Estudiantes aprendiendo frente a una laptop",
+        image:
+          "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1400&auto=format&fit=crop"
+      },
+      {
+        title: "Aprende con instructores expertos.",
+        subtitle: "Acompañamiento personalizado para cada nivel",
+        alt: "Maestra guiando a estudiante en piano",
+        image:
+          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1400&auto=format&fit=crop"
+      },
+      {
+        title: "Toca con confianza.",
+        subtitle: "Recitales y experiencia de presentación real",
+        alt: "Escenario de recital con piano",
+        image:
+          "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1400&auto=format&fit=crop"
+      }
+    ]
+  }
 };
