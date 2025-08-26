@@ -84,6 +84,24 @@ export const es = {
   copyright: "Todos los derechos reservados.",
   madeWith: "Hecho con",
 
+    // Navbar / Routes
+  scheduleMenu: "Horario",
+
+  // Schedule page (EMA-78)
+  preregisterTitle: "¡Pre-regístrate y reserva tu cupo!",
+  today: "Hoy",
+  continue: "Continuar",
+  week: "Semana",
+  monthSoon: "Mes (próximamente)",
+  legendAvailable: "Disponible",
+  legendSelected: "Seleccionado",
+  legendReserved: "Reservado",
+  yourSelection: "Tu selección",
+  pickAtLeastOne: "Elige uno o más horarios en el calendario.",
+  confirmPre: "Confirmar pre-registro",
+  cancel: "Cancelar",
+  confirm: "Confirmar",
+
   // --- Home Carousel (EMA-29) ---
   homeCarousel: {
     prev: "Anterior",

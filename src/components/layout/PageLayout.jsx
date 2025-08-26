@@ -21,10 +21,8 @@ export default function PageLayout({ children, className = "", lang, setLang, t 
     console.log('Usuario cerró sesión');
   };
 
-  // Función para determinar si el link está activo
-  const isActiveLink = (path) => {
-    return location.pathname === path;
-  };
+  // Link activo
+  const isActiveLink = (path) => location.pathname === path;
 
   return (
     <div className={`font-sans text-gray-200 min-h-screen flex flex-col ${className}`}>
@@ -34,29 +32,43 @@ export default function PageLayout({ children, className = "", lang, setLang, t 
         </div>
         <NavbarDivider />
         <NavbarSection>
-          <NavbarItem 
-            href="/" 
+          <NavbarItem
+            href="/"
             className={isActiveLink('/') ? "text-teal-600" : ""}
           >
             {lang === "es" ? "Inicio" : "Home"}
           </NavbarItem>
-          <NavbarItem 
+
+          <NavbarItem
             href="/about"
             className={isActiveLink('/about') ? "text-teal-600" : ""}
           >
             {lang === "es" ? "Nosotros" : "About"}
           </NavbarItem>
-          <NavbarItem href="#content">{lang === "es" ? "Contenido" : "Services"}</NavbarItem>
-          <NavbarItem 
+
+          <NavbarItem href="#content">
+            {lang === "es" ? "Contenido" : "Services"}
+          </NavbarItem>
+
+          {/* ✅ Nuevo: Horario / Schedule (traducible) */}
+          <NavbarItem
+            href="/schedule"
+            className={isActiveLink('/schedule') ? "text-teal-600" : ""}
+          >
+            {t?.scheduleMenu ?? (lang === "es" ? "Horario" : "Schedule")}
+          </NavbarItem>
+
+          <NavbarItem
             href="/contact"
             className={isActiveLink('/contact') ? "text-teal-600" : ""}
           >
             {lang === "es" ? "Contacto" : "Contact"}
           </NavbarItem>
         </NavbarSection>
+
         <NavbarSection>
-          <button 
-            onClick={() => setLang(lang === "es" ? "en" : "es")} 
+          <button
+            onClick={() => setLang(lang === "es" ? "en" : "es")}
             className="text-gray-200 hover:text-white px-2 py-2 sm:px-3 sm:py-2 rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
           >
             {t?.langToggle || (lang === "es" ? "EN" : "ES")}

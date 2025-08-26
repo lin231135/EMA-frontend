@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LoginForm, RegisterForm } from "./components/forms";
 import { Home, About, Profile, Settings, Contact } from "./components/pages";
+import Schedule from "./components/pages/Schedule";
 import { AuthProvider } from "./contexts/AuthContext";
 
 export function AppRoutes() {
@@ -13,6 +14,7 @@ export function AppRoutes() {
       <Route path="/settings" element={<Settings />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
+      <Route path="/schedule" element={<Schedule />} />
     </Routes>
   );
 }

@@ -83,6 +83,24 @@ export const en = {
   copyright: "All rights reserved.",
   madeWith: "Made with",
 
+      // Navbar / Routes
+  scheduleMenu: "Schedule",
+
+  // Schedule page (EMA-78)
+  preregisterTitle: "Pre-register and reserve your spot",
+  today: "Today",
+  continue: "Continue",
+  week: "Week",
+  monthSoon: "Month (coming soon)",
+  legendAvailable: "Available",
+  legendSelected: "Selected",
+  legendReserved: "Reserved",
+  yourSelection: "Your selection",
+  pickAtLeastOne: "Choose one or more time slots from the calendar.",
+  confirmPre: "Confirm pre-registration",
+  cancel: "Cancel",
+  confirm: "Confirm",
+  
   // --- Home Carousel (EMA-29) ---
   homeCarousel: {
     prev: "Previous",
