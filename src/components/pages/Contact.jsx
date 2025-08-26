@@ -4,7 +4,7 @@ import { PageLayout } from '../layout'
 import { translations } from '../../translations'
 
 export default function Contact() {
-  const [lang, setLang] = useState("es");
+  const [lang, setLang] = useState("en");
   const t = translations[lang];
 
   const [formData, setFormData] = useState({

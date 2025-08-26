@@ -1,145 +1,134 @@
-import './Footer.css';
-import { Logo } from './Logo';
+"use client";
 
-export default function Footer({ lang = "es" }) {
+import {
+  Footer,
+  FooterBrand,
+  FooterCopyright,
+  FooterDivider,
+  FooterIcon,
+  FooterLink,
+  FooterLinkGroup,
+  FooterTitle,
+} from "flowbite-react";
+import { BsFacebook, BsInstagram, BsYoutube, BsWhatsapp } from "react-icons/bs";
+import { Logo } from "./Logo";
+
+export default function AppFooter({ lang = "es" }) {
   const currentYear = new Date().getFullYear();
-  
+
   const footerData = {
     es: {
-      contact: "Contacto",
       quickLinks: "Enlaces Rápidos",
       followUs: "Síguenos",
+      contact: "Contacto",
       newsletter: "Boletín",
       newsletterText: "Suscríbete para recibir noticias y promociones",
       subscribe: "Suscribirse",
       emailPlaceholder: "Tu correo electrónico",
-      phone: "Teléfono",
-      email: "Correo",
-      address: "Dirección",
-      hours: "Horarios",
       home: "Inicio",
       about: "Nosotros",
       services: "Servicios",
-      contact: "Contacto",
       privacy: "Política de Privacidad",
       terms: "Términos de Servicio",
       copyright: "Todos los derechos reservados.",
-      madeWith: "Hecho con",
-      description: "Escuela de música dedicada a formar artistas con excelencia y pasión por la música."
+      description:
+        "Escuela de música dedicada a formar artistas con excelencia y pasión por la música.",
     },
     en: {
-      contact: "Contact",
       quickLinks: "Quick Links",
       followUs: "Follow Us",
+      contact: "Contact",
       newsletter: "Newsletter",
       newsletterText: "Subscribe to receive news and promotions",
       subscribe: "Subscribe",
       emailPlaceholder: "Your email address",
-      phone: "Phone",
-      email: "Email",
-      address: "Address",
-      hours: "Hours",
       home: "Home",
       about: "About",
       services: "Services",
-      contact: "Contact",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
       copyright: "All rights reserved.",
-      madeWith: "Made with",
-      description: "Music school dedicated to training artists with excellence and passion for music."
-    }
+      description:
+        "Music school dedicated to training artists with excellence and passion for music.",
+    },
   };
 
   const t = footerData[lang];
 
   return (
-    <footer className="footer">
-      <div className="footer-content">
-        <div className="footer-section footer-brand">
-          <div className="footer-logo">
-            <Logo variant='white' size='h-15'/>
+    <Footer container className="bg-gray-900 text-white">
+      <div className="w-full">
+        <div className="grid w-full justify-between gap-8 sm:flex sm:justify-between md:grid-cols-4">
+          {/* Brand & Description */}
+          <div className="max-w-sm">
+            <FooterBrand
+              href="/"
+              src= ""
+              alt="EMA Logo"
+              name="EMA Music School"
+            />
+            <p className="mt-3 text-gray-400 text-sm">{t.description}</p>
           </div>
-          <p className="footer-description">
-            {t.description}
-          </p>
-          <div className="social-links">
-            <a href="#" className="social-link" aria-label="Facebook">
-              <span>📘</span>
-            </a>
-            <a href="#" className="social-link" aria-label="Instagram">
-              <span>📷</span>
-            </a>
-            <a href="#" className="social-link" aria-label="YouTube">
-              <span>📺</span>
-            </a>
-            <a href="#" className="social-link" aria-label="WhatsApp">
-              <span>📱</span>
-            </a>
+
+          {/* Quick Links */}
+          <div>
+            <FooterTitle title={t.quickLinks} />
+            <FooterLinkGroup col>
+              <FooterLink href="/">{t.home}</FooterLink>
+              <FooterLink href="/about">{t.about}</FooterLink>
+              <FooterLink href="#services">{t.services}</FooterLink>
+              <FooterLink href="#contact">{t.contact}</FooterLink>
+            </FooterLinkGroup>
           </div>
-        </div>
 
-        <div className="footer-section">
-          <h4>{t.quickLinks}</h4>
-          <ul className="footer-links">
-            <li><a href="/">{t.home}</a></li>
-            <li><a href="/about">{t.about}</a></li>
-            <li><a href="#services">{t.services}</a></li>
-            <li><a href="#contact">{t.contact}</a></li>
-          </ul>
-        </div>
-
-        <div className="footer-section">
-          <h4>{t.contact}</h4>
-          <div className="contact-info">
-            <div className="contact-item">
-              <span className="contact-icon">📞</span>
-              <span>+502 1234-5678</span>
-            </div>
-            <div className="contact-item">
-              <span className="contact-icon">✉️</span>
-              <span>info@emamusic.com</span>
-            </div>
-            <div className="contact-item">
-              <span className="contact-icon">📍</span>
-              <span>Zona 15, Guatemala</span>
-            </div>
+          {/* Contact Info */}
+          <div>
+            <FooterTitle title={t.contact} />
+            <FooterLinkGroup col>
+              <span className="text-gray-400">📞 +502 1234-5678</span>
+              <span className="text-gray-400">✉️ info@emamusic.com</span>
+              <span className="text-gray-400">📍 Zona 15, Guatemala</span>
+            </FooterLinkGroup>
           </div>
-        </div>
 
-        <div className="footer-section">
-          <h4>{t.newsletter}</h4>
-          <p className="newsletter-text">{t.newsletterText}</p>
-          <form className="newsletter-form">
-            <div className="newsletter-input-group">
+          {/* Newsletter */}
+          <div>
+            <FooterTitle title={t.newsletter} />
+            <p className="mb-3 text-sm text-gray-400">{t.newsletterText}</p>
+            <form className="flex flex-col gap-2">
               <input
                 type="email"
                 placeholder={t.emailPlaceholder}
-                className="newsletter-input"
+                className="rounded-lg px-3 py-2 text-black"
                 required
               />
-              <button type="submit" className="newsletter-button">
+              <button
+                type="submit"
+                className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium hover:bg-blue-700"
+              >
                 {t.subscribe}
               </button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
 
-      <div className="footer-bottom">
-        <div className="footer-bottom-content">
-          <div className="footer-bottom-left">
-            <p>
-              © {currentYear} EMA Music School. {t.copyright}
-            </p>
-          </div>
-          <div className="footer-bottom-right">
-            <a href="#privacy" className="footer-legal-link">{t.privacy}</a>
-            <span className="footer-divider">|</span>
-            <a href="#terms" className="footer-legal-link">{t.terms}</a>
+        <FooterDivider />
+
+        {/* Bottom section */}
+        <div className="w-full sm:flex sm:items-center sm:justify-between">
+          <FooterCopyright
+            href="/"
+            by={`EMA Music School. ${t.copyright}`}
+            year={currentYear}
+          />
+          <div className="mt-4 flex space-x-6 sm:mt-0 sm:justify-center">
+            <FooterIcon href="#" icon={BsFacebook} />
+            <FooterIcon href="#" icon={BsInstagram} />
+            <FooterIcon href="#" icon={BsYoutube} />
+            <FooterIcon href="#" icon={BsWhatsapp} />
           </div>
         </div>
       </div>
-    </footer>
+    </Footer>
   );
 }

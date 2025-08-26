@@ -1,7 +1,8 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import LoginForm from '../components/forms/LoginForm';
 import { vi } from 'vitest';
+import { renderWithProviders } from './test-utils.jsx';
 
 // Mock de React Router
 const mockNavigate = vi.fn();
@@ -44,14 +45,6 @@ describe('LoginForm - Casos de Integración', () => {
     window.alert.mockClear();
   });
 
-  const renderWithRouter = (component) => {
-    return render(
-      <MemoryRouter>
-        {component}
-      </MemoryRouter>
-    );
-  };
-
   describe('TC_LOGIN_001: Autenticación de Estudiante', () => {
     test('Debe autenticar correctamente a un estudiante y redirigir al dashboard', async () => {
       // Arrange
@@ -73,7 +66,7 @@ describe('LoginForm - Casos de Integración', () => {
       
       fetch.mockResolvedValueOnce(mockStudentResponse);
       
-      renderWithRouter(<LoginForm />);
+      renderWithProviders(<LoginForm />);
 
       // Act
       const emailInput = screen.getByLabelText(/correo electrónico|email/i);
@@ -133,7 +126,7 @@ describe('LoginForm - Casos de Integración', () => {
       
       fetch.mockResolvedValueOnce(mockFirstLoginResponse);
       
-      renderWithRouter(<LoginForm />);
+      renderWithProviders(<LoginForm />);
 
       // Act
       fireEvent.change(screen.getByLabelText(/correo electrónico|email/i), { 
@@ -167,7 +160,7 @@ describe('LoginForm - Casos de Integración', () => {
       
       fetch.mockResolvedValueOnce(mockErrorResponse);
       
-      renderWithRouter(<LoginForm />);
+      renderWithProviders(<LoginForm />);
 
       // Act
       fireEvent.change(screen.getByLabelText(/correo electrónico|email/i), { 
@@ -203,7 +196,7 @@ describe('LoginForm - Casos de Integración', () => {
       
       fetch.mockResolvedValueOnce(mockBlockedResponse);
       
-      renderWithRouter(<LoginForm />);
+      renderWithProviders(<LoginForm />);
 
       // Act
       fireEvent.change(screen.getByLabelText(/correo electrónico|email/i), { 
@@ -243,7 +236,7 @@ describe('LoginForm - Casos de Integración', () => {
       
       fetch.mockResolvedValueOnce(mockResponse);
       
-      renderWithRouter(<LoginForm />);
+      renderWithProviders(<LoginForm />);
 
       // Act
       fireEvent.change(screen.getByLabelText(/correo electrónico|email/i), { 
@@ -274,7 +267,7 @@ describe('LoginForm - Casos de Integración', () => {
 
   describe('TC_LOGIN_004: Recuperación de Contraseña', () => {
     test('Debe abrir modal de recuperación y enviar email', async () => {
-      renderWithRouter(<LoginForm />);
+      renderWithProviders(<LoginForm />);
 
       // Act - verificar que existe el enlace de recuperación
       const forgotPasswordLink = screen.getByText(/olvidaste tu contraseña|forgot password/i);

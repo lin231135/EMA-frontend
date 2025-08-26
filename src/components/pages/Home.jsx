@@ -4,7 +4,7 @@ import { PageLayout } from '../layout'
 import { translations } from '../../translations'
 
 export default function Home() {
-  const [lang, setLang] = useState("es");
+  const [lang, setLang] = useState("en");
   const t = translations[lang];
 
   return (
@@ -38,6 +38,9 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+
+
 
       <section className="py-16 px-8 text-center flex-1 bg-white w-full">
         <div className="max-w-7xl mx-auto">

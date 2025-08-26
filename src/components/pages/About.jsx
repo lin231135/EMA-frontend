@@ -4,7 +4,7 @@ import { TestimonialCard, RecitalCard } from '../ui'
 import { translations } from '../../translations'
 
 export default function About() {
-  const [lang, setLang] = useState("es");
+  const [lang, setLang] = useState("en");
   const t = translations[lang];
 
   const testimonials = [

@@ -58,4 +58,18 @@ export const es = {
   quickInfo3: "Instrumentos: Piano, guitarra, violín",
   quickInfo4: "Preparación para recitales",
   quickInfo5: "Clases presenciales y virtuales",
+  // Footer
+  footerDescription: "Escuela de música dedicada a formar artistas con excelencia y pasión por la música.",
+  quickLinks: "Enlaces Rápidos",
+  followUs: "Síguenos",
+  newsletter: "Boletín",
+  newsletterText: "Suscríbete para recibir noticias y promociones",
+  subscribe: "Suscribirse",
+  home: "Inicio",
+  about: "Nosotros",
+  services: "Servicios",
+  privacy: "Política de Privacidad",
+  terms: "Términos de Servicio",
+  copyright: "Todos los derechos reservados.",
+  madeWith: "Hecho con",
 };

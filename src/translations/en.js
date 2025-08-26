@@ -58,4 +58,18 @@ export const en = {
   quickInfo3: "Instruments: Piano, guitar, violin",
   quickInfo4: "Recital preparation",
   quickInfo5: "In-person and virtual classes",
+  // Footer
+  footerDescription: "Music school dedicated to training artists with excellence and passion for music.",
+  quickLinks: "Quick Links",
+  followUs: "Follow Us",
+  newsletter: "Newsletter",
+  newsletterText: "Subscribe to receive news and promotions",
+  subscribe: "Subscribe",
+  home: "Home",
+  about: "About",
+  services: "Services",
+  privacy: "Privacy Policy",
+  terms: "Terms of Service",
+  copyright: "All rights reserved.",
+  madeWith: "Made with",
 };

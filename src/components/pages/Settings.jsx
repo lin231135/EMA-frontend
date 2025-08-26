@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { translations } from '../../translations'
 
 export default function Settings() {
-  const [lang, setLang] = useState("es");
+  const [lang, setLang] = useState("en");
   const { isAuthenticated, user, logout, loading } = useAuth();
   const navigate = useNavigate();
   const t = translations[lang];

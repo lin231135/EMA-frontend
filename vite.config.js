@@ -9,6 +9,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.js',
-    threads: false 
+    threads: false,
+    pool: 'forks'
   }
 });

@@ -33,6 +33,16 @@ export const renderWithProviders = (component, options = {}) => {
   );
 };
 
+// Helper específico para formularios que solo necesitan AuthProvider (sin Router extra)
+export const renderWithAuth = (component, options = {}) => {
+  return render(
+    <AuthProvider>
+      {component}
+    </AuthProvider>,
+    options
+  );
+};
+
 // Helper para renderizar componentes con Router (legacy)
 export const renderWithRouter = (component, initialEntries = ['/']) => {
   return renderWithProviders(component, { initialEntries });
