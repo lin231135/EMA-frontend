@@ -13,61 +13,25 @@ import {
 import { BsFacebook, BsInstagram, BsYoutube, BsWhatsapp } from "react-icons/bs";
 import { Logo } from "./Logo";
 
-export default function AppFooter({ lang = "es" }) {
+// importa las traducciones
+import { es } from "../../translations/es";
+import { en } from "../../translations/en";
+
+export default function AppFooter({ lang = "en" }) {
   const currentYear = new Date().getFullYear();
 
-  const footerData = {
-    es: {
-      quickLinks: "Enlaces Rápidos",
-      followUs: "Síguenos",
-      contact: "Contacto",
-      newsletter: "Boletín",
-      newsletterText: "Suscríbete para recibir noticias y promociones",
-      subscribe: "Suscribirse",
-      emailPlaceholder: "Tu correo electrónico",
-      home: "Inicio",
-      about: "Nosotros",
-      services: "Servicios",
-      privacy: "Política de Privacidad",
-      terms: "Términos de Servicio",
-      copyright: "Todos los derechos reservados.",
-      description:
-        "Escuela de música dedicada a formar artistas con excelencia y pasión por la música.",
-    },
-    en: {
-      quickLinks: "Quick Links",
-      followUs: "Follow Us",
-      contact: "Contact",
-      newsletter: "Newsletter",
-      newsletterText: "Subscribe to receive news and promotions",
-      subscribe: "Subscribe",
-      emailPlaceholder: "Your email address",
-      home: "Home",
-      about: "About",
-      services: "Services",
-      privacy: "Privacy Policy",
-      terms: "Terms of Service",
-      copyright: "All rights reserved.",
-      description:
-        "Music school dedicated to training artists with excellence and passion for music.",
-    },
-  };
-
-  const t = footerData[lang];
+  // selector de idioma
+  const translations = { es, en };
+  const t = translations[lang];
 
   return (
-    <Footer container className="bg-gray-900 text-white">
+    <Footer container className="bg-gradient-to-r from-[#9931CC] to-[#038EFE] text-white animate-gradient rounded-none">
       <div className="w-full">
         <div className="grid w-full justify-between gap-8 sm:flex sm:justify-between md:grid-cols-4">
           {/* Brand & Description */}
           <div className="max-w-sm">
-            <FooterBrand
-              href="/"
-              src= ""
-              alt="EMA Logo"
-              name="EMA Music School"
-            />
-            <p className="mt-3 text-gray-400 text-sm">{t.description}</p>
+            <Logo variant="black" size = "h-16"/>
+            <p className="mt-3 text-white text-sm">{t.footerDescription}</p>
           </div>
 
           {/* Quick Links */}
@@ -85,21 +49,21 @@ export default function AppFooter({ lang = "es" }) {
           <div>
             <FooterTitle title={t.contact} />
             <FooterLinkGroup col>
-              <span className="text-gray-400">📞 +502 1234-5678</span>
-              <span className="text-gray-400">✉️ info@emamusic.com</span>
-              <span className="text-gray-400">📍 Zona 15, Guatemala</span>
+              <span className="text-white">📞 +502 1234-5678</span>
+              <span className="text-white">✉️ info@emamusic.com</span>
+              <span className="text-white">📍 Zona 15, Guatemala</span>
             </FooterLinkGroup>
           </div>
 
           {/* Newsletter */}
           <div>
             <FooterTitle title={t.newsletter} />
-            <p className="mb-3 text-sm text-gray-400">{t.newsletterText}</p>
+            <p className="mb-3 text-sm text-white">{t.newsletterText}</p>
             <form className="flex flex-col gap-2">
               <input
                 type="email"
                 placeholder={t.emailPlaceholder}
-                className="rounded-lg px-3 py-2 text-black"
+                className="rounded-lg px-3 py-2 text-white"
                 required
               />
               <button
@@ -118,7 +82,7 @@ export default function AppFooter({ lang = "es" }) {
         <div className="w-full sm:flex sm:items-center sm:justify-between">
           <FooterCopyright
             href="/"
-            by={`EMA Music School. ${t.copyright}`}
+            by={`EMA. ${t.copyright}`}
             year={currentYear}
           />
           <div className="mt-4 flex space-x-6 sm:mt-0 sm:justify-center">

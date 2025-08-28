@@ -1,72 +1,45 @@
-import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from './index'
-import { useAuth } from '../../contexts/AuthContext'
-import { useNavigate, useLocation } from 'react-router-dom'
+
+import {
+  Avatar,
+  Dropdown,
+  DropdownDivider,
+  DropdownHeader,
+  DropdownItem,
+  Navbar as FlowbiteNavbar,
+  NavbarBrand,
+  NavbarCollapse,
+  NavbarLink,
+  NavbarToggle,
+} from "flowbite-react";
+import { Logo, Footer as AppFooter, AvatarDropdown } from './index';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function PageLayout({ children, className = "", lang, setLang, t }) {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogin = () => {
-    navigate('/login');
-  };
-
-  const handleRegister = () => {
-    navigate('/register');
-  };
-
+  const handleLogin = () => navigate('/login');
+  const handleRegister = () => navigate('/register');
   const handleLogout = () => {
     logout();
     navigate('/');
     console.log('Usuario cerró sesión');
   };
 
-  // Link activo
   const isActiveLink = (path) => location.pathname === path;
 
   return (
     <div className={`font-sans text-gray-200 min-h-screen flex flex-col ${className}`}>
-      <Navbar>
-        <div className="flex items-center">
-          <Logo />
-        </div>
-        <NavbarDivider />
-        <NavbarSection>
-          <NavbarItem
-            href="/"
-            className={isActiveLink('/') ? "text-teal-600" : ""}
-          >
-            {lang === "es" ? "Inicio" : "Home"}
-          </NavbarItem>
-
-          <NavbarItem
-            href="/about"
-            className={isActiveLink('/about') ? "text-teal-600" : ""}
-          >
-            {lang === "es" ? "Nosotros" : "About"}
-          </NavbarItem>
-
-          <NavbarItem href="#content">
-            {lang === "es" ? "Contenido" : "Services"}
-          </NavbarItem>
-
-          {/* ✅ Nuevo: Horario / Schedule (traducible) */}
-          <NavbarItem
-            href="/schedule"
-            className={isActiveLink('/schedule') ? "text-teal-600" : ""}
-          >
-            {t?.scheduleMenu ?? (lang === "es" ? "Horario" : "Schedule")}
-          </NavbarItem>
-
-          <NavbarItem
-            href="/contact"
-            className={isActiveLink('/contact') ? "text-teal-600" : ""}
-          >
-            {lang === "es" ? "Contacto" : "Contact"}
-          </NavbarItem>
-        </NavbarSection>
-
-        <NavbarSection>
+      {/* Navbar Flowbite conservando la misma información */}
+      <FlowbiteNavbar fluid rounded>
+        <NavbarBrand href="/">
+          <Logo size="h-18" />
+          <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white ml-2">
+          </span>
+        </NavbarBrand>
+        <div className="flex md:order-2 items-center">
           <button
             onClick={() => setLang(lang === "es" ? "en" : "es")}
             className="text-gray-200 hover:text-white px-2 py-2 sm:px-3 sm:py-2 rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
@@ -81,12 +54,27 @@ export default function PageLayout({ children, className = "", lang, setLang, t 
             onLogout={handleLogout}
             translations={t}
           />
-        </NavbarSection>
-      </Navbar>
+          <NavbarToggle />
+        </div>
+        <NavbarCollapse>
+          <NavbarLink href="/" active={isActiveLink('/')}>{lang === "es" ? "Inicio" : "Home"}</NavbarLink>
+          <NavbarLink href="/about" active={isActiveLink('/about')}>{lang === "es" ? "Nosotros" : "About"}</NavbarLink>
+          <NavbarLink href="#content">{lang === "es" ? "Contenido" : "Services"}</NavbarLink>
+          <NavbarLink href="/schedule" active={isActiveLink('/schedule')}>{t?.scheduleMenu ?? (lang === "es" ? "Horario" : "Schedule")}</NavbarLink>
+          <NavbarLink href="/contact" active={isActiveLink('/contact')}>{lang === "es" ? "Contacto" : "Contact"}</NavbarLink>
+        </NavbarCollapse>
+      </FlowbiteNavbar>
 
-      {children}
+      {/* Contenido principal */}
+      <main className="flex-grow">
+        {children}
+      </main>
 
-      <Footer lang={lang} />
+      {/* Footer animado */}
+      <AppFooter
+        lang={lang}
+        className="bg-gradient-to-r from-[#9931CC] to-[#038EFE] text-white rounded-none animate-gradient-x bg-[length:200%_200%]"
+      />
     </div>
   );
 }
