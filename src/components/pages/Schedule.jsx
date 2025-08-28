@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, Fragment } from "react";
 import { Button, Badge, Modal, Tabs } from "flowbite-react";
 import { PageLayout } from "../layout";
 import { translations } from "../../translations";
+import HeroCarousel from "../ui/HeroCarousel";
 
 // Utilidades de fechas
 const startOfWeek = (d) => {
@@ -49,16 +50,24 @@ export default function Schedule() {
   return (
     <PageLayout lang={lang} setLang={setLang} t={t}>
       <main className="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
-          <h1 className="text-2xl sm:text-3xl font-bold">{t.preregisterTitle}</h1>
-          <div className="flex gap-2">
-            <Button color="light" onClick={goToday}>{t.today}</Button>
-            <Button color="light" onClick={goPrevWeek}>←</Button>
-            <Button color="light" onClick={goNextWeek}>→</Button>
-            <Button color="blue" onClick={() => setConfirmOpen(true)} disabled={!selected.length}>
-              {t.continue}
-            </Button>
+        {/* === Hero Carousel (EMA-29) === */}
+        <section className="px-4 sm:px-6 lg:px-8 py-6 w-full">
+          <div className="max-w-7xl mx-auto">
+            <HeroCarousel
+              slides={t.homeCarousel?.slides || []}
+              ctaPrimary={t.homeCarousel?.ctaPrimary}
+              ctaSecondary={t.homeCarousel?.ctaSecondary}
+              onPrimary={() => console.log("Go to Courses")}
+              onSecondary={() => console.log("Go to Exams")}
+            />
           </div>
+        </section>
+
+        {/* Título centrado */}
+        <header className="mb-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-center text-black">
+            {t.preregisterTitle}
+          </h1>
         </header>
 
         <Tabs aria-label="Views" className="mb-4">
@@ -66,16 +75,25 @@ export default function Schedule() {
           <Tabs.Item title={t.monthSoon} />
         </Tabs>
 
-        {/* Leyenda */}
-        <div className="flex items-center gap-4 mb-3 text-sm">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-4 h-4 rounded bg-gray-200" /> {t.legendAvailable}
+        {/* Leyenda + Botonera (botones a la derecha) */}
+        <div className="flex flex-wrap items-center gap-4 mb-3 text-sm">
+          {/* izquierda */}
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-4 h-4 rounded bg-gray-200" /> {t.legendAvailable}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-4 h-4 rounded bg-blue-500/70" /> {t.legendSelected}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-4 h-4 rounded bg-red-300" /> {t.legendReserved}
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-4 h-4 rounded bg-blue-500/70" /> {t.legendSelected}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-4 h-4 rounded bg-red-300" /> {t.legendReserved}
+
+          <div className="ml-auto flex gap-2">
+            <Button color="light" onClick={goToday}>{t.today}</Button>
+            <Button color="light" onClick={goPrevWeek}>←</Button>
+            <Button color="light" onClick={goNextWeek}>→</Button>
           </div>
         </div>
 
@@ -92,8 +110,8 @@ export default function Schedule() {
 
             {/* Filas de horas */}
             {HOURS.map((h) => (
-              <>
-                <div key={`h-${h}`} className="p-2 text-sm bg-white dark:bg-gray-900 border-t">
+              <Fragment key={`row-${h}`}>
+                <div className="p-2 text-sm bg-white dark:bg-gray-900 border-t">
                   {formatHour(h)}
                 </div>
                 {days.map((d, j) => {
@@ -119,9 +137,16 @@ export default function Schedule() {
                     </button>
                   );
                 })}
-              </>
+              </Fragment>
             ))}
           </div>
+        </div>
+        
+        {/* Botón continuar*/}
+        <div className="flex justify-end mt-4">
+          <Button color="blue" onClick={() => setConfirmOpen(true)} disabled={!selected.length}>
+            {t.continue}
+          </Button>
         </div>
 
         {/* Selección actual */}
