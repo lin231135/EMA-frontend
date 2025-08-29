@@ -1,4 +1,3 @@
-
 import {
   Avatar,
   Dropdown,
@@ -15,7 +14,7 @@ import { Logo, Footer as AppFooter, AvatarDropdown } from './index';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function PageLayout({ children, className = "", lang, setLang, t }) {
+export default function PageLayout({ children, className = "", lang, setLang, t, hideUserMenu = false }) {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +32,7 @@ export default function PageLayout({ children, className = "", lang, setLang, t 
   return (
     <div className={`font-sans text-gray-200 min-h-screen flex flex-col ${className}`}>
       {/* Navbar Flowbite conservando la misma información */}
-      <FlowbiteNavbar fluid rounded>
+      <FlowbiteNavbar fluid>
         <NavbarBrand href="/">
           <Logo size="h-18" />
           <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white ml-2">
@@ -46,14 +45,16 @@ export default function PageLayout({ children, className = "", lang, setLang, t 
           >
             {t?.langToggle || (lang === "es" ? "EN" : "ES")}
           </button>
-          <AvatarDropdown
-            isAuthenticated={isAuthenticated}
-            user={user}
-            onLogin={handleLogin}
-            onRegister={handleRegister}
-            onLogout={handleLogout}
-            translations={t}
-          />
+          {!hideUserMenu && (
+            <AvatarDropdown
+              isAuthenticated={isAuthenticated}
+              user={user}
+              onLogin={handleLogin}
+              onRegister={handleRegister}
+              onLogout={handleLogout}
+              translations={t}
+            />
+          )}
           <NavbarToggle />
         </div>
         <NavbarCollapse>
@@ -73,7 +74,7 @@ export default function PageLayout({ children, className = "", lang, setLang, t 
       {/* Footer animado */}
       <AppFooter
         lang={lang}
-        className="bg-gradient-to-r from-[#9931CC] to-[#038EFE] text-white rounded-none animate-gradient-x bg-[length:200%_200%]"
+        className="bg-gradient-to-r from-[#9931CC] to-[#038EFE] text-white animate-gradient-x bg-[length:200%_200%]"
       />
     </div>
   );

@@ -164,9 +164,7 @@ export const RegisterFormCard = () => {
 
     if (validateAllFields()) {
       console.log('Formulario válido:', formData);
-      // Aquí iría la lógica de registro
-      
-      // Mostrar mensaje de éxito (usando alert por simplicidad, en producción usarías un toast)
+      // TODO: Conexión con el backend
       alert('¡Registro exitoso!');
     }
   };
