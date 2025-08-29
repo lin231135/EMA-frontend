@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 
 // Tarjeta de imagen
 export const RegisterImageCard = () => (
@@ -345,9 +346,12 @@ export const RegisterFormCard = () => {
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
             ¿Ya tienes una cuenta?{' '}
-            <a href="#" className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline">
+            <Link
+              to="/login"
+              className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
+            >
               Inicia sesión
-            </a>
+            </Link>
           </p>
         </div>
       </form>
