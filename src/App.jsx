@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { LoginForm, RegisterForm } from "./components/forms";
+import { LoginForm } from "./components/forms";
+import Register from "./components/pages/Register";
 import { Home, About, Profile, Settings, Contact } from "./components/pages";
 import Schedule from "./components/pages/Schedule";
 import { AuthProvider } from "./contexts/AuthContext";
-
 import { Prueba } from "./components/pages";
 
 export function AppRoutes() {
@@ -15,7 +15,7 @@ export function AppRoutes() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/login" element={<LoginForm />} />
-      <Route path="/register" element={<RegisterForm />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/schedule" element={<Schedule />} />
       <Route path="/prueba" element={<Prueba />} />
     </Routes>
