@@ -190,9 +190,11 @@ export const RegisterFormCard = () => {
         body: JSON.stringify({
           name: formData.nombre,
           last_name: formData.apellido,
-          phone: `+502${formData.telefono}`, // Incluimos el prefijo
+          prefix: `+502`,
+          phone: formData.telefono,
           email: formData.email,
           password: formData.password,
+          confirmPassword: formData.confirmPassword,
           role: 'padre'
         })
       });
