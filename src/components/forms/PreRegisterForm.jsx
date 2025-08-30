@@ -14,7 +14,7 @@ export default function PreRegisterForm({
     dob: "",
     preferredFormat: "",
     preferredLanguage: "",
-    address: "", 
+    address: "",
     childEnabled: true,
     childFullName: "",
     childDob: "",
@@ -37,11 +37,42 @@ export default function PreRegisterForm({
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
+        
+
+        {/* Intro text */}
+        <div className="mb-6 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+          <p className="mb-2">
+            {label(
+              "preRegisterIntro1",
+              "Please fill out your information to complete the pre-registration. Once submitted, you’ll receive an email with the steps to pay for your trial class and secure your spot."
+            )}
+          </p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>
+              {label(
+                "preRegisterIntro2",
+                "If the class is for your child, click the ‘Fill in My Child’s Information’ button and complete all required fields."
+              )}
+            </li>
+            <li>
+              {label(
+                "preRegisterIntro3",
+                "If the class is for yourself, simply fill out the form with your personal details."
+              )}
+            </li>
+          </ul>
+          <p className="mt-2">
+            {label(
+              "preRegisterIntro4",
+              "We’ll contact you shortly to confirm your reservation!"
+            )}
+          </p>
+        </div>
+
       <Card className="bg-white dark:bg-gray-900">
         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white">
           {label("registrationTitle", "Registration for enrolment")}
         </h1>
-
         <form onSubmit={handleSubmit} className="mt-2 space-y-6">
           {/* Full name */}
           <div>
@@ -144,9 +175,8 @@ export default function PreRegisterForm({
               </Select>
             </div>
           </div>
-            
 
-         {/* Dirección */}
+          {/* Address */}
           <div>
             <Label htmlFor="address" className="mb-2 block">
               {label("address", "Address")}
@@ -163,14 +193,14 @@ export default function PreRegisterForm({
           {/* Checkbox: Fill in My Child’s Information */}
           <div className="flex items-center gap-3">
             <Checkbox
-                id="childEnabled"
-                name="childEnabled"
-                checked={form.childEnabled}
-                onChange={handleChange}
-                className="accent-[#01A6CC]"
+              id="childEnabled"
+              name="childEnabled"
+              checked={form.childEnabled}
+              onChange={handleChange}
+              className="accent-[#01A6CC]"
             />
             <Label htmlFor="childEnabled" className="cursor-pointer">
-                {label("childInfo", "Fill in My Child’s Information")}
+              {label("childInfo", "Fill in My Child’s Information")}
             </Label>
           </div>
 
@@ -206,10 +236,12 @@ export default function PreRegisterForm({
             </div>
           )}
 
-          {/* resumen de slots seleccionados  */}
+          {/* resumen de slots seleccionados */}
           {Array.isArray(selected) && selected.length > 0 && (
             <div className="text-sm text-gray-600 dark:text-gray-300">
-              <p className="font-medium mb-1">{label("yourSelection", "Your selection")}</p>
+              <p className="font-medium mb-1">
+                {label("yourSelection", "Your selection")}
+              </p>
               <ul className="list-disc pl-5 space-y-1">
                 {selected.map((s, i) => (
                   <li key={i}>
@@ -222,18 +254,28 @@ export default function PreRegisterForm({
           )}
 
           {/* Actions */}
-            <div className="flex items-center justify-end gap-2">
-                {/* Botón para volver */}
-                {onCancel && (
-                    <Button style={{ backgroundColor: "white", color: "black", border: "1px solid #ccc" }} type="button" onClick={onCancel}>
-                    {label("back", "Back")}
-                    </Button>
-                )}
+          <div className="flex items-center justify-end gap-2">
+            {onCancel && (
+              <Button
+                style={{ backgroundColor: "white", color: "black", border: "1px solid #ccc" }}
+                type="button"
+                onClick={onCancel}
+              >
+                {label("back", "Back")}
+              </Button>
+            )}
 
-                <Button style={{ backgroundColor: "#01A6CC", color: "#fff", border: "none" }} type="submit">
-                    {label("enrollNow", "Enroll Now")}
-                </Button>
-            </div>
+            <Button
+              style={{
+                backgroundColor: "#01A6CC",
+                color: "#fff",
+                border: "none",
+              }}
+              type="submit"
+            >
+              {label("enrollNow", "Enroll Now")}
+            </Button>
+          </div>
         </form>
       </Card>
     </div>

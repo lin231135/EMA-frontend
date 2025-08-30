@@ -87,7 +87,7 @@ export const en = {
   scheduleMenu: "Schedule",
 
   // Schedule page (EMA-78)
-  preregisterTitle: "Pre-register and reserve your spot",
+  preregisterTitle: "Pre-register now and reserve your spot!",
   today: "Today",
   continue: "Continue",
   week: "Week",
@@ -150,5 +150,12 @@ export const en = {
   childDob: "Date of birth",
   back: "Back",
   enrollNow: "Enroll Now",
+
+  // Pre-registration instructions
+  preRegisterIntro1: "Please fill out your information to complete the pre-registration. Once submitted, you’ll receive an email with the steps to pay for your trial class and secure your spot.",
+  preRegisterIntro2: "If the class is for your child, click the \"Fill in My Child’s Information\" button and complete all required fields.",
+  preRegisterIntro3: "If the class is for yourself, simply fill out the form with your personal details.",
+  preRegisterIntro4: "We’ll contact you shortly to confirm your reservation!",
+
 
 };
