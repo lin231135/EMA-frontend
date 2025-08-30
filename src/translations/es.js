@@ -131,5 +131,25 @@ export const es = {
           "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1400&auto=format&fit=crop"
       }
     ]
-  }
+  },
+
+  // PreRegisterForm page (EMA-XX)
+  registrationTitle: "Registro de inscripción",
+  fullName: "Nombre completo",
+  email: "Correo electrónico",
+  phone: "Número de teléfono",
+  dob: "Fecha de nacimiento",
+  preferredFormat: "Formato preferido",
+  preferredLanguage: "Idioma preferido",
+  address: "Dirección",
+  selectOption: "Selecciona una opción",
+  inPerson: "Presencial",
+  online: "En línea",
+  hybrid: "Híbrido",
+  childInfo: "Completar información de mi hijo/a",
+  childFullName: "Nombre completo",
+  childDob: "Fecha de nacimiento",
+  back: "Atrás",
+  enrollNow: "Inscribirse",
+
 };

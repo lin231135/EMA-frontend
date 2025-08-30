@@ -225,7 +225,7 @@ export default function PreRegisterForm({
             <div className="flex items-center justify-end gap-2">
                 {/* Botón para volver */}
                 {onCancel && (
-                    <Button color="white" type="button" onClick={onCancel}>
+                    <Button style={{ backgroundColor: "white", color: "black", border: "1px solid #ccc" }} type="button" onClick={onCancel}>
                     {label("back", "Back")}
                     </Button>
                 )}
