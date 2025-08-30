@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import { PageLayout } from "../layout";
 import translations from "../../translations";
 import HeroCarousel from "../ui/HeroCarousel";
@@ -14,11 +14,11 @@ const markerIcon = new L.Icon({
 });
 
 export default function Home() {
-  const [lang, setLang] = useState("en");
+  const { lang } = useAuth();
   const t = translations[lang].home;
 
   return (
-    <PageLayout lang={lang} setLang={setLang} t={t}>
+    <PageLayout>
       {/* Hero Carousel */}
       <section className="px-4 sm:px-6 lg:px-8 py-6 w-full">
         <div className="max-w-7xl mx-auto">
@@ -48,21 +48,17 @@ export default function Home() {
           {/* Text second */}
           <div className="md:w-1/2 text-left">
             <h2 className="text-2xl lg:text-3xl font-bold mb-8 text-gray-900">
-              Our Philosophy:
+              {t.philosophyTitle}
             </h2>
             <p className="text-gray-700 leading-relaxed max-w-3xl mb-8">
-              At our music academy, we believe that music is the best way to
-              stimulate creativity, discipline, and confidence in children.
-              We provide a safe and fun environment to learn, with highly qualified
-              teachers and teaching methods adapted to every age.
+              {t.philosophyText}
             </p>
             <button className="bg-[#01A6CC] hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-              Reserv your spot
+              {t.reserveButton}
             </button>
           </div>
         </div>
       </section>
-
 
       {/* Enroll Section con imagen */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -70,19 +66,16 @@ export default function Home() {
           {/* Texto */}
           <div className="md:w-1/2 text-left">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Sign up for a course today
+              {t.enrollTitle}
             </h2>
             <h3 className="text-2xl font-semibold text-gray-800 mb-6">
-              Boost your child's creativity and musical talent
+              {t.enrollSubtitle}
             </h3>
             <p className="text-gray-600 mb-8 leading-relaxed">
-              We offer courses for all ages, from music stimulation for the little ones
-              to singing and piano classes for children and teenagers. Our personalized approach
-              ensures that each student learns at their own pace, enjoying music while developing
-              essential skills.
+              {t.enrollText}
             </p>
             <button className="bg-[#01A6CC] hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-              View Courses
+              {t.viewCoursesButton}
             </button>
           </div>
 

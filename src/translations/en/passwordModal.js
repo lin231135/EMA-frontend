@@ -1,0 +1,15 @@
+export const passwordModal = {
+  title: 'Change Your Password',
+  subtitle: 'For security, please change your password before continuing.',
+  altLogo: 'EMA Logo',
+  close: 'Close',
+  currentPassword: 'Current Password',
+  newPassword: 'New Password',
+  confirmNewPassword: 'Confirm New Password',
+  passwordPlaceholder: '••••••••••••',
+  submitButton: 'CHANGE PASSWORD',
+  submittingButton: 'CHANGING...',
+  errorAllFields: 'Please fill out all fields',
+  errorMinLength: 'New password must be at least 8 characters long',
+  errorMismatch: 'Passwords do not match',
+};

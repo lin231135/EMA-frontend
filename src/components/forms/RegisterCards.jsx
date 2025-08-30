@@ -1,20 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { useAuth } from '../../contexts/AuthContext';
+import translations from '../../translations';
 
 // Tarjeta de imagen
-export const RegisterImageCard = () => (
-  <div className="flex-1 min-h-[400px] flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-800 relative shadow-2xl overflow-hidden rounded-lg">
-    <img
-      src="/imagen_registro.jpg"
-      alt="Registro"
-      className="object-cover w-full h-full opacity-90"
-    />
-    <div className="absolute inset-0 bg-black opacity-30"></div>
-  </div>
-);
+export const RegisterImageCard = () => {
+  const { lang } = useAuth();
+  const t = translations[lang].register;
+
+  return (
+    <div className="flex-1 min-h-[400px] flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-800 relative shadow-2xl overflow-hidden rounded-lg">
+      <img
+        src="/imagen_registro.jpg"
+        alt={t.altImage}
+        className="object-cover w-full h-full opacity-90"
+      />
+      <div className="absolute inset-0 bg-black opacity-30"></div>
+    </div>
+  );
+};
 
 // Tarjeta del formulario
 export const RegisterFormCard = () => {
+  const { lang } = useAuth();
+  const t = { ...translations[lang].common, ...translations[lang].register };
+
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -67,34 +77,34 @@ export const RegisterFormCard = () => {
     const fieldErrors = [];
 
     if (rules.required && !value.trim()) {
-      fieldErrors.push('Este campo es obligatorio');
+      fieldErrors.push(t.requiredField);
     }
 
     if (value.trim()) {
       if (rules.minLength && value.length < rules.minLength) {
-        fieldErrors.push(`Debe tener al menos ${rules.minLength} caracteres`);
+        fieldErrors.push(t.minLength.replace('{minLength}', rules.minLength));
       }
 
       if (rules.pattern && !rules.pattern.test(value)) {
         switch (name) {
           case 'nombre':
           case 'apellido':
-            fieldErrors.push('Solo se permiten letras y espacios');
+            fieldErrors.push(t.onlyLetters);
             break;
           case 'telefono':
-            fieldErrors.push('Debe contener exactamente 8 dígitos');
+            fieldErrors.push(t.phoneLength);
             break;
           case 'email':
-            fieldErrors.push('Ingresa un email válido');
+            fieldErrors.push(t.invalidEmail);
             break;
           case 'password':
-            fieldErrors.push('Debe contener al menos: 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial');
+            fieldErrors.push(t.passwordRequirements);
             break;
         }
       }
 
       if (rules.matchPassword && value !== formData.password) {
-        fieldErrors.push('Las contraseñas no coinciden');
+        fieldErrors.push(t.passwordsDoNotMatch);
       }
     }
 
@@ -202,9 +212,9 @@ export const RegisterFormCard = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        setErrors({ api: data.message || 'Error desconocido' });
+        setErrors({ api: data.message || t.unknownError });
       } else {
-        setSuccessMessage('¡Registro exitoso! Ya puedes iniciar sesión.');
+        setSuccessMessage(t.successMessage);
         // Limpiar formulario
         setFormData({
           nombre: '',
@@ -219,7 +229,7 @@ export const RegisterFormCard = () => {
         setErrors({});
       }
     } catch (err) {
-      setErrors({ api: 'Error de conexión con el servidor' });
+      setErrors({ api: t.connectionError });
     } finally {
       setIsSubmitting(false);
     }
@@ -268,7 +278,7 @@ export const RegisterFormCard = () => {
           <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
           </svg>
-          <span className="sr-only">Success</span>
+          <span className="sr-only">{t.success}</span>
           <div className="font-medium">
             {successMessage}
           </div>
@@ -287,7 +297,7 @@ export const RegisterFormCard = () => {
           <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
           </svg>
-          <span className="sr-only">Error</span>
+          <span className="sr-only">{t.error}</span>
           <div className="font-medium">
             {errors.api}
           </div>
@@ -303,14 +313,14 @@ export const RegisterFormCard = () => {
         <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
           <img
             src="/LogoColorEMA4.svg"
-            alt="Logo EMA"
+            alt={t.altLogo}
             className="w-30 h-30 object-contain"
           />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Formulario de Registro
+          {t.title}
         </h1>
-        <p className="text-gray-600">Regístrate para comenzar</p>
+        <p className="text-gray-600">{t.subtitle}</p>
       </div>
 
       {/* Alertas de Flowbite */}
@@ -323,7 +333,7 @@ export const RegisterFormCard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-900">
-              Nombre <span className="text-red-500">*</span>
+              {t.firstName} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -331,7 +341,7 @@ export const RegisterFormCard = () => {
               value={formData.nombre}
               onChange={handleInputChange}
               onBlur={handleBlur}
-              placeholder="Tu nombre"
+              placeholder={t.firstNamePlaceholder}
               className={getInputClasses('nombre')}
               disabled={isSubmitting}
             />
@@ -339,7 +349,7 @@ export const RegisterFormCard = () => {
           </div>
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-900">
-              Apellido <span className="text-red-500">*</span>
+              {t.lastName} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -347,7 +357,7 @@ export const RegisterFormCard = () => {
               value={formData.apellido}
               onChange={handleInputChange}
               onBlur={handleBlur}
-              placeholder="Tu apellido"
+              placeholder={t.lastNamePlaceholder}
               className={getInputClasses('apellido')}
               disabled={isSubmitting}
             />
@@ -358,7 +368,7 @@ export const RegisterFormCard = () => {
         {/* Prefijo + Teléfono */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900">
-            Prefijo + Teléfono <span className="text-red-500">*</span>
+            {t.phone} <span className="text-red-500">*</span>
           </label>
           <div className="flex">
             <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-lg">
@@ -370,7 +380,7 @@ export const RegisterFormCard = () => {
               value={formData.telefono}
               onChange={handleInputChange}
               onBlur={handleBlur}
-              placeholder="12345678"
+              placeholder={t.phonePlaceholder}
               className={`rounded-none rounded-r-lg ${getInputClasses('telefono').replace('rounded-lg', '')}`}
               disabled={isSubmitting}
             />
@@ -381,7 +391,7 @@ export const RegisterFormCard = () => {
         {/* Correo Electrónico */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900">
-            Correo Electrónico <span className="text-red-500">*</span>
+            {t.email} <span className="text-red-500">*</span>
           </label>
           <input
             type="email"
@@ -389,7 +399,7 @@ export const RegisterFormCard = () => {
             value={formData.email}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            placeholder="tu@gmail.com"
+            placeholder={t.emailPlaceholder}
             className={getInputClasses('email')}
             disabled={isSubmitting}
           />
@@ -399,7 +409,7 @@ export const RegisterFormCard = () => {
         {/* Contraseña */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900">
-            Contraseña <span className="text-red-500">*</span>
+            {t.password} <span className="text-red-500">*</span>
           </label>
           <input
             type="password"
@@ -407,7 +417,7 @@ export const RegisterFormCard = () => {
             value={formData.password}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            placeholder="••••••••••••"
+            placeholder={t.passwordPlaceholder}
             className={getInputClasses('password')}
             disabled={isSubmitting}
           />
@@ -417,7 +427,7 @@ export const RegisterFormCard = () => {
         {/* Confirmar Contraseña */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900">
-            Confirmar Contraseña <span className="text-red-500">*</span>
+            {t.confirmPassword} <span className="text-red-500">*</span>
           </label>
           <input
             type="password"
@@ -425,7 +435,7 @@ export const RegisterFormCard = () => {
             value={formData.confirmPassword}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            placeholder="••••••••••••"
+            placeholder={t.passwordPlaceholder}
             className={getInputClasses('confirmPassword')}
             disabled={isSubmitting}
           />
@@ -448,11 +458,11 @@ export const RegisterFormCard = () => {
                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
                 <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
               </svg>
-              Registrando...
+              {t.submittingButton}
             </>
           ) : (
             <>
-              {isFormValid ? 'REGISTRARSE' : 'COMPLETA TODOS LOS CAMPOS'}
+              {isFormValid ? t.submitButton : t.fillFieldsButton}
             </>
           )}
         </button>
@@ -460,12 +470,12 @@ export const RegisterFormCard = () => {
         {/* Enlace de inicio de sesión */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            ¿Ya tienes una cuenta?{' '}
+            {t.alreadyHaveAccount}{' '}
             <Link
               to="/login"
               className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
             >
-              Inicia sesión
+              {t.login}
             </Link>
           </p>
         </div>

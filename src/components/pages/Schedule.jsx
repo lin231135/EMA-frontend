@@ -4,6 +4,7 @@ import { PageLayout } from "../layout";
 import translations from "../../translations";
 import HeroCarousel from "../ui/HeroCarousel";
 import PreRegisterForm from "../forms/PreRegisterForm";
+import { useAuth } from "../../contexts/AuthContext";
 
 // Utilidades de fechas
 const startOfWeek = (d) => {
@@ -22,7 +23,7 @@ const ymd = (d) => d.toISOString().slice(0, 10);
 const demoReserved = {};
 
 export default function Schedule() {
-  const [lang, setLang] = useState("en");
+  const { lang } = useAuth();
   const t = translations[lang].schedule;
 
   // Semana visible
@@ -53,13 +54,12 @@ export default function Schedule() {
 
   // Handler de envío del PreRegisterForm 
   const handlePreRegisterSubmit = (formData) => {
-
-    alert("¡Formulario enviado!");
+    alert(t.formSent);
     setShowForm(false); // regresar a la vista de calendario
   };
 
   return (
-    <PageLayout lang={lang} setLang={setLang} t={t}>
+    <PageLayout>
       <main className="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* === Hero Carousel === */}
         <section className="px-4 sm:px-6 lg:px-8 py-6 w-full">

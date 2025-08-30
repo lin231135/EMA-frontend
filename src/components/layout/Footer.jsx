@@ -7,8 +7,10 @@ import {
 import { BsFacebook, BsInstagram, BsYoutube, BsWhatsapp } from "react-icons/bs";
 
 import translations from '../../translations'
+import { useAuth } from "../../contexts/AuthContext";
 
-export default function AppFooter({ lang = "en" }) {
+export default function AppFooter() {
+  const { lang } = useAuth();
   const t = { ...translations[lang].common, ...translations[lang].contact };
 
   return (
@@ -19,43 +21,57 @@ export default function AppFooter({ lang = "en" }) {
           {/* Columna 1 - Redes sociales */}
           <div>
             <h4 className="font-semibold text-white text-lg mb-2">
-              {lang === "es" ? "Síguenos" : "Follow us"}
+              {t.followUs}
             </h4>
-            <p className="text-sm mb-4">
-              we are not here to sell you products, we sell value through our expertise.
-            </p>
+            <p className="text-sm mb-4">{t.footerFollowUsText}</p>
             <div className="flex justify-center md:justify-start space-x-4 mt-2">
-              <FooterIcon href="#" icon={BsFacebook} className="text-white hover:text-blue-200" />
-              <FooterIcon href="#" icon={BsInstagram} className="text-white hover:text-pink-200" />
-              <FooterIcon href="#" icon={BsYoutube} className="text-white hover:text-red-200" />
-              <FooterIcon href="#" icon={BsWhatsapp} className="text-white hover:text-green-200" />
+              <FooterIcon
+                href="#"
+                icon={BsFacebook}
+                className="text-white hover:text-blue-200"
+              />
+              <FooterIcon
+                href="#"
+                icon={BsInstagram}
+                className="text-white hover:text-pink-200"
+              />
+              <FooterIcon
+                href="#"
+                icon={BsYoutube}
+                className="text-white hover:text-red-200"
+              />
+              <FooterIcon
+                href="#"
+                icon={BsWhatsapp}
+                className="text-white hover:text-green-200"
+              />
             </div>
           </div>
 
           {/* Columna 2 - Contacto */}
           <div>
             <h4 className="font-semibold text-lg mb-4 text-white">
-              {lang === "es" ? "Contáctanos" : "Contact us"}
+              {t.contactUs}
             </h4>
-            <p className="text-sm">Zona 15, Guatemala</p>
-            <p className="text-sm">+502 1234-5678</p>
-            <p className="text-sm">info@emamusic.com</p>
+            <p className="text-sm">{t.addressLine}</p>
+            <p className="text-sm">{t.phoneLine}</p>
+            <p className="text-sm">{t.emailLine}</p>
           </div>
 
           {/* Columna 3 - Navegación */}
           <div>
             <h4 className="font-semibold text-lg mb-4 text-white">
-              {lang === "es" ? "Navegación" : "Navigation"}
+              {t.navigation}
             </h4>
             <ul className="space-y-2">
               <li>
                 <a href="/about" className="hover:underline text-white">
-                  {lang === "es" ? "Nosotros" : "About us"}
+                  {t.about}
                 </a>
               </li>
               <li>
                 <a href="/contact" className="hover:underline text-white">
-                  {lang === "es" ? "Contacto" : "Contact"}
+                  {t.contact}
                 </a>
               </li>
             </ul>
@@ -65,12 +81,12 @@ export default function AppFooter({ lang = "en" }) {
         {/* Newsletter debajo del grid */}
         <div className="mt-12 text-center">
           <h3 className="text-xl font-semibold mb-4 text-white">
-            Subscribe to get latest updates
+            {t.newsletterSubscribe}
           </h3>
           <form className="flex justify-center max-w-md mx-auto">
             <input
               type="email"
-              placeholder="Your Email address"
+              placeholder={t.emailPlaceholder}
               className="flex-1 rounded-l-lg px-4 py-2 bg-white text-gray-800 placeholder-purple-500 border-0 focus:ring-2 focus:ring-blue-300"
               required
             />
@@ -78,7 +94,7 @@ export default function AppFooter({ lang = "en" }) {
               type="submit"
               className="rounded-r-lg bg-blue-400 hover:bg-blue-500 px-6 py-2 text-white font-medium transition-colors"
             >
-              Subscribe
+              {t.subscribe}
             </button>
           </form>
         </div>

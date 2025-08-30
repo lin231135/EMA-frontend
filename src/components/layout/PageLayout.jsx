@@ -13,9 +13,11 @@ import {
 import { Logo, Footer as AppFooter, AvatarDropdown } from './index';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import translations from "../../translations";
 
-export default function PageLayout({ children, className = "", lang, setLang, t, hideUserMenu = false }) {
-  const { isAuthenticated, user, logout } = useAuth();
+export default function PageLayout({ children, className = "", hideUserMenu = false }) {
+  const { isAuthenticated, user, logout, lang, setLang } = useAuth();
+  const t = translations[lang].common;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,7 +46,7 @@ export default function PageLayout({ children, className = "", lang, setLang, t,
             className="bg-[#01A6CC] hover:bg-[#038EFE] text-white px-2 py-2 sm:px-3 sm:py-2 
              rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
           >
-            {t?.langToggle || (lang === "es" ? "EN" : "ES")}
+            {lang === "es" ? "ES" : "EN"}
           </button>
           {!hideUserMenu && (
             <AvatarDropdown
@@ -59,11 +61,11 @@ export default function PageLayout({ children, className = "", lang, setLang, t,
           <NavbarToggle />
         </div>
         <NavbarCollapse>
-          <NavbarLink href="/" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/')}>{lang === "es" ? "Inicio" : "Home"}</NavbarLink>
-          <NavbarLink href="/about" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/about')}>{lang === "es" ? "Nosotros" : "About"}</NavbarLink>
-          <NavbarLink href="#content" className={'text-gray-500 hover:!text-[#038EFE]'}>{lang === "es" ? "Contenido" : "Services"}</NavbarLink>
-          <NavbarLink href="/schedule" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/schedule')}>{t?.scheduleMenu ?? (lang === "es" ? "Horario" : "Schedule")}</NavbarLink>
-          <NavbarLink href="/contact" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/contact')}>{lang === "es" ? "Contacto" : "Contact"}</NavbarLink>
+          <NavbarLink href="/" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/')}>{t.home}</NavbarLink>
+          <NavbarLink href="/about" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/about')}>{t.about}</NavbarLink>
+          <NavbarLink href="#content" className={'text-gray-500 hover:!text-[#038EFE]'}>{t.services}</NavbarLink>
+          <NavbarLink href="/schedule" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/schedule')}>{t.schedule}</NavbarLink>
+          <NavbarLink href="/contact" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/contact')}>{t.contact}</NavbarLink>
         </NavbarCollapse>
       </FlowbiteNavbar>
 
@@ -74,7 +76,6 @@ export default function PageLayout({ children, className = "", lang, setLang, t,
 
       {/* Footer animado */}
       <AppFooter
-        lang={lang}
         className="bg-gradient-to-r from-[#9931CC] to-[#038EFE] text-white animate-gradient-x bg-[length:200%_200%]"
       />
     </div>

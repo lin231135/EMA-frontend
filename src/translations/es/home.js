@@ -35,5 +35,23 @@ const home = {
       },
     ],
   },
+  philosophyTitle: "Nuestra Filosofía:",
+  philosophyText:
+    "En nuestra academia de música, creemos que la música es la mejor forma de estimular la creatividad, la disciplina y la confianza en los niños. Brindamos un ambiente seguro y divertido para aprender, con maestros altamente calificados y métodos de enseñanza adaptados a cada edad.",
+  reserveButton: "Reserva tu cupo",
+  enrollTitle: "Inscríbete a un curso hoy",
+  enrollSubtitle: "Potencia la creatividad y el talento musical de tu hijo",
+  enrollText:
+    "Ofrecemos cursos para todas las edades, desde estimulación musical para los más pequeños hasta clases de canto y piano para niños y adolescentes. Nuestro enfoque personalizado asegura que cada estudiante aprenda a su propio ritmo, disfrutando de la música mientras desarrolla habilidades esenciales.",
+  viewCoursesButton: "Ver Cursos",
+  coursesTitle: "Nuestros Cursos",
+  coursesSubtitle:
+    "Ofrecemos una variedad de cursos diseñados para nutrir el talento musical en cada etapa.",
+  courseSinging: "Clase de Canto",
+  coursePiano: "Piano",
+  courseStimulation2_3: "Estimulación Musical 2-3 años",
+  courseStimulation4_5: "Estimulación Musical 4-5 años",
+  locationTitle: "Nuestra ubicación",
+  locationPopup: "19 avenida A 4-39, Vista Hermosa 1, Zona 15",
 };
 export default home;

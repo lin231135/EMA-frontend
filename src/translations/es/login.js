@@ -1,0 +1,20 @@
+export const login = {
+  title: 'Inicia sesión en tu cuenta',
+  altLogo: 'Logo EMA',
+  emailLabel: 'Correo Electrónico',
+  passwordLabel: 'Contraseña',
+  emailPlaceholder: 'tu@gmail.com',
+  passwordPlaceholder: '••••••••••••',
+  rememberMe: 'Recordar sesión',
+  forgotPassword: '¿Olvidaste tu contraseña?',
+  loginButton: 'INICIAR SESIÓN',
+  noAccount: '¿No tienes cuenta?',
+  register: 'Regístrate',
+  // Messages
+  errorAllFields: 'Por favor completa todos los campos',
+  errorInvalidEmail: 'Por favor ingresa un email válido',
+  errorLogin: 'Error al iniciar sesión',
+  welcomeMessage: '¡Bienvenido/a, {name}!',
+  passwordUpdateSuccess: '¡Contraseña actualizada correctamente!',
+  passwordUpdateError: 'Error: {message}',
+};

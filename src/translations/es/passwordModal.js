@@ -1,0 +1,15 @@
+export const passwordModal = {
+  title: 'Cambia Tu Contraseña',
+  subtitle: 'Por seguridad, cambia tu contraseña antes de continuar.',
+  altLogo: 'Logo EMA',
+  close: 'Cerrar',
+  currentPassword: 'Contraseña Actual',
+  newPassword: 'Nueva Contraseña',
+  confirmNewPassword: 'Confirmar Nueva Contraseña',
+  passwordPlaceholder: '••••••••••••',
+  submitButton: 'CAMBIAR CONTRASEÑA',
+  submittingButton: 'CAMBIANDO...',
+  errorAllFields: 'Completa todos los campos',
+  errorMinLength: 'La nueva contraseña debe tener al menos 8 caracteres',
+  errorMismatch: 'Las contraseñas no coinciden',
+};

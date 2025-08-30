@@ -1,10 +1,11 @@
+import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 import { Button, Card, Label, TextInput, Textarea } from "flowbite-react";
 import { PageLayout } from '../layout'
 import translations from '../../translations'
 
 export default function Contact() {
-  const [lang, setLang] = useState("en");
+  const { lang } = useAuth();
   const t = translations[lang].contact;
 
   const [formData, setFormData] = useState({
@@ -38,15 +39,15 @@ export default function Contact() {
   };
 
   return (
-    <PageLayout lang={lang} setLang={setLang} t={t}>
+    <PageLayout>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-teal-600 to-teal-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-            {t.contactTitle || "Contáctanos"}
+            {t.contactTitle}
           </h1>
           <p className="text-xl lg:text-2xl text-teal-100">
-            {t.contactSubtitle || "Estamos aquí para ayudarte con tus preguntas sobre nuestras clases de música"}
+            {t.contactSubtitle}
           </p>
         </div>
       </section>
@@ -60,16 +61,16 @@ export default function Contact() {
             <div>
               <Card className="p-8 bg-white border-gray-200 shadow-lg">
                 <h2 className="text-2xl font-bold mb-6 text-teal-500">
-                  {t.sendMessage || "Envíanos un mensaje"}
+                  {t.sendMessage}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <Label htmlFor="name" value={t.name || "Nombre"} className="text-gray-200" />
+                    <Label htmlFor="name" value={t.name} className="text-gray-200" />
                     <TextInput
                       id="name"
                       name="name"
                       type="text"
-                      placeholder={t.namePlaceholder || "Tu nombre completo"}
+                      placeholder={t.namePlaceholder}
                       value={formData.name}
                       onChange={handleInputChange}
                       required
@@ -78,12 +79,12 @@ export default function Contact() {
                   </div>
                   
                   <div>
-                    <Label htmlFor="email" value={t.email || "Email"} className="text-gray-200" />
+                    <Label htmlFor="email" value={t.email} className="text-gray-200" />
                     <TextInput
                       id="email"
                       name="email"
                       type="email"
-                      placeholder={t.emailPlaceholder || "tu@email.com"}
+                      placeholder={t.emailPlaceholder}
                       value={formData.email}
                       onChange={handleInputChange}
                       required
@@ -92,12 +93,12 @@ export default function Contact() {
                   </div>
                   
                   <div>
-                    <Label htmlFor="phone" value={t.phone || "Teléfono"} className="text-gray-200" />
+                    <Label htmlFor="phone" value={t.phone} className="text-gray-200" />
                     <TextInput
                       id="phone"
                       name="phone"
                       type="tel"
-                      placeholder={t.phonePlaceholder || "Tu número de teléfono"}
+                      placeholder={t.phonePlaceholder}
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="bg-white border-gray-300 text-gray-200"
@@ -105,12 +106,12 @@ export default function Contact() {
                   </div>
                   
                   <div>
-                    <Label htmlFor="subject" value={t.subject || "Asunto"} className="text-gray-200" />
+                    <Label htmlFor="subject" value={t.subject} className="text-gray-200" />
                     <TextInput
                       id="subject"
                       name="subject"
                       type="text"
-                      placeholder={t.subjectPlaceholder || "¿En qué podemos ayudarte?"}
+                      placeholder={t.subjectPlaceholder}
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
@@ -119,11 +120,11 @@ export default function Contact() {
                   </div>
                   
                   <div>
-                    <Label htmlFor="message" value={t.message || "Mensaje"} className="text-gray-200" />
+                    <Label htmlFor="message" value={t.message} className="text-gray-200" />
                     <Textarea
                       id="message"
                       name="message"
-                      placeholder={t.messagePlaceholder || "Escribe tu mensaje aquí..."}
+                      placeholder={t.messagePlaceholder}
                       rows={5}
                       value={formData.message}
                       onChange={handleInputChange}
@@ -137,7 +138,7 @@ export default function Contact() {
                     size="lg" 
                     className="w-full bg-teal-700 hover:bg-teal-800 text-white border-teal-700"
                   >
-                    {t.sendButton || "Enviar Mensaje"}
+                    {t.sendButton}
                   </Button>
                 </form>
               </Card>
@@ -147,7 +148,7 @@ export default function Contact() {
             <div className="space-y-8">
               <Card className="p-8 bg-white border-gray-200 shadow-lg">
                 <h2 className="text-2xl font-bold mb-6 text-teal-500">
-                  {t.contactInfo || "Información de Contacto"}
+                  {t.contactInfo}
                 </h2>
                 <div className="space-y-6">
                   <div className="flex items-start">
@@ -156,10 +157,10 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-200">
-                        {t.address || "Dirección"}
+                        {t.address}
                       </h3>
                       <p className="text-gray-200">
-                        {t.addressDetails || "19 Avenida A 4-39, Vista Hermosa I, Zona 15, Ciudad de Guatemala, Guatemala"}
+                        {t.addressDetails}
                       </p>
                     </div>
                   </div>
@@ -170,7 +171,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-200">
-                        {t.phoneContact || "Teléfono"}
+                        {t.phoneContact}
                       </h3>
                       <p className="text-gray-200">+502 1234-5678</p>
                     </div>
@@ -182,7 +183,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-200">
-                        {t.emailContact || "Email"}
+                        {t.emailContact}
                       </h3>
                       <p className="text-gray-200">info@emamusic.com</p>
                     </div>
@@ -194,13 +195,13 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-200">
-                        {t.schedule || "Horarios"}
+                        {t.schedule}
                       </h3>
                       <p className="text-gray-200">
-                        {t.scheduleDetails || "Lunes a Viernes: 2:00 PM - 8:00 PM"}
+                        {t.scheduleDetails}
                       </p>
                       <p className="text-gray-200">
-                        {t.scheduleWeekend || "Sábados: 9:00 AM - 3:00 PM"}
+                        {t.scheduleWeekend}
                       </p>
                     </div>
                   </div>
@@ -210,14 +211,14 @@ export default function Contact() {
               {/* Quick Info Card */}
               <Card className="p-8 bg-teal-50 border-teal-200 shadow-lg">
                 <h3 className="text-xl font-bold mb-4 text-teal-500">
-                  {t.quickInfo || "Información Rápida"}
+                  {t.quickInfo}
                 </h3>
                 <ul className="space-y-2 text-gray-200">
-                  <li>• {t.quickInfo1 || "Clases individuales y grupales"}</li>
-                  <li>• {t.quickInfo2 || "Todos los niveles: principiante a avanzado"}</li>
-                  <li>• {t.quickInfo3 || "Instrumentos: Piano, guitarra, violín"}</li>
-                  <li>• {t.quickInfo4 || "Preparación para recitales"}</li>
-                  <li>• {t.quickInfo5 || "Clases presenciales y virtuales"}</li>
+                  <li>• {t.quickInfo1}</li>
+                  <li>• {t.quickInfo2}</li>
+                  <li>• {t.quickInfo3}</li>
+                  <li>• {t.quickInfo4}</li>
+                  <li>• {t.quickInfo5}</li>
                 </ul>
               </Card>
             </div>

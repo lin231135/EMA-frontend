@@ -5,8 +5,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import PageLayout from "../layout/PageLayout";
 import { RegisterImageCard } from "../forms/RegisterCards";
 import { Link } from "react-router-dom";
+import translations from '../../translations';
 
 const Login = () => {
+  const { lang, login } = useAuth();
+  const t = translations[lang].login;
   // Estado para los campos de email y contraseña
   const [credentials, setCredentials] = useState({
     email: '',
@@ -14,7 +17,6 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   // Estado para el checkbox "Recordar sesión"
   const [rememberMe, setRememberMe] = useState(false);
@@ -39,12 +41,12 @@ const Login = () => {
     e.preventDefault();
 
     if (!credentials.email || !credentials.password) {
-      setError('Por favor completa todos los campos');
+      setError(t.errorAllFields);
       return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(credentials.email)) {
-      setError('Por favor ingresa un email válido');
+      setError(t.errorInvalidEmail);
       return;
     }
 
@@ -60,7 +62,7 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Error al iniciar sesión');
+        throw new Error(data.message || t.errorLogin);
       }
 
       // Usar el contexto de autenticación para manejar el login
@@ -73,7 +75,7 @@ const Login = () => {
         setIsFirstLogin(true);
         setShowResetPopup(true);
       } else {
-        alert(`¡Bienvenido/a, ${data.user.name}!`);
+        alert(t.welcomeMessage.replace('{name}', data.user.name));
         navigate('/'); // Redirige a la página de inicio
       }
 
@@ -102,14 +104,14 @@ const Login = () => {
 
       if (!response.ok) throw new Error(result.message);
 
-      alert('¡Contraseña actualizada correctamente!');
+      alert(t.passwordUpdateSuccess);
       setTimeout(() => navigate('/'), 1000);
 
       setShowResetPopup(false);
       setIsFirstLogin(false);
     } catch (err) {
       console.error(err.message);
-      alert('Error: ' + err.message);
+      alert(t.passwordUpdateError.replace('{message}', err.message));
     }
   };
 
@@ -136,13 +138,13 @@ const Login = () => {
                   <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
                     <img
                       src="/LogoColorEMA4.svg"
-                      alt="Logo EMA"
+                      alt={t.altLogo}
                       className="w-30 h-30 object-contain"
                     />
                   </div>
                   {/* Título */}
                   <h2 className="text-center text-2xl lg:text-3xl font-extrabold text-gray-900">
-                    Inicia sesión en tu cuenta
+                    {t.title}
                   </h2>
                 </div>
 
@@ -158,7 +160,7 @@ const Login = () => {
                   {/* Campo de email */}
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900">
-                      Correo Electrónico <span className="text-red-500">*</span>
+                      {t.emailLabel} <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="email"
@@ -168,7 +170,7 @@ const Login = () => {
                       required
                       value={credentials.email}
                       onChange={handleChange}
-                      placeholder="tu@gmail.com"
+                      placeholder={t.emailPlaceholder}
                       className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
@@ -176,7 +178,7 @@ const Login = () => {
                   {/* Contraseña */}
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900">
-                      Contraseña <span className="text-red-500">*</span>
+                      {t.passwordLabel} <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="password"
@@ -186,7 +188,7 @@ const Login = () => {
                       required
                       value={credentials.password}
                       onChange={handleChange}
-                      placeholder="••••••••••••"
+                      placeholder={t.passwordPlaceholder}
                       className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
@@ -203,7 +205,7 @@ const Login = () => {
                         className="h-5 w-5 p-3 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 accent-cyan-600"
                       />
                       <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                        Recordar sesión
+                        {t.rememberMe}
                       </label>
                     </div>
 
@@ -212,7 +214,7 @@ const Login = () => {
                       onClick={() => setShowResetPopup(true)}
                       className="text-sm p-3 font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
                     >
-                      ¿Olvidaste tu contraseña?
+                      {t.forgotPassword}
                     </button>
                   </div>
 
@@ -222,7 +224,7 @@ const Login = () => {
                       type="submit"
                       className="w-full font-medium rounded-lg text-sm px-5 py-4 text-center transition-all duration-200 transform text-white bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 hover:scale-[1.02] cursor-pointer"
                     >
-                      INICIAR SESIÓN
+                      {t.loginButton}
                     </button>
                   </div>
                 </form>
@@ -230,12 +232,12 @@ const Login = () => {
                 {/* Enlace para registrarse */}
                 <div className="text-center mt-6">
                   <p className="text-sm text-gray-600">
-                    ¿No tienes cuenta?{' '}
+                    {t.noAccount}{' '}
                     <Link
                       to="/register"
                       className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
                     >
-                      Regístrate
+                      {t.register}
                     </Link>
                   </p>
                 </div>
@@ -259,4 +261,4 @@ const Login = () => {
 };
 
 // Exporta el componente Login
-export default Login;   
+export default Login;

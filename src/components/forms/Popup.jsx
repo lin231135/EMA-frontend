@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import translations from '../../translations';
 
 const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
+  const { lang } = useAuth();
+  const t = translations[lang].passwordModal;
+
   const [form, setForm] = useState({
     current: '',
     new: '',
@@ -28,15 +33,15 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
   const handleSubmit = e => {
     e.preventDefault();
     if (!form.current || !form.new || !form.confirm) {
-      setError('Completa todos los campos');
+      setError(t.errorAllFields);
       return;
     }
     if (form.new.length < 8) {
-      setError('La nueva contraseña debe tener al menos 8 caracteres');
+      setError(t.errorMinLength);
       return;
     }
     if (form.new !== form.confirm) {
-      setError('Las contraseñas no coinciden');
+      setError(t.errorMismatch);
       return;
     }
     setLoading(true);
@@ -62,7 +67,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
         <button
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
           onClick={onClose}
-          aria-label="Cerrar"
+          aria-label={t.close}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -75,16 +80,16 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
           <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
             <img
               src="/LogoColorEMA4.svg"
-              alt="Logo EMA"
+              alt={t.altLogo}
               className="w-30 h-30 object-contain"
             />
           </div>
           {/* Título */}
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Cambia Tu Contraseña
+            {t.title}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Por seguridad, cambia tu contraseña antes de continuar.
+            {t.subtitle}
           </p>
         </div>
 
@@ -101,7 +106,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
             {/* Campo de contraseña actual */}
             <div className="mb-4">
               <label className="block mb-2 text-sm font-medium text-gray-900">
-                Contraseña Actual <span className="text-red-500">*</span>
+                {t.currentPassword} <span className="text-red-500">*</span>
               </label>
               <input
                 id="current"
@@ -111,7 +116,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
                 required
                 value={form.current}
                 onChange={handleChange}
-                placeholder="••••••••••••"
+                placeholder={t.passwordPlaceholder}
                 className="block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
               />
             </div>
@@ -119,7 +124,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
             {/* Nueva contraseña */}
             <div className="mb-4">
               <label className="block mb-2 text-sm font-medium text-gray-900">
-                Nueva Contraseña <span className="text-red-500">*</span>
+                {t.newPassword} <span className="text-red-500">*</span>
               </label>
               <input
                 id="new"
@@ -129,7 +134,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
                 required
                 value={form.new}
                 onChange={handleChange}
-                placeholder="••••••••••••"
+                placeholder={t.passwordPlaceholder}
                 className="block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
               />
             </div>
@@ -137,7 +142,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
             {/* Confirmar nueva contraseña */}
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-900">
-                Confirmar Nueva Contraseña <span className="text-red-500">*</span>
+                {t.confirmNewPassword} <span className="text-red-500">*</span>
               </label>
               <input
                 id="confirm"
@@ -147,7 +152,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
                 required
                 value={form.confirm}
                 onChange={handleChange}
-                placeholder="••••••••••••"
+                placeholder={t.passwordPlaceholder}
                 className="block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
               />
             </div>
@@ -163,7 +168,7 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
                 : 'bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 hover:scale-[1.02] cursor-pointer'
                 }`}
             >
-              {loading ? 'CAMBIANDO...' : 'CAMBIAR CONTRASEÑA'}
+              {loading ? t.submittingButton : t.submitButton}
             </button>
           </div>
         </form>

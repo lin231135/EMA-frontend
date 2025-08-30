@@ -35,5 +35,23 @@ const home = {
       },
     ],
   },
+  philosophyTitle: "Our Philosophy:",
+  philosophyText:
+    "At our music academy, we believe that music is the best way to stimulate creativity, discipline, and confidence in children. We provide a safe and fun environment to learn, with highly qualified teachers and teaching methods adapted to every age.",
+  reserveButton: "Reserve your spot",
+  enrollTitle: "Sign up for a course today",
+  enrollSubtitle: "Boost your child's creativity and musical talent",
+  enrollText:
+    "We offer courses for all ages, from music stimulation for the little ones to singing and piano classes for children and teenagers. Our personalized approach ensures that each student learns at their own pace, enjoying music while developing essential skills.",
+  viewCoursesButton: "View Courses",
+  coursesTitle: "Our Courses",
+  coursesSubtitle:
+    "We offer a variety of courses designed to nurture musical talent at every stage.",
+  courseSinging: "Singing Class",
+  coursePiano: "Piano",
+  courseStimulation2_3: "Music Stimulation 2-3 years old",
+  courseStimulation4_5: "Music Stimulation 4-5 years old",
+  locationTitle: "Our location",
+  locationPopup: "19 avenida A 4-39, Vista Hermosa 1, Zona 15",
 };
 export default home;

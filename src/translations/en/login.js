@@ -1,0 +1,20 @@
+export const login = {
+  title: 'Log in to your account',
+  altLogo: 'EMA Logo',
+  emailLabel: 'Email',
+  passwordLabel: 'Password',
+  emailPlaceholder: 'you@gmail.com',
+  passwordPlaceholder: '••••••••••••',
+  rememberMe: 'Remember me',
+  forgotPassword: 'Forgot your password?',
+  loginButton: 'LOG IN',
+  noAccount: "Don't have an account?",
+  register: 'Sign up',
+  // Messages
+  errorAllFields: 'Please fill out all fields',
+  errorInvalidEmail: 'Please enter a valid email',
+  errorLogin: 'Error logging in',
+  welcomeMessage: 'Welcome, {name}!',
+  passwordUpdateSuccess: 'Password updated successfully!',
+  passwordUpdateError: 'Error: {message}',
+};

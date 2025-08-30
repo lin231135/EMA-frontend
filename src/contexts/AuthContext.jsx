@@ -14,11 +14,16 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'es');
 
   useEffect(() => {
     // Verificar si hay un token guardado al cargar la aplicación
     checkAuthStatus();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('lang', lang);
+  }, [lang]);
 
   const checkAuthStatus = () => {
     try {
@@ -65,6 +70,8 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     user,
     loading,
+    lang,
+    setLang,
     login,
     logout,
     checkAuthStatus

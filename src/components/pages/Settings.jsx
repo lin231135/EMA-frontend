@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react";
-import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../translations'
+import { PageLayout } from "../layout";
 
 export default function Settings() {
-  const [lang, setLang] = useState("en");
-  const { isAuthenticated, user, logout, loading } = useAuth();
+  const { isAuthenticated, user, logout, loading, lang, setLang } = useAuth();
   const navigate = useNavigate();
   const t = translations[lang].common;
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -181,36 +179,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar>
-        <a href="#" className="flex items-center">
-          <Logo />
-        </a>
-        <NavbarDivider />
-        <NavbarSection>
-          <NavbarItem href="/">{lang === "es" ? "Inicio" : "Home"}</NavbarItem>
-          <NavbarItem href="/about">{lang === "es" ? "Nosotros" : "About"}</NavbarItem>
-          <NavbarItem href="#content">{lang === "es" ? "Contenido" : "Services"}</NavbarItem>
-          <NavbarItem href="#contact">{lang === "es" ? "Contacto" : "Contact"}</NavbarItem>
-        </NavbarSection>
-        <NavbarSection>
-          <button 
-            onClick={() => setLang(lang === "es" ? "en" : "es")} 
-            className="text-gray-200 hover:text-white px-2 py-2 sm:px-3 sm:py-2 rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
-          >
-            {t.langToggle}
-          </button>
-          <AvatarDropdown
-            isAuthenticated={isAuthenticated}
-            user={user}
-            onLogin={handleLogin}
-            onRegister={handleRegister}
-            onLogout={handleLogout}
-            translations={t}
-          />
-        </NavbarSection>
-      </Navbar>
-
+    <PageLayout>
       <main className="max-w-4xl mx-auto px-4 py-8 pt-24">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-[#011C33] mb-2">
@@ -488,8 +457,6 @@ export default function Settings() {
           </div>
         </div>
       </main>
-
-      <Footer lang={lang} />
-    </div>
+    </PageLayout>
   );
 }
