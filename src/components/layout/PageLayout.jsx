@@ -32,7 +32,7 @@ export default function PageLayout({ children, className = "", lang, setLang, t,
   return (
     <div className={`font-sans text-gray-200 min-h-screen flex flex-col ${className}`}>
       {/* Navbar Flowbite conservando la misma información */}
-      <FlowbiteNavbar fluid>
+      <FlowbiteNavbar fluid className="shadow-md">
         <NavbarBrand href="/">
           <Logo size="h-18" />
           <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white ml-2">
@@ -41,7 +41,8 @@ export default function PageLayout({ children, className = "", lang, setLang, t,
         <div className="flex md:order-2 items-center">
           <button
             onClick={() => setLang(lang === "es" ? "en" : "es")}
-            className="text-gray-200 hover:text-white px-2 py-2 sm:px-3 sm:py-2 rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
+            className="bg-[#01A6CC] hover:bg-[#038EFE] text-white px-2 py-2 sm:px-3 sm:py-2 
+             rounded-md text-sm sm:text-base font-medium mr-2 sm:mr-4 transition-colors duration-200"
           >
             {t?.langToggle || (lang === "es" ? "EN" : "ES")}
           </button>
@@ -58,11 +59,11 @@ export default function PageLayout({ children, className = "", lang, setLang, t,
           <NavbarToggle />
         </div>
         <NavbarCollapse>
-          <NavbarLink href="/" active={isActiveLink('/')}>{lang === "es" ? "Inicio" : "Home"}</NavbarLink>
-          <NavbarLink href="/about" active={isActiveLink('/about')}>{lang === "es" ? "Nosotros" : "About"}</NavbarLink>
-          <NavbarLink href="#content">{lang === "es" ? "Contenido" : "Services"}</NavbarLink>
-          <NavbarLink href="/schedule" active={isActiveLink('/schedule')}>{t?.scheduleMenu ?? (lang === "es" ? "Horario" : "Schedule")}</NavbarLink>
-          <NavbarLink href="/contact" active={isActiveLink('/contact')}>{lang === "es" ? "Contacto" : "Contact"}</NavbarLink>
+          <NavbarLink href="/" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/')}>{lang === "es" ? "Inicio" : "Home"}</NavbarLink>
+          <NavbarLink href="/about" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/about')}>{lang === "es" ? "Nosotros" : "About"}</NavbarLink>
+          <NavbarLink href="#content" className={'text-gray-500 hover:!text-[#038EFE]'}>{lang === "es" ? "Contenido" : "Services"}</NavbarLink>
+          <NavbarLink href="/schedule" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/schedule')}>{t?.scheduleMenu ?? (lang === "es" ? "Horario" : "Schedule")}</NavbarLink>
+          <NavbarLink href="/contact" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/contact')}>{lang === "es" ? "Contacto" : "Contact"}</NavbarLink>
         </NavbarCollapse>
       </FlowbiteNavbar>
 
