@@ -115,42 +115,48 @@ const Login = () => {
 
   // Formulario de login
   return (
-    <PageLayout hideUserMenu={true}>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-        <div className="w-full max-w-6xl flex flex-col lg:flex-row items-stretch justify-center gap-8">
-          <div className="flex-1">
-            <RegisterImageCard />
-          </div>
-          <div className="flex-[1.2] flex items-center justify-center">
-            <div className="flex-1 min-h-[400px] bg-white p-12 shadow-2xl flex flex-col justify-center rounded-lg">
-              {/* Logo y titulo  */}
-              <div className="text-center mb-8">
-                {/* Ícono de usuario */}
-                <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
-                  <img
-                    src="/LogoColorEMA4.svg"
-                    alt="Logo EMA"
-                    className="w-30 h-30 object-contain"
-                  />
-                </div>
-                {/* Título */}
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                  Inicia sesión en tu cuenta
-                </h2>
+    <>
+      <PageLayout hideUserMenu={true}>
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+          <div className="w-full max-w-6xl flex flex-col lg:flex-row items-start justify-center gap-8">
+
+            {/* Contenedor de RegisterImageCard - sin altura fija */}
+            <div className="flex-1 hidden lg:block">
+              <div className="h-full max-h-[650px] overflow-hidden rounded-lg">
+                <RegisterImageCard />
               </div>
+            </div>
 
-              {/* Mensaje de error si existe */}
-              {error && (
-                <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
-                  {error}
+            {/* Contenedor del formulario - se ajusta a la altura de RegisterImageCard */}
+            <div className="flex-[1.2] flex items-center justify-center">
+              <div className="flex-1 min-h-[400px] bg-white p-12 shadow-2xl flex flex-col justify-center rounded-lg">
+                {/* Logo y titulo */}
+                <div className="text-center mb-6">
+                  {/* Ícono de usuario */}
+                  <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
+                    <img
+                      src="/LogoColorEMA4.svg"
+                      alt="Logo EMA"
+                      className="w-30 h-30 object-contain"
+                    />
+                  </div>
+                  {/* Título */}
+                  <h2 className="text-center text-2xl lg:text-3xl font-extrabold text-gray-900">
+                    Inicia sesión en tu cuenta
+                  </h2>
                 </div>
-              )}
 
-              {/* Formulario de login */}
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                <div className="rounded-md -space-y-px">
+                {/* Mensaje de error si existe */}
+                {error && (
+                  <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm mb-4">
+                    {error}
+                  </div>
+                )}
+
+                {/* Formulario de login */}
+                <form className="space-y-4" onSubmit={handleSubmit}>
                   {/* Campo de email */}
-                  <div className="mb-4">
+                  <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900">
                       Correo Electrónico <span className="text-red-500">*</span>
                     </label>
@@ -163,9 +169,10 @@ const Login = () => {
                       value={credentials.email}
                       onChange={handleChange}
                       placeholder="tu@gmail.com"
-                      className={"block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"}
+                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
+
                   {/* Contraseña */}
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900">
@@ -180,76 +187,74 @@ const Login = () => {
                       value={credentials.password}
                       onChange={handleChange}
                       placeholder="••••••••••••"
-                      className={"block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"}
+                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
-                </div>
 
-                {/* Checkbox "Recordar sesión" y enlace para recuperar contraseña */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      id="remember-me"
-                      name="remember-me"
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 accent-cyan-600"
-                    />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                      Recordar sesión
-                    </label>
-                  </div>
+                  {/* Checkbox "Recordar sesión" y enlace para recuperar contraseña */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <input
+                        id="remember-me"
+                        name="remember-me"
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                        className="h-5 w-5 p-3 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 accent-cyan-600"
+                      />
+                      <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                        Recordar sesión
+                      </label>
+                    </div>
 
-                  <div className="text-center mt-6">
                     <button
                       type="button"
                       onClick={() => setShowResetPopup(true)}
-                      className="text-sm font-medium text-cyan-600 hover:text-cyan-700 hover:underline px-2"
+                      className="text-sm p-3 font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
                     >
                       ¿Olvidaste tu contraseña?
                     </button>
                   </div>
-                </div>
-                {/* Botón iniciar sesion */}
-                <div>
-                  <button
-                    type="submit"
-                    className={`w-full font-medium rounded-lg text-sm px-5 py-3 text-center transition-all duration-200 transform text-white bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 hover:scale-[1.02] cursor-pointer`}
-                  >
-                    INICIAR SESIÓN
-                  </button>
-                </div>
-              </form>
 
-              {/* Enlace para registrarse */}
-              <div className="text-center mt-6">
-                <p className="text-sm text-gray-600">
-                  ¿No tienes cuenta?{' '}
-                  <Link
-                    to="/register"
-                    className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
-                  >
-                    Regístrate
-                  </Link>
-                </p>
+                  {/* Botón iniciar sesion */}
+                  <div>
+                    <button
+                      type="submit"
+                      className="w-full font-medium rounded-lg text-sm px-5 py-4 text-center transition-all duration-200 transform text-white bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 hover:scale-[1.02] cursor-pointer"
+                    >
+                      INICIAR SESIÓN
+                    </button>
+                  </div>
+                </form>
+
+                {/* Enlace para registrarse */}
+                <div className="text-center mt-6">
+                  <p className="text-sm text-gray-600">
+                    ¿No tienes cuenta?{' '}
+                    <Link
+                      to="/register"
+                      className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
+                    >
+                      Regístrate
+                    </Link>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </PageLayout>
 
-
-        {/* Popup de restablecimiento de contraseña */}
-        <PasswordModal
-          isOpen={showResetPopup}
-          onClose={() => {
-            setShowResetPopup(false);
-            setIsFirstLogin(false);
-          }}
-          onSubmit={handlePasswordUpdate}
-        />
-      </div>
-    </PageLayout>
+      {/* Popup de restablecimiento de contraseña */}
+      <PasswordModal
+        isOpen={showResetPopup}
+        onClose={() => {
+          setShowResetPopup(false);
+          setIsFirstLogin(false);
+        }}
+        onSubmit={handlePasswordUpdate}
+      />
+    </>
   );
 };
 

@@ -49,82 +49,123 @@ const PasswordModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-6 relative">
+    <div
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-2xl bg-white p-12 shadow-2xl flex flex-col justify-center rounded-lg relative transform transition-all duration-300 scale-100"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Botón de cerrar */}
         <button
-          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
           onClick={onClose}
           aria-label="Cerrar"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <div className="flex flex-col items-center mb-4">
-          <div className="bg-indigo-100 rounded-full p-2 mb-2">
-            <svg className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
+
+        {/* Logo y titulo  */}
+        <div className="text-center mb-8">
+          {/* Ícono de usuario */}
+          <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
+            <img
+              src="/LogoColorEMA4.svg"
+              alt="Logo EMA"
+              className="w-30 h-30 object-contain"
+            />
           </div>
-          <h2 className="text-lg font-bold text-gray-800 text-center">Cambia Tú Contraseña</h2>
-          <p className="text-xs text-gray-500 text-center">Por seguridad, cambia tu contraseña antes de continuar.</p>
+          {/* Título */}
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Cambia Tu Contraseña
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Por seguridad, cambia tu contraseña antes de continuar.
+          </p>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label htmlFor="current" className="block text-xs font-medium text-gray-700 mb-1">
-              Contraseña Actual
-            </label>
-            <input
-              id="current"
-              name="current"
-              type="password"
-              value={form.current}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200 text-sm"
-              autoComplete="current-password"
-              placeholder="••••••••"
-            />
+
+        {/* Mensaje de error si existe */}
+        {error && (
+          <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm mb-4">
+            {error}
           </div>
-          <div>
-            <label htmlFor="new" className="block text-xs font-medium text-gray-700 mb-1">
-              Nueva Contraseña
-            </label>
-            <input
-              id="new"
-              name="new"
-              type="password"
-              value={form.new}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200 text-sm"
-              autoComplete="new-password"
-              placeholder="••••••••"
-            />
+        )}
+
+        {/* Formulario */}
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="rounded-md -space-y-px">
+            {/* Campo de contraseña actual */}
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-gray-900">
+                Contraseña Actual <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="current"
+                name="current"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={form.current}
+                onChange={handleChange}
+                placeholder="••••••••••••"
+                className="block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
+
+            {/* Nueva contraseña */}
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-gray-900">
+                Nueva Contraseña <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="new"
+                name="new"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={form.new}
+                onChange={handleChange}
+                placeholder="••••••••••••"
+                className="block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
+
+            {/* Confirmar nueva contraseña */}
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900">
+                Confirmar Nueva Contraseña <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="confirm"
+                name="confirm"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={form.confirm}
+                onChange={handleChange}
+                placeholder="••••••••••••"
+                className="block w-full p-3 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="confirm" className="block text-xs font-medium text-gray-700 mb-1">
-              Confirmar Nueva Contraseña
-            </label>
-            <input
-              id="confirm"
-              name="confirm"
-              type="password"
-              value={form.confirm}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-200 text-sm"
-              autoComplete="new-password"
-              placeholder="••••••••"
-            />
+
+          {/* Botón cambiar contraseña */}
+          <div className="mt-6">
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full font-medium rounded-lg text-sm px-5 py-3 text-center transition-all duration-200 transform text-white ${loading
+                ? 'opacity-60 cursor-not-allowed bg-gray-400'
+                : 'bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 hover:scale-[1.02] cursor-pointer'
+                }`}
+            >
+              {loading ? 'CAMBIANDO...' : 'CAMBIAR CONTRASEÑA'}
+            </button>
           </div>
-          {error && <div className="text-xs text-red-500 text-center">{error}</div>}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-2 rounded bg-indigo-600 text-white text-sm font-medium mt-2 transition ${
-              loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-indigo-700'
-            }`}
-          >
-            {loading ? 'Cambiando...' : 'Cambiar Contraseña'}
-          </button>
         </form>
       </div>
     </div>
