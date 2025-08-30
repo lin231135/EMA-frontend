@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { Navbar, NavbarDivider, NavbarItem, NavbarSection, Logo, AvatarDropdown, Footer } from '../layout'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { translations } from '../../translations'
+import translations from '../../translations'
 
 export default function Profile() {
   const [lang, setLang] = useState("en");
   const { isAuthenticated, user, logout, loading } = useAuth();
   const navigate = useNavigate();
-  const t = translations[lang];
+  const t = translations[lang].common;
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Estados para edición del perfil

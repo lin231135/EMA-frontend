@@ -1,0 +1,21 @@
+const about = {
+  mission: "Misión",
+  vision: "Visión",
+  commitment: "Compromiso",
+  professionalCareer: "Carrera Profesional",
+  recitals: "Recitales",
+  testimonials: "Testimonios",
+  missionText:
+    "Contribuir a formar personas que amen la música y que el amor a la música sea parte de la vida familiar.",
+  visionText:
+    "Desarrollar  Destrezas musicales y Contribuir al desarrollo artístico y al crecimiento de habilidades musicales, formando  personas sensibles al arte y al lenguaje musical a través del desarrollo personal y artístico de niños, adolescentes, jóvenes y adultos.",
+  commitmentText:
+    "Nos comprometemos a ofrecer una enseñanza personalizada a las necesidades individuales de cada estudiante, en un ambiente de respeto, creatividad y excelencia académica.",
+  careerText:
+    "La Licda. Elizabeth Delgado cuenta con más de 20 años de experiencia en la enseñanza musical. Graduada con honores de la Universidad del Valle de Guatemala, ha organizado numerosos recitales con estudiantes nacionales e internacionales, formando a más de 100 estudiantes.",
+  recitalsText:
+    "Se han realizado varios recitales donde los estudiantes tienen la oportunidad de mostrar su progreso y talento musical de manera pública.",
+  testimonialsText:
+    "Nuestros estudiantes y sus familias comparten sus experiencias y el impacto positivo que la música ha tenido en sus vidas.",
+};
+export default about;

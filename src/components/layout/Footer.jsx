@@ -6,13 +6,10 @@ import {
 } from "flowbite-react";
 import { BsFacebook, BsInstagram, BsYoutube, BsWhatsapp } from "react-icons/bs";
 
-// importa las traducciones
-import { es } from "../../translations/es";
-import { en } from "../../translations/en";
+import translations from '../../translations'
 
 export default function AppFooter({ lang = "en" }) {
-  const translations = { es, en };
-  const t = translations[lang];
+  const t = { ...translations[lang].common, ...translations[lang].contact };
 
   return (
     <Footer container className="bg-gradient-to-r from-[#9931CC] to-[#038EFE] text-white animate-gradient rounded-none">

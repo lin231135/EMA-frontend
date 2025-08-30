@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button, Card, Label, TextInput, Textarea } from "flowbite-react";
 import { PageLayout } from '../layout'
-import { translations } from '../../translations'
+import translations from '../../translations'
 
 export default function Contact() {
   const [lang, setLang] = useState("en");
-  const t = translations[lang];
+  const t = translations[lang].contact;
 
   const [formData, setFormData] = useState({
     name: '',

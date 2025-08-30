@@ -1,7 +1,7 @@
 import { useMemo, useState, Fragment } from "react";
 import { Button, Badge, Modal, Tabs } from "flowbite-react";
 import { PageLayout } from "../layout";
-import { translations } from "../../translations";
+import translations from "../../translations";
 import HeroCarousel from "../ui/HeroCarousel";
 import PreRegisterForm from "../forms/PreRegisterForm";
 
@@ -23,7 +23,7 @@ const demoReserved = {};
 
 export default function Schedule() {
   const [lang, setLang] = useState("en");
-  const t = translations[lang];
+  const t = translations[lang].schedule;
 
   // Semana visible
   const [anchorDate, setAnchorDate] = useState(() => startOfWeek(new Date()));

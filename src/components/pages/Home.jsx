@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PageLayout } from "../layout";
-import { translations } from "../../translations";
+import translations from "../../translations";
 import HeroCarousel from "../ui/HeroCarousel";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -15,7 +15,7 @@ const markerIcon = new L.Icon({
 
 export default function Home() {
   const [lang, setLang] = useState("en");
-  const t = translations[lang];
+  const t = translations[lang].home;
 
   return (
     <PageLayout lang={lang} setLang={setLang} t={t}>

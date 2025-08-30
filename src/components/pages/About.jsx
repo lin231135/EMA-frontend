@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { PageLayout } from '../layout'
 import { TestimonialCard, RecitalCard } from '../ui'
-import { translations } from '../../translations'
+import translations from '../../translations'
 
 export default function About() {
   const [lang, setLang] = useState("en");
-  const t = translations[lang];
+  const t = translations[lang].about;
 
   const testimonials = [
     {
