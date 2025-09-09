@@ -5,7 +5,8 @@ import { Home, About, Profile, Settings, Contact } from "./components/pages";
 import Schedule from "./components/pages/Schedule";
 import { AuthProvider } from "./contexts/AuthContext";
 import PreRegisterForm from "./components/forms/PreRegisterForm";
-import StudentDashboard from "./components/pages/StudentDashboard";
+import StudentDashboard from "./components/pages/student/StudentDashboard";
+import StudentCalendar from "./components/pages/student/StudentCalendar";
 
 
 
@@ -13,7 +14,8 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/studentdashboard" element={<StudentDashboard />} />
+      <Route path="/student/dashboard" element={<StudentDashboard />} />
+      <Route path="/student/calendar" element={<StudentCalendar />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/profile" element={<Profile />} />

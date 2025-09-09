@@ -1,5 +1,5 @@
 import { NavLink, Link } from "react-router-dom";
-import { Logo } from "../layout/Logo"; 
+import { Logo } from "../Logo"; 
 
 const linkCls = (isActive, collapsed) =>
   [
