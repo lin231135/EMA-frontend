@@ -45,7 +45,7 @@ export default function StudentLayout({ children }) {
 
       {/* NAVBAR (debajo del sidebar) */}
       <div className={contentShift}>
-        <StudentNavbar breadcrumbs={breadcrumbs} onLogout={logout} />
+        <StudentNavbar onLogout={logout} />
       </div>
 
       {/* CONTENIDO */}

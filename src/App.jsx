@@ -14,8 +14,8 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/student/dashboard" element={<StudentDashboard />} />
-      <Route path="/student/calendar" element={<StudentCalendar />} />
+      <Route path="/student/StudentDashboard" element={<StudentDashboard />} />
+      <Route path="/student/StudentCalendar" element={<StudentCalendar />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/profile" element={<Profile />} />
