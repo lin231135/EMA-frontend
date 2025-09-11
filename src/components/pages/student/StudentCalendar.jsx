@@ -1,5 +1,5 @@
-
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Button, Card, Badge, Tabs } from "flowbite-react";
 import StudentLayout from "../../layout/student/StudentLayout";
 import AddClassModal from "../../ui/AddClassModal";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -11,6 +11,12 @@ function startOfMonth(date) {
 }
 function endOfMonth(date) {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
+function startOfWeek(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Lunes como primer día
+  return new Date(d.setDate(diff));
 }
 function addDays(d, n) {
   const x = new Date(d);
@@ -29,6 +35,14 @@ function fmtKey(d) {
     d.getDate()
   ).padStart(2, "0")}`;
 }
+function formatTime(hour) {
+  const h = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  const suffix = hour < 12 ? "AM" : "PM";
+  return `${h}:00 ${suffix}`;
+}
+
+// Horas para las vistas de día y semana (8 AM - 8 PM)
+const SCHEDULE_HOURS = Array.from({ length: 13 }, (_, i) => 8 + i);
 
 export default function StudentCalendar() {
   const { lang } = useAuth();
@@ -81,6 +95,11 @@ export default function StudentCalendar() {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
+  // Para vista de día, también mantener el día específico
+  const [currentDay, setCurrentDay] = useState(() => new Date());
+  // Para vista de semana, mantener el inicio de semana
+  const [currentWeek, setCurrentWeek] = useState(() => startOfWeek(new Date()));
+  
   const [showModal, setShowModal] = useState(false);
   const [events, setEvents] = useState(SAMPLE_EVENTS_I18N);
 
@@ -114,13 +133,29 @@ export default function StudentCalendar() {
     };
   }, [autoFollow, view]);
 
-  const monthLabel = useMemo(
-    () => {
-      const locale = lang === 'es' ? 'es-ES' : 'en-US';
+  const periodLabel = useMemo(() => {
+    const locale = lang === 'es' ? 'es-ES' : 'en-US';
+    if (view === "month") {
       return cursor.toLocaleDateString(locale, { year: "numeric", month: "long" });
-    },
-    [cursor, lang]
-  );
+    } else if (view === "week") {
+      const weekStart = currentWeek;
+      const weekEnd = addDays(weekStart, 6);
+      const startStr = weekStart.toLocaleDateString(locale, { month: "short", day: "numeric" });
+      const endStr = weekEnd.toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
+      return t.weekView?.weekOf?.replace("{date}", `${startStr} - ${endStr}`) || `${startStr} - ${endStr}`;
+    } else if (view === "day") {
+      const dayStr = currentDay.toLocaleDateString(locale, { 
+        weekday: "long", 
+        year: "numeric", 
+        month: "long", 
+        day: "numeric" 
+      });
+      return sameYMD(currentDay, new Date()) 
+        ? t.dayView?.todayLabel?.replace("{date}", dayStr) || `Today - ${dayStr}`
+        : dayStr;
+    }
+    return "";
+  }, [view, cursor, currentDay, currentWeek, lang, t]);
 
   const gridDays = useMemo(() => {
     const first = startOfMonth(cursor);
@@ -156,13 +191,34 @@ export default function StudentCalendar() {
   const isSameMonth = (d) =>
     d.getFullYear() === cursor.getFullYear() && d.getMonth() === cursor.getMonth();
 
-  const prevMonth = () => {
+  const prevPeriod = () => {
     setAutoFollow(false); // usuario tomó control
-    setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1));
+    if (view === "month") {
+      setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1));
+    } else if (view === "week") {
+      setCurrentWeek(addDays(currentWeek, -7));
+    } else if (view === "day") {
+      setCurrentDay(addDays(currentDay, -1));
+    }
   };
-  const nextMonth = () => {
+
+  const nextPeriod = () => {
     setAutoFollow(false);
-    setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1));
+    if (view === "month") {
+      setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1));
+    } else if (view === "week") {
+      setCurrentWeek(addDays(currentWeek, 7));
+    } else if (view === "day") {
+      setCurrentDay(addDays(currentDay, 1));
+    }
+  };
+
+  const goToToday = () => {
+    const today = new Date();
+    setAutoFollow(true);
+    setCursor(new Date(today.getFullYear(), today.getMonth(), 1));
+    setCurrentDay(today);
+    setCurrentWeek(startOfWeek(today));
   };
 
   const handleCreateClass = (data) => {
@@ -257,64 +313,97 @@ export default function StudentCalendar() {
           <section className="col-span-12 md:col-span-8 lg:col-span-9">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-full flex flex-col">
               {/* Header calendario — MÁS separación vertical (mb-8) */}
-              <div className="flex items-center justify-between mb-12">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center justify-between mb-8">
+                <Button
+                  size="sm"
+                  color="light" 
+                  onClick={goToToday}
+                  className="text-sm"
+                >
                   {t.headerToday || "Today"}
-                </div>
+                </Button>
                 <div className="flex items-center gap-3">
-                  <button
-                    onClick={prevMonth}
-                    aria-label={t.a11y.prevMonth || "Previous month"}
-                    className="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  <Button
+                    size="sm"
+                    color="light"
+                    onClick={prevPeriod}
+                    aria-label={
+                      view === "month" ? t.a11y.prevMonth : 
+                      view === "week" ? t.a11y.prevWeek : 
+                      t.a11y.prevDay
+                    }
                   >
                     &lt;
-                  </button>
-                  <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200 min-w-[9rem] text-center">
-                    {monthLabel}
+                  </Button>
+                  <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200 min-w-[12rem] text-center">
+                    {periodLabel}
                   </h2>
-                  <button
-                    onClick={nextMonth}
-                    aria-label={t.a11y.nextMonth || "Next month"}
-                    className="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  <Button
+                    size="sm"
+                    color="light"
+                    onClick={nextPeriod}
+                    aria-label={
+                      view === "month" ? t.a11y.nextMonth :
+                      view === "week" ? t.a11y.nextWeek :
+                      t.a11y.nextDay
+                    }
                   >
                     &gt;
-                  </button>
+                  </Button>
                 </div>
                 <div className="flex items-center gap-2">
                   {viewKeys.map((v) => (
-                    <button
+                    <Button
                       key={v}
+                      size="sm"
+                      color={view === v ? "blue" : "light"}
                       onClick={() => setView(v)}
-                      className={`px-3 py-1 rounded-md text-sm capitalize ${
-                        view === v
-                          ? "bg-cyan-500 text-white"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-                      }`}
+                      className="capitalize"
                     >
                       {viewLabels[v]}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
 
-              {/* Fila de días EN GRIS */}
-              <div className="grid grid-cols-7 text-center text-gray-900 dark:text-gray-200 text-xs font-semibold mb-2 bg-gray-50 dark:bg-gray-700/50 rounded-md">
-                {dayNames.map((d, i) => (
-                  <div
-                    key={`${d}-${i}`}
-                    className={`py-2 ${i === 0 ? "rounded-l-md" : ""} ${i === 6 ? "rounded-r-md" : ""}`}
-                  >
-                    {d}
-                  </div>
-                ))}
-              </div>
+              {/* Fila de días EN GRIS - solo para vista mensual */}
+              {view === "month" && (
+                <div className="grid grid-cols-7 text-center text-gray-900 dark:text-gray-200 text-xs font-semibold mb-2 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+                  {dayNames.map((d, i) => (
+                    <div
+                      key={`${d}-${i}`}
+                      className={`py-2 ${i === 0 ? "rounded-l-md" : ""} ${i === 6 ? "rounded-r-md" : ""}`}
+                    >
+                      {d}
+                    </div>
+                  ))}
+                </div>
+              )}
 
-              {/* Grid de días */}
-              <CalendarGrid
-                cursor={cursor}
-                events={events}
-                multiByDay={multiByDay}
-              />
+              {/* Renderizado condicional de vistas */}
+              {view === "month" && (
+                <CalendarGrid
+                  cursor={cursor}
+                  events={events}
+                  multiByDay={multiByDay}
+                />
+              )}
+              {view === "week" && (
+                <WeekView
+                  weekStart={currentWeek}
+                  events={events}
+                  t={t}
+                  lang={lang}
+                />
+              )}
+              {view === "day" && (
+                <DayView
+                  currentDay={currentDay}
+                  events={events}
+                  t={t}
+                  lang={lang}
+                />
+              )}
             </div>
           </section>
         </div>
@@ -327,6 +416,208 @@ export default function StudentCalendar() {
         onSubmit={handleCreateClass}
       />
     </StudentLayout>
+  );
+}
+
+/** Componente Vista de Semana */
+function WeekView({ weekStart, events, t, lang }) {
+  const locale = lang === 'es' ? 'es-ES' : 'en-US';
+  const dayNamesFull = t.dayNamesFull || ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  
+  const weekDays = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  }, [weekStart]);
+
+  const colorMap = {
+    indigo: "bg-blue-500 text-white",
+    pink: "bg-pink-500 text-white", 
+    violet: "bg-purple-500 text-white",
+    rose: "bg-rose-500 text-white",
+    orange: "bg-orange-500 text-white",
+    cyan: "bg-cyan-500 text-white",
+  };
+
+  const hasEvents = weekDays.some(day => {
+    const dayKey = fmtKey(day);
+    return events[dayKey] && events[dayKey].length > 0;
+  });
+
+  return (
+    <div className="flex-1 overflow-hidden">
+      {/* Grid de semana */}
+      <div className="grid grid-cols-8 gap-1 h-full">
+        {/* Columna de horas */}
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-l-lg">
+          <div className="h-12 flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600">
+            {t.hours?.timeLabel || "Time"}
+          </div>
+          {SCHEDULE_HOURS.map((hour) => (
+            <div key={hour} className="h-16 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200/50 dark:border-gray-600/50">
+              {formatTime(hour)}
+            </div>
+          ))}
+        </div>
+
+        {/* Columnas de días */}
+        {weekDays.map((day, dayIndex) => {
+          const dayKey = fmtKey(day);
+          const dayEvents = events[dayKey] || [];
+          const isToday = sameYMD(day, new Date());
+          
+          return (
+            <div key={dayKey} className={`bg-white dark:bg-gray-800 ${dayIndex === 6 ? 'rounded-r-lg' : ''}`}>
+              {/* Header del día */}
+              <div className={`h-12 flex flex-col items-center justify-center text-sm border-b border-gray-200 dark:border-gray-600 ${isToday ? 'bg-blue-50 dark:bg-blue-900/30' : ''}`}>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {dayNamesFull[dayIndex]?.slice(0, 3) || day.toLocaleDateString(locale, { weekday: 'short' })}
+                </div>
+                <div className={`text-lg font-semibold ${isToday ? 'text-blue-600 dark:text-blue-400' : 'text-gray-800 dark:text-gray-200'}`}>
+                  {day.getDate()}
+                </div>
+              </div>
+
+              {/* Slots de horas */}
+              {SCHEDULE_HOURS.map((hour) => (
+                <div key={`${dayKey}-${hour}`} className="h-16 border-b border-gray-100 dark:border-gray-700 p-1 relative">
+                  {dayEvents
+                    .filter(event => {
+                      // Simulamos que eventos tienen hora basada en su posición
+                      const eventHour = 8 + (dayEvents.indexOf(event) % 13);
+                      return eventHour === hour;
+                    })
+                    .map((event, eventIndex) => (
+                      <Badge
+                        key={eventIndex}
+                        className={`${colorMap[event.color] || colorMap.cyan} text-xs absolute left-1 right-1 top-1`}
+                      >
+                        {event.label}
+                      </Badge>
+                    ))}
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+
+      {!hasEvents && (
+        <div className="flex items-center justify-center py-8">
+          <p className="text-gray-500 dark:text-gray-400 text-center">
+            {t.weekView?.noEvents || "No events this week"}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Componente Vista de Día */
+function DayView({ currentDay, events, t, lang }) {
+  const locale = lang === 'es' ? 'es-ES' : 'en-US';
+  const dayKey = fmtKey(currentDay);
+  const dayEvents = events[dayKey] || [];
+  const isToday = sameYMD(currentDay, new Date());
+
+  const colorMap = {
+    indigo: "border-l-blue-500 bg-blue-50 dark:bg-blue-900/20",
+    pink: "border-l-pink-500 bg-pink-50 dark:bg-pink-900/20",
+    violet: "border-l-purple-500 bg-purple-50 dark:bg-purple-900/20", 
+    rose: "border-l-rose-500 bg-rose-50 dark:bg-rose-900/20",
+    orange: "border-l-orange-500 bg-orange-50 dark:bg-orange-900/20",
+    cyan: "border-l-cyan-500 bg-cyan-50 dark:bg-cyan-900/20",
+  };
+
+  return (
+    <div className="flex-1">
+      <div className="grid grid-cols-1 gap-4">
+        {/* Header del día */}
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                {currentDay.toLocaleDateString(locale, { 
+                  weekday: 'long',
+                  month: 'long', 
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </h3>
+              {isToday && (
+                <Badge color="blue" className="mt-1">
+                  {t.headerToday || "Today"}
+                </Badge>
+              )}
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {dayEvents.length} {dayEvents.length === 1 ? 'evento' : 'eventos'}
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Timeline del día */}
+        <Card className="flex-1">
+          <div className="p-4">
+            <h4 className="text-md font-medium text-gray-700 dark:text-gray-200 mb-4">
+              {t.dayView?.schedule || "Schedule"}
+            </h4>
+            
+            {dayEvents.length === 0 ? (
+              <div className="flex items-center justify-center py-12">
+                <p className="text-gray-500 dark:text-gray-400 text-center">
+                  {t.dayView?.noEvents || "No events today"}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {SCHEDULE_HOURS.map((hour) => {
+                  // Simulamos eventos en diferentes horas
+                  const hourEvents = dayEvents.filter((_, index) => {
+                    const eventHour = 8 + (index % 13);
+                    return eventHour === hour;
+                  });
+
+                  return (
+                    <div key={hour} className="flex gap-4">
+                      {/* Columna de hora */}
+                      <div className="w-20 flex-shrink-0 text-right">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          {formatTime(hour)}
+                        </span>
+                      </div>
+
+                      {/* Columna de eventos */}
+                      <div className="flex-1">
+                        {hourEvents.length > 0 ? (
+                          <div className="space-y-2">
+                            {hourEvents.map((event, eventIndex) => (
+                              <div
+                                key={eventIndex}
+                                className={`p-3 rounded-lg border-l-4 ${colorMap[event.color] || colorMap.cyan}`}
+                              >
+                                <h5 className="font-medium text-gray-800 dark:text-white">
+                                  {event.label}
+                                </h5>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                  {formatTime(hour)}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="h-8 border-l-2 border-gray-200 dark:border-gray-600 opacity-30"></div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 }
 
