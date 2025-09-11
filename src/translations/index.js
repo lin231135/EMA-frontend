@@ -7,8 +7,8 @@ import esPreregister from "./es/preregister";
 import { register as esRegister } from "./es/register";
 import { passwordModal as esPasswordModal } from "./es/passwordModal";
 import { login as esLogin } from "./es/login";
-import esStudentCalendar from "./es/Student/StudentCalendar";
-import esStudentHistoryPayment from "./es/Student/StudentHistoryPayment";
+import esStudentCalendar from "./es/student/StudentCalendar";
+import esStudentHistoryPayment from "./es/student/StudentHistoryPayment";
 import esAddClassModal from "./es/AddClassModal";
 
 import enAbout from "./en/about";
@@ -20,8 +20,8 @@ import enPreregister from "./en/preregister";
 import { register as enRegister } from "./en/register";
 import { passwordModal as enPasswordModal } from "./en/passwordModal";
 import { login as enLogin } from "./en/login";
-import enStudentCalendar from "./en/Student/StudentCalendar";
-import enStudentHistoryPayment from "./en/Student/StudentHistoryPayment";
+import enStudentCalendar from "./en/student/StudentCalendar";
+import enStudentHistoryPayment from "./en/student/StudentHistoryPayment";
 import enAddClassModal from "./en/AddClassModal";
 
 const translations = {
@@ -56,4 +56,3 @@ const translations = {
 };
 
 export default translations;
-
