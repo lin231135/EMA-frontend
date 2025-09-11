@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PreRegisterForm from "./components/forms/PreRegisterForm";
 import StudentDashboard from "./components/pages/student/StudentDashboard";
 import StudentCalendar from "./components/pages/student/StudentCalendar";
+import StudentHistoryPayments from "./components/pages/student/StudentHistoryPayments";
 
 
 
@@ -16,6 +17,8 @@ export function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/student/StudentDashboard" element={<StudentDashboard />} />
       <Route path="/student/StudentCalendar" element={<StudentCalendar />} />
+      <Route path="/student/payments" element={<StudentHistoryPayments />} />
+      <Route path="/student/StudentHistoryPayments" element={<StudentHistoryPayments />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/profile" element={<Profile />} />

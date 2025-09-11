@@ -6,3 +6,4 @@ export { default as Contact } from './Contact';
 export { default as Register } from './Register';
 export { default as StudentDashboard } from './student/StudentDashboard';
 export { default as StudentCalendar } from './student/StudentCalendar';
+export { default as StudentHistoryPayments } from './student/StudentHistoryPayments';

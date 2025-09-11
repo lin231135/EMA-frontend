@@ -1,7 +1,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import StudentLayout from "../../layout/student/StudentLayout";
-import AddClassModal from "../../../components/ui/AddClassModal";
+import AddClassModal from "../../ui/AddClassModal";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";   
 
