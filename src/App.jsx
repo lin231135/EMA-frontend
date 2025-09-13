@@ -8,6 +8,7 @@ import PreRegisterForm from "./components/forms/PreRegisterForm";
 import StudentDashboard from "./components/pages/student/StudentDashboard";
 import StudentCalendar from "./components/pages/student/StudentCalendar";
 import StudentHistoryPayments from "./components/pages/student/StudentHistoryPayments";
+import ParentDashboard from "./components/pages/parent/ParentDashboard";
 
 
 
@@ -15,6 +16,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/parent/ParentDashboard" element={<ParentDashboard />} />
       <Route path="/student/StudentDashboard" element={<StudentDashboard />} />
       <Route path="/student/StudentCalendar" element={<StudentCalendar />} />
       <Route path="/student/payments" element={<StudentHistoryPayments />} />

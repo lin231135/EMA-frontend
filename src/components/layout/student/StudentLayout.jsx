@@ -1,3 +1,5 @@
+// src/components/layout/student/StudentLayout.jsx
+
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import StudentNavbar from "./StudentNavbar";
