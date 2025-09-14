@@ -10,6 +10,7 @@ import { login as esLogin } from "./es/login";
 import esStudentCalendar from "./es/student/StudentCalendar";
 import esStudentHistoryPayment from "./es/student/StudentHistoryPayment";
 import esAddClassModal from "./es/AddClassModal";
+import esStudentDashboard from "./es/student/StudentDashboard";
 
 import enAbout from "./en/about";
 import enCommon from "./en/common";
@@ -23,6 +24,7 @@ import { login as enLogin } from "./en/login";
 import enStudentCalendar from "./en/student/StudentCalendar";
 import enStudentHistoryPayment from "./en/student/StudentHistoryPayment";
 import enAddClassModal from "./en/AddClassModal";
+import enStudentDashboard from "./en/student/StudentDashboard";
 
 const translations = {
   es: {
@@ -38,6 +40,7 @@ const translations = {
     studentCalendar: esStudentCalendar,
     studentHistoryPayment: esStudentHistoryPayment,
     addClassModal: esAddClassModal,
+    studentDashboard: esStudentDashboard,
   },
   en: {
     about: enAbout,
@@ -52,6 +55,7 @@ const translations = {
     studentCalendar: enStudentCalendar,
     studentHistoryPayment: enStudentHistoryPayment,
     addClassModal: enAddClassModal,
+    studentDashboard: enStudentDashboard,
   },
 };
 

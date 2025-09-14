@@ -1,4 +1,4 @@
-// src/components/pages/StudentDashboard.jsx
+// src/components/pages/student/StudentDashboard.jsx
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,6 +14,8 @@ import {
   Tooltip,
 } from "flowbite-react";
 import StudentLayout from "../../layout/student/StudentLayout";
+import { useAuth } from "../../../contexts/AuthContext";
+import translations from "../../../translations";
 
 const today = new Date();
 const addDays = (d, n) => {
@@ -48,26 +50,30 @@ function SectionTitle({ children, className = "" }) {
   );
 }
 
-
 export default function StudentDashboard({
   onCreateNote,
   onUpdateNote,
   onDeleteNote,
 }) {
   const navigate = useNavigate();
+  const { lang } = useAuth();
+  const t = translations[lang].studentDashboard.studentDashboard;
+
+  const DAYS_WINDOW = 3;
 
   const classesNext3Days = useMemo(() => {
-    const limit = addDays(today, 3);
+    const limit = addDays(today, DAYS_WINDOW);
     return MOCK_UPCOMING.filter(
       (c) => c.date >= today && c.date < limit && c.status !== "canceled"
     );
   }, []);
 
+  // ===== Notas  =====
   const [notes, setNotes] = useState([
     { id: 1, text: "DEBO DE MANTENER EL RITMO EN LAS CANCIONES" },
   ]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState(null);
+  const [editing, setEditing] = useState(null); 
   const [noteText, setNoteText] = useState("");
 
   const openNew = () => {
@@ -128,14 +134,16 @@ export default function StudentDashboard({
   return (
     <StudentLayout>
       <div className="px-6 pt-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t.title}</h1>
       </div>
 
       <div className="px-6 py-4 grid grid-cols-12 gap-4">
         {/*  Clases de hoy */}
         <div className="col-span-12 lg:col-span-3">
           <Card className="h-full pt-0">
-            <SectionTitle className="text-center font-bold text-xl mt-0">Clases de Hoy</SectionTitle>
+            <SectionTitle className="text-center font-bold text-xl mt-0">
+              {t.todayClasses}
+            </SectionTitle>
             <div className="border-b border-gray-200 dark:border-gray-700 mx-2" />
             <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700 px-1">
               {MOCK_CLASSES_TODAY.map((c, idx) => (
@@ -144,10 +152,11 @@ export default function StudentDashboard({
                   <div className="min-w-0">
                     <p className="font-medium text-gray-900 dark:text-white">{c.title}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Today {c.time}
+                      {/* "Today"  */}
+                      {"Today"} {c.time}
                       {c.status === "canceled" && (
                         <Badge color="failure" size="xs" className="ml-2">
-                          CANCELED
+                          {t.actions.canceled}
                         </Badge>
                       )}
                     </p>
@@ -162,7 +171,7 @@ export default function StudentDashboard({
           </Card>
         </div>
 
-        {/* CONTENEDOR BLANCO */}
+        {/* CONTENEDOR BLANCO  */}
         <div className="col-span-12 lg:col-span-9">
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow p-4 sm:p-6">
             <div className="grid grid-cols-12 gap-6">
@@ -176,18 +185,20 @@ export default function StudentDashboard({
                   <div className="absolute inset-0 bg-black/40" />
                   <div className="relative py-10 px-6 sm:px-10">
                     <p className="text-2xl sm:text-3xl font-semibold text-white leading-snug">
-                      En los próximos <span className="text-white/90 font-bold">3</span> días tienes{" "}
-                      <span className="text-red-400 font-extrabold">{classesNext3Days.length}</span>{" "}
-                      clases
+                      {
+                        t.upcomingClassesText
+                          .replace("{days}", DAYS_WINDOW)
+                          .replace("{count}", classesNext3Days.length)
+                      }
                     </p>
                     <Button className="mt-4" onClick={() => navigate("/calendar")}>
-                      Ver calendario
+                      {t.viewCalendar}
                     </Button>
                   </div>
                 </Card>
 
                 <Card>
-                  <SectionTitle>Retroalimentación por profesores</SectionTitle>
+                  <SectionTitle>{t.feedbackTitle}</SectionTitle>
                   <div className="divide-y divide-gray-200 dark:divide-gray-700">
                     {MOCK_FEEDBACK.map((f) => (
                       <div key={f.id} className="py-4">
@@ -200,7 +211,67 @@ export default function StudentDashboard({
                 </Card>
               </div>
 
-              
+              {/* Notas */}
+              <div className="col-span-12 lg:col-span-4">
+                <Card>
+                  <div className="flex items-center justify-between">
+                    <SectionTitle>{t.notesTitle}</SectionTitle>
+                    <Button size="xs" onClick={openNew}>{t.addNote}</Button>
+                  </div>
+
+                  <div className="space-y-4 mt-2">
+                    {notes.map((n) => (
+                      <div key={n.id} className="relative rounded-xl bg-sky-50 dark:bg-slate-800 p-4 shadow-sm">
+                        <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{n.text}</p>
+                        <div className="flex gap-2 justify-end mt-4">
+                          <Tooltip content={t.actions.edit}>
+                            <Button size="xs" color="light" onClick={() => openEdit(n)} aria-label={t.actions.edit}>
+                              {/* Icono Editar */}
+                              <svg
+                                className="w-5 h-5 text-gray-800 dark:text-white"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
+                                />
+                              </svg>
+                              <span className="sr-only">{t.actions.edit}</span>
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content={t.actions.delete}>
+                            <Button size="xs" color="light" onClick={() => deleteNote(n.id)} aria-label={t.actions.delete}>
+                              {/* Icono Eliminar */}
+                              <svg
+                                className="w-5 h-5 text-gray-800 dark:text-white"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                                />
+                              </svg>
+                              <span className="sr-only">{t.actions.delete}</span>
+                            </Button>
+                          </Tooltip>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
@@ -208,18 +279,18 @@ export default function StudentDashboard({
 
       {/* Modal nota */}
       <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
-        <ModalHeader>{editing ? "Editar nota" : "Nueva nota"}</ModalHeader>
+        <ModalHeader>{editing ? t.modal.edit : t.modal.new}</ModalHeader>
         <ModalBody>
           <Textarea
             rows={6}
-            placeholder="Escribe tu nota aquí..."
+            placeholder={t.modal.placeholder}
             value={noteText}
             onChange={(e) => setNoteText(e.target.value)}
           />
         </ModalBody>
         <ModalFooter>
-          <Button onClick={saveNote}>{editing ? "Guardar cambios" : "Agregar nota"}</Button>
-          <Button color="gray" onClick={() => setModalOpen(false)}>Cancelar</Button>
+          <Button onClick={saveNote}>{editing ? t.modal.saveChanges : t.modal.add}</Button>
+          <Button color="gray" onClick={() => setModalOpen(false)}>{t.modal.cancel}</Button>
         </ModalFooter>
       </Modal>
     </StudentLayout>
