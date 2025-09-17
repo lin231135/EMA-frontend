@@ -1,5 +1,5 @@
 // src/components/pages/admin/StudentListReport.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "../../layout/admin/AdminLayout";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
@@ -45,6 +45,166 @@ const MOCK_STUDENTS = [
     place: "atHome",
     type: "singingClass",
     status: "onHold"
+  },
+  {
+    id: 6,
+    name: "Diego Fernández",
+    address: "Avenida Este 987, Ciudad",
+    place: "atAcademy",
+    type: "pianoClass",
+    status: "payed"
+  },
+  {
+    id: 7,
+    name: "Sofia Ruiz",
+    address: "Calle Oeste 246, Ciudad",
+    place: "atHome",
+    type: "musicStimulation",
+    status: "rejected"
+  },
+  {
+    id: 8,
+    name: "Miguel Torres",
+    address: "Plaza Central 135, Ciudad",
+    place: "atAcademy",
+    type: "singingClass",
+    status: "payed"
+  },
+  {
+    id: 9,
+    name: "Elena Vargas",
+    address: "Calle Nueva 579, Ciudad",
+    place: "atHome",
+    type: "pianoClass",
+    status: "onHold"
+  },
+  {
+    id: 10,
+    name: "Roberto Silva",
+    address: "Avenida Sur 864, Ciudad",
+    place: "atAcademy",
+    type: "musicStimulation",
+    status: "payed"
+  },
+  {
+    id: 11,
+    name: "Carmen Herrera",
+    address: "Calle Flores 392, Ciudad",
+    place: "atHome",
+    type: "singingClass",
+    status: "rejected"
+  },
+  {
+    id: 12,
+    name: "Andrés Morales",
+    address: "Boulevard Oeste 147, Ciudad",
+    place: "atAcademy",
+    type: "pianoClass",
+    status: "payed"
+  },
+  {
+    id: 13,
+    name: "Patricia Jiménez",
+    address: "Calle Luna 685, Ciudad",
+    place: "atHome",
+    type: "musicStimulation",
+    status: "onHold"
+  },
+  {
+    id: 14,
+    name: "Fernando Castro",
+    address: "Avenida Sol 258, Ciudad",
+    place: "atAcademy",
+    type: "singingClass",
+    status: "payed"
+  },
+  {
+    id: 15,
+    name: "Isabella Ramos",
+    address: "Calle Estrella 741, Ciudad",
+    place: "atHome",
+    type: "pianoClass",
+    status: "rejected"
+  },
+  {
+    id: 16,
+    name: "Sebastián Ortega",
+    address: "Plaza Norte 159, Ciudad",
+    place: "atAcademy",
+    type: "musicStimulation",
+    status: "onHold"
+  },
+  {
+    id: 17,
+    name: "Valentina Mendoza",
+    address: "Calle Jardín 427, Ciudad",
+    place: "atHome",
+    type: "singingClass",
+    status: "payed"
+  },
+  {
+    id: 18,
+    name: "Nicolás Guerrero",
+    address: "Avenida Libertad 836, Ciudad",
+    place: "atAcademy",
+    type: "pianoClass",
+    status: "payed"
+  },
+  {
+    id: 19,
+    name: "Gabriela Vega",
+    address: "Calle Primavera 574, Ciudad",
+    place: "atHome",
+    type: "musicStimulation",
+    status: "rejected"
+  },
+  {
+    id: 20,
+    name: "Mateo Romero",
+    address: "Boulevard Sur 293, Ciudad",
+    place: "atAcademy",
+    type: "singingClass",
+    status: "onHold"
+  },
+  {
+    id: 21,
+    name: "Camila Aguilar",
+    address: "Calle Río 618, Ciudad",
+    place: "atHome",
+    type: "pianoClass",
+    status: "payed"
+  },
+  {
+    id: 22,
+    name: "Alejandro Cruz",
+    address: "Avenida Montaña 785, Ciudad",
+    place: "atAcademy",
+    type: "musicStimulation",
+    status: "payed"
+  },
+  {
+    id: 23,
+    name: "Lucía Delgado",
+    address: "Calle Valle 341, Ciudad",
+    place: "atHome",
+    type: "singingClass",
+    status: "rejected"
+  },
+  {
+    id: 24,
+    name: "Emilio Sandoval",
+    address: "Plaza Sur 967, Ciudad",
+    place: "atAcademy",
+    type: "pianoClass",
+    status: "onHold"
+  },
+  {
+    id: 25,
+    name: "Natalia Peña",
+    address: "Calle Bosque 412, Ciudad",
+    place: "atHome",
+    type: "musicStimulation",
+    status: "payed"
   }
 ];
 
@@ -57,6 +217,15 @@ export default function StudentListReport() {
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // Estados de paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // 10 elementos por página
+
+  // Efecto para resetear la página cuando cambien los filtros
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [placeFilter, typeFilter, statusFilter, searchTerm]);
 
   const getStatusBadge = (status) => {
     const statusConfig = {
@@ -109,6 +278,52 @@ export default function StudentListReport() {
     
     return true;
   });
+
+  // Cálculos de paginación
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedStudents = filteredStudents.slice(startIndex, endIndex);
+
+  // Función para cambiar de página
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Función para ir a la página anterior
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Función para ir a la página siguiente
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Función para generar números de página visibles
+  const getVisiblePages = () => {
+    const visiblePages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        visiblePages.push(i);
+      }
+    } else {
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      
+      for (let i = startPage; i <= endPage; i++) {
+        visiblePages.push(i);
+      }
+    }
+    
+    return visiblePages;
+  };
 
   // Función para limpiar filtros
   const resetFilters = () => {
@@ -295,7 +510,7 @@ export default function StudentListReport() {
               </tr>
             </thead>
             <tbody>
-              {filteredStudents.map((student) => (
+              {paginatedStudents.map((student) => (
                 <tr key={student.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                   <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {student.id}
@@ -320,6 +535,68 @@ export default function StudentListReport() {
             </tbody>
           </table>
         </div>
+
+        {/* Paginación */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-6">
+            <nav aria-label="Paginación de tabla">
+              <ul className="flex items-center -space-x-px h-10 text-base">
+                {/* Botón Anterior */}
+                <li>
+                  <button
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white ${
+                      currentPage === 1
+                        ? 'text-gray-300 bg-gray-100 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600'
+                        : 'text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-400'
+                    }`}
+                  >
+                    <span className="sr-only">Anterior</span>
+                    <svg className="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4"/>
+                    </svg>
+                  </button>
+                </li>
+
+                {/* Números de página */}
+                {getVisiblePages().map((page) => (
+                  <li key={page}>
+                    <button
+                      onClick={() => handlePageChange(page)}
+                      className={`flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white ${
+                        currentPage === page
+                          ? 'z-10 text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                          : 'text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-400'
+                      }`}
+                      aria-current={currentPage === page ? 'page' : undefined}
+                    >
+                      {page}
+                    </button>
+                  </li>
+                ))}
+
+                {/* Botón Siguiente */}
+                <li>
+                  <button
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className={`flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white ${
+                      currentPage === totalPages
+                        ? 'text-gray-300 bg-gray-100 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600'
+                        : 'text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-400'
+                    }`}
+                  >
+                    <span className="sr-only">Siguiente</span>
+                    <svg className="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
