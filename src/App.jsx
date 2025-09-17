@@ -9,6 +9,8 @@ import StudentDashboard from "./components/pages/student/StudentDashboard";
 import StudentCalendar from "./components/pages/student/StudentCalendar";
 import StudentHistoryPayments from "./components/pages/student/StudentHistoryPayments";
 import ParentDashboard from "./components/pages/parent/ParentDashboard";
+import AdminDashboard from "./components/pages/admin/AdminDashboard";
+import StudentListReport from "./components/pages/admin/StudentListReport";
 
 
 
@@ -17,6 +19,8 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/parent/ParentDashboard" element={<ParentDashboard />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/student-list-report" element={<StudentListReport />} />
       <Route path="/student/StudentDashboard" element={<StudentDashboard />} />
       <Route path="/student/StudentCalendar" element={<StudentCalendar />} />
       <Route path="/student/payments" element={<StudentHistoryPayments />} />

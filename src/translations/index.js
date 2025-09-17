@@ -11,6 +11,7 @@ import esStudentCalendar from "./es/student/StudentCalendar";
 import esStudentHistoryPayment from "./es/student/StudentHistoryPayment";
 import esAddClassModal from "./es/AddClassModal";
 import esStudentDashboard from "./es/student/StudentDashboard";
+import esAdminDashboard from "./es/admin/AdminDashboard";
 
 import enAbout from "./en/about";
 import enCommon from "./en/common";
@@ -25,6 +26,7 @@ import enStudentCalendar from "./en/student/StudentCalendar";
 import enStudentHistoryPayment from "./en/student/StudentHistoryPayment";
 import enAddClassModal from "./en/AddClassModal";
 import enStudentDashboard from "./en/student/StudentDashboard";
+import enAdminDashboard from "./en/admin/AdminDashboard";
 
 const translations = {
   es: {
@@ -41,6 +43,7 @@ const translations = {
     studentHistoryPayment: esStudentHistoryPayment,
     addClassModal: esAddClassModal,
     studentDashboard: esStudentDashboard,
+    adminDashboard: esAdminDashboard,
   },
   en: {
     about: enAbout,
@@ -56,6 +59,7 @@ const translations = {
     studentHistoryPayment: enStudentHistoryPayment,
     addClassModal: enAddClassModal,
     studentDashboard: enStudentDashboard,
+    adminDashboard: enAdminDashboard,
   },
 };
 

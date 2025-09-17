@@ -6,3 +6,6 @@ export { default as PageLayout } from './PageLayout';
 export { default as StudentLayout } from './student/StudentLayout';
 export { default as StudentNavbar } from './student/StudentNavbar';
 export { default as Sidebar } from './student/Sidebar';
+export { default as AdminLayout } from './admin/AdminLayout';
+export { default as AdminNavbar } from './admin/AdminNavbar';
+export { default as AdminSidebar } from './admin/Sidebar';

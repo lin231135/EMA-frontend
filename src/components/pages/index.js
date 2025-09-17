@@ -7,3 +7,5 @@ export { default as Register } from './Register';
 export { default as StudentDashboard } from './student/StudentDashboard';
 export { default as StudentCalendar } from './student/StudentCalendar';
 export { default as StudentHistoryPayments } from './student/StudentHistoryPayments';
+export { default as AdminDashboard } from './admin/AdminDashboard';
+export { default as StudentListReport } from './admin/StudentListReport';
