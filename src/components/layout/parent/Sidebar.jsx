@@ -1,6 +1,11 @@
-// src/components/layout/parent/Sidebar.jsx
 import { NavLink, Link } from "react-router-dom";
 import { Logo } from "../Logo";
+
+/* ---- Paleta por hijo (clases tailwind conocidas para build) ---- */
+const KID_STYLES = {
+  daniel: { dot: "bg-violet-500", accent: "accent-violet-500" },
+  david:  { dot: "bg-pink-500",   accent: "accent-pink-500" },
+};
 
 const linkCls = (isActive, collapsed) =>
   [
@@ -101,22 +106,49 @@ export default function Sidebar({
         </ul>
       </nav>
 
-      {/* ------- Filtros de hijos ------- */}
+      {/* ------- Filtros de hijos con color ------- */}
       {!collapsed && kidsFilter && onToggleKid && (
         <div className="mt-4 mx-3 p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">Students</p>
+
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={kidsFilter.all} onChange={() => onToggleKid("all")} />
-              <span>All</span>
+              <input
+                type="checkbox"
+                className="accent-cyan-500"
+                checked={kidsFilter.all}
+                onChange={() => onToggleKid("all")}
+              />
+              <span className="inline-flex items-center gap-2">
+                <span className="inline-block w-2.5 h-2.5 rounded-full bg-cyan-500" />
+                All
+              </span>
             </label>
+
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={kidsFilter.daniel} onChange={() => onToggleKid("daniel")} />
-              <span>{kidsLabels.daniel}</span>
+              <input
+                type="checkbox"
+                className={KID_STYLES.daniel.accent}
+                checked={kidsFilter.daniel}
+                onChange={() => onToggleKid("daniel")}
+              />
+              <span className="inline-flex items-center gap-2">
+                <span className={`inline-block w-2.5 h-2.5 rounded-full ${KID_STYLES.daniel.dot}`} />
+                {kidsLabels.daniel}
+              </span>
             </label>
+
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={kidsFilter.david} onChange={() => onToggleKid("david")} />
-              <span>{kidsLabels.david}</span>
+              <input
+                type="checkbox"
+                className={KID_STYLES.david.accent}
+                checked={kidsFilter.david}
+                onChange={() => onToggleKid("david")}
+              />
+              <span className="inline-flex items-center gap-2">
+                <span className={`inline-block w-2.5 h-2.5 rounded-full ${KID_STYLES.david.dot}`} />
+                {kidsLabels.david}
+              </span>
             </label>
           </div>
         </div>
@@ -133,6 +165,7 @@ export default function Sidebar({
           </span>
           <span className={collapsed ? "hidden" : "ms-1 truncate"}>Settings</span>
         </NavLink>
+
         <NavLink to="/logout" className={linkCls(false, collapsed)} title={collapsed ? "Logout" : undefined}>
           <span className="me-2 flex-shrink-0">
             <svg className="w-5 h-5 text-gray-400 dark:text-gray-400" viewBox="0 0 24 24" fill="none">
