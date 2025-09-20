@@ -1,7 +1,7 @@
 import { NavLink, Link } from "react-router-dom";
 import { Logo } from "../Logo";
 
-/* ---- Paleta por hijo (clases tailwind conocidas para build) ---- */
+/* ---- Paleta por hijo ---- */
 const KID_STYLES = {
   daniel: { dot: "bg-violet-500", accent: "accent-violet-500" },
   david:  { dot: "bg-pink-500",   accent: "accent-pink-500" },
@@ -17,12 +17,13 @@ const linkCls = (isActive, collapsed) =>
     collapsed ? "justify-center" : "justify-start",
   ].join(" ");
 
+/* Rutas según tu App.jsx actual */
 const items = [
-  { to: "/dashboard", label: "Dashboard", icon: "grid" },
-  { to: "/calendar", label: "Calendar", icon: "calendar" },
-  { to: "/payments", label: "Payment History", icon: "card" },
-  { to: "/books", label: "Books", icon: "book" },
-  { to: "/account", label: "Account", icon: "user" },
+  { to: "/parent/ParentDashboard", label: "Dashboard", icon: "grid" },
+  { to: "/parent/ParentCalendar",  label: "Calendar",  icon: "calendar" },
+  // { to: "/parent/PaymentHistory", label: "Payment History", icon: "card" },
+  // { to: "/parent/Books",          label: "Books",           icon: "book" },
+  // { to: "/parent/Account",        label: "Account",         icon: "user" },
 ];
 
 function Icon({ name }) {
@@ -48,8 +49,8 @@ function Icon({ name }) {
 export default function Sidebar({
   collapsed,
   onToggleCollapse,
-  kidsFilter,          // { all, daniel, david }
-  onToggleKid,         // (key) => void
+  kidsFilter,
+  onToggleKid,
   kidsLabels = { daniel: "Daniel Chet", david: "David Chet" },
 }) {
   return (
@@ -64,7 +65,7 @@ export default function Sidebar({
     >
       {/* Header */}
       <div className={`flex items-center px-0 py-3 ${collapsed ? "flex-col justify-center" : "flex-row justify-between"}`}>
-        <Link to="/ParentDashboard" className="flex items-center justify-start gap-3">
+        <Link to="/parent/ParentDashboard" className="flex items-center justify-start gap-3">
           <Logo size="h-10" variant="color" />
           {!collapsed && (
             <div className="leading-tight">
@@ -106,7 +107,7 @@ export default function Sidebar({
         </ul>
       </nav>
 
-      {/* ------- Filtros de hijos con color ------- */}
+      {/* Filtros de hijos */}
       {!collapsed && kidsFilter && onToggleKid && (
         <div className="mt-4 mx-3 p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
           <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">Students</p>
@@ -153,7 +154,6 @@ export default function Sidebar({
           </div>
         </div>
       )}
-      {/* -------------------------------- */}
 
       {/* Footer */}
       <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800">
