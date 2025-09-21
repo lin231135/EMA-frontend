@@ -9,3 +9,4 @@ export { default as StudentCalendar } from './student/StudentCalendar';
 export { default as StudentHistoryPayments } from './student/StudentHistoryPayments';
 export { default as AdminDashboard } from './admin/AdminDashboard';
 export { default as StudentListReport } from './admin/StudentListReport';
+export { default as AdminPayment } from './admin/AdminPayment';
