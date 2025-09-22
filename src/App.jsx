@@ -13,6 +13,7 @@ import AdminDashboard from "./components/pages/admin/AdminDashboard";
 import StudentListReport from "./components/pages/admin/StudentListReport";
 import ParentCalendar from "./components/pages/parent/ParentCalendar";
 import AdminPayment from "./components/pages/admin/AdminPayment";
+import StudentProfile from "./components/pages/student/StudentProfile";
 
 export function AppRoutes() {
   return (
@@ -36,6 +37,7 @@ export function AppRoutes() {
       <Route path="/student/StudentCalendar" element={<StudentCalendar />} />
       <Route path="/student/payments" element={<StudentHistoryPayments />} />
       <Route path="/student/StudentHistoryPayments" element={<StudentHistoryPayments />} />
+      <Route path="/student/StudentProfile" element={<StudentProfile />} />
 
       {/* Varios */}
       <Route path="/about" element={<About />} />

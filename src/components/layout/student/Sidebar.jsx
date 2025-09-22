@@ -1,7 +1,7 @@
 // src/components/layout/student/Sidebar.jsx
-
-import { NavLink, Link } from "react-router-dom";
-import { Logo } from "../Logo"; 
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
+import { Logo } from "../Logo";
 
 const linkCls = (isActive, collapsed) =>
   [
@@ -14,12 +14,11 @@ const linkCls = (isActive, collapsed) =>
   ].join(" ");
 
 const items = [
-  { to: "/dashboard", label: "Dashboard", icon: "grid" },
-  { to: "/calendar", label: "Calendar", icon: "calendar" },
-  { to: "/courses", label: "Courses", icon: "books" },
-  { to: "/payments", label: "Payment History", icon: "card" },
-  { to: "/books", label: "Books", icon: "book" },
-  { to: "/account", label: "Account", icon: "user" },
+  { to: "/student/StudentDashboard", label: "Dashboard", icon: "grid" },
+  { to: "/student/StudentCalendar", label: "Calendar", icon: "calendar" },
+  { to: "/student/StudentHistoryPayments", label: "Payment History", icon: "card" },
+  { to: "/student/books", label: "Books", icon: "book" },
+  { to: "/student/StudentProfile", label: "Account", icon: "user" },
 ];
 
 function Icon({ name }) {
@@ -45,8 +44,10 @@ function Icon({ name }) {
 }
 
 export default function Sidebar({ collapsed, onToggleCollapse }) {
+  const navigate = useNavigate();
+  const auth = useAuth?.();
+
   return (
-    // Sidebar fijo a la izquierda, sobre el navbar 
     <aside
       className={[
         "hidden md:flex md:flex-col md:h-screen",
@@ -56,9 +57,9 @@ export default function Sidebar({ collapsed, onToggleCollapse }) {
         collapsed ? "w-20" : "w-64",
       ].join(" ")}
     >
-      {/* Header: LOGO + botón de colapso */}
+      {/* Header */}
       <div className={`flex items-center px-0 py-3 ${collapsed ? "flex-col justify-center" : "flex-row justify-between"}`}>
-        <Link to="/StudentDashboard" className="flex items-center justify-start gap-3">
+        <Link to="/student/dashboard" className="flex items-center justify-start gap-3">
           <Logo size="h-10" variant="color" />
           {!collapsed && (
             <div className="leading-tight">
@@ -106,7 +107,7 @@ export default function Sidebar({ collapsed, onToggleCollapse }) {
       {/* Footer */}
       <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800">
         <NavLink
-          to="/settings"
+          to="/student/settings"
           className={({ isActive }) => linkCls(isActive, collapsed)}
           title={collapsed ? "Settings" : undefined}
         >
@@ -117,6 +118,7 @@ export default function Sidebar({ collapsed, onToggleCollapse }) {
           </span>
           <span className={collapsed ? "hidden" : "ms-1 truncate"}>Settings</span>
         </NavLink>
+
         <button
           onClick={() => {
             try { auth?.logout?.(); } catch {}
