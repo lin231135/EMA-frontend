@@ -1,10 +1,15 @@
 // src/translations/es/parent/ParentSidebar.js
 export default {
-  dashboard: "Dashboard", 
+  dashboard: "Panel",
   calendar: "Calendario",
-  paymentHistory: "Historial de Pagos",
+  paymentHistory: "Historial de pagos",
   books: "Libros",
   account: "Cuenta",
   settings: "Configuración",
-  logout: "Cerrar Sesión",
+  logout: "Cerrar sesión",
+
+  studentsTitle: "Estudiantes",
+  filters: {
+    all: "Todos",
+  },
 };

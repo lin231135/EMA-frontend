@@ -1,3 +1,4 @@
+// src/components/pages/parent/ParentDashboard.jsx
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,125 +18,44 @@ import translations from "../../../translations";
 
 /* ======= Paleta + nombres por hijo (coherente en toda la vista) ======= */
 const KIDS = {
-  daniel: {
-    name: "Daniel Chet",
-    bar: "bg-violet-500",
-    ring: "ring-violet-500",
-    text: "text-violet-600",
-  },
-  david: {
-    name: "David Chet",
-    bar: "bg-pink-500",
-    ring: "ring-pink-500",
-    text: "text-pink-600",
-  },
+  daniel: { name: "Daniel Chet", bar: "bg-violet-500", ring: "ring-violet-500", text: "text-violet-600" },
+  david:  { name: "David Chet",  bar: "bg-pink-500",   ring: "ring-pink-500",   text: "text-pink-600" },
 };
 
 const today = new Date();
-const addDays = (d, n) => {
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
-};
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 
 /* ======= Datos de ejemplo (cada clase ligada a un student) ======= */
 const MOCK_CLASSES_TODAY = [
   {
-    id: 1,
-    student: "daniel",
-    title: "Tim's piano class",
-    date: today,
-    time: "11:00 AM",
-    place: "56 Davion Mission Suite 157",
-    teacher: "Meaghanberg",
-    avatar: "",
-    status: "normal",
+    id: 1, student: "daniel", title: "Tim's piano class", date: today, time: "11:00 AM",
+    place: "56 Davion Mission Suite 157", teacher: "Meaghanberg", avatar: "", status: "normal",
   },
   {
-    id: 2,
-    student: "david",
-    title: "Clase de Canto para Laura",
-    date: today,
-    time: "13:00 PM",
-    place: "853 Moore Flats Suite 158, Sweden",
-    teacher: "—",
-    avatar: "",
-    status: "normal",
+    id: 2, student: "david", title: "Clase de Canto para Laura", date: today, time: "13:00 PM",
+    place: "853 Moore Flats Suite 158, Sweden", teacher: "—", avatar: "", status: "normal",
   },
   {
-    id: 3,
-    student: "daniel",
-    title: "Sofía's Piano Class",
-    date: today,
-    time: "15:00 PM",
-    place: "646 Walter Road Apt. 571, Turks and Caicos Islands",
-    teacher: "—",
-    avatar: "",
-    status: "canceled",
+    id: 3, student: "daniel", title: "Sofía's Piano Class", date: today, time: "15:00 PM",
+    place: "646 Walter Road Apt. 571, Turks and Caicos Islands", teacher: "—", avatar: "", status: "canceled",
   },
 ];
 
 const MOCK_UPCOMING = [
   ...MOCK_CLASSES_TODAY,
-  {
-    id: 4,
-    student: "david",
-    title: "Estimulación Musical (4-5 años)",
-    date: addDays(today, 1),
-    time: "09:30 AM",
-    place: "Campus Central",
-    teacher: "Sr. Pérez",
-    avatar: "",
-    status: "normal",
-  },
-  {
-    id: 5,
-    student: "daniel",
-    title: "Teoría Musical",
-    date: addDays(today, 2),
-    time: "10:00 AM",
-    place: "Sala 204",
-    teacher: "Lic. Gómez",
-    avatar: "",
-    status: "normal",
-  },
-  {
-    id: 6,
-    student: "david",
-    title: "Ensamble",
-    date: addDays(today, 5),
-    time: "16:00 PM",
-    place: "Auditorio",
-    teacher: "—",
-    avatar: "",
-    status: "normal",
-  },
+  { id: 4, student: "david",  title: "Estimulación Musical (4-5 años)", date: addDays(today, 1), time: "09:30 AM", place: "Campus Central", teacher: "Sr. Pérez", avatar: "", status: "normal" },
+  { id: 5, student: "daniel", title: "Teoría Musical",                    date: addDays(today, 2), time: "10:00 AM", place: "Sala 204",       teacher: "Lic. Gómez", avatar: "", status: "normal" },
+  { id: 6, student: "david",  title: "Ensamble",                           date: addDays(today, 5), time: "16:00 PM", place: "Auditorio",      teacher: "—", avatar: "", status: "normal" },
 ];
 
 const MOCK_FEEDBACK = [
-  {
-    id: 1,
-    student: "daniel",
-    title: "Piano Class",
-    time: "Today 11:00 AM",
-    text: "Todo muy bien, solo recuerda mantener el ritmo.",
-  },
-  {
-    id: 2,
-    student: "david",
-    title: "Canto Class",
-    time: "Today 15:00 PM",
-    text: "Debes de practicar la entonación.",
-  },
+  { id: 1, student: "daniel", title: "Piano Class", time: "Today 11:00 AM", text: "Todo muy bien, solo recuerda mantener el ritmo." },
+  { id: 2, student: "david",  title: "Canto Class", time: "Today 15:00 PM", text: "Debes de practicar la entonación." },
 ];
 
 /* ======= helpers ======= */
 function SectionTitle({ children, className = "" }) {
-  return (
-    <h3 className={`text-sm font-semibold tracking-wide text-black dark:text-gray-400 ${className}`}>
-      {children}
-    </h3>
-  );
+  return <h3 className={`text-sm font-semibold tracking-wide text-black dark:text-gray-400 ${className}`}>{children}</h3>;
 }
 
 /** Hace coherente el texto del título con el nombre del hijo. */
@@ -148,7 +68,6 @@ function coherentTitle(originalTitle, studentKey) {
   if (t.includes("estimulación") || t.includes("estimulacion")) return `Estimulación Musical de ${kid}`;
   if (t.includes("teoría")) return `Clase de Teoría Musical de ${kid}`;
   if (t.includes("ensamble")) return `Ensamble — ${kid}`;
-  // fallback:
   return `${originalTitle} — ${kid}`;
 }
 
@@ -169,11 +88,7 @@ export default function ParentDashboard() {
   const t = translations[lang]?.parentDashboard || translations.es.parentDashboard;
 
   // filtros (render en sidebar)
-  const [kidsFilter, setKidsFilter] = useState({
-    all: true,
-    daniel: true,
-    david: true,
-  });
+  const [kidsFilter, setKidsFilter] = useState({ all: true, daniel: true, david: true });
 
   const onToggleKid = (key) =>
     setKidsFilter((s) => {
@@ -278,7 +193,6 @@ export default function ParentDashboard() {
 
                       <div className="min-w-0">
                         <p className="font-medium text-gray-900 dark:text-white">{label}</p>
-
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                           {t.classDetails.todayAt.replace('{time}', c.time)}
                           {c.status === "canceled" && <Badge color="failure" size="xs" className="ml-2">{t.status.canceled}</Badge>}
@@ -304,10 +218,7 @@ export default function ParentDashboard() {
               <div className="col-span-12 lg:col-span-8 space-y-6">
                 {/* Hero resumen próximos 3 días */}
                 <Card className="relative overflow-hidden cursor-pointer" onClick={() => navigate("/parent/ParentCalendar")}>
-                  <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: "url('RecitalInicio.jpg')" }}
-                  />
+                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('RecitalInicio.jpg')" }} />
                   <div className="absolute inset-0 bg-black/40" />
                   <div className="relative py-10 px-6 sm:px-10">
                     <p className="text-2xl sm:text-3xl font-semibold text-white leading-snug">
@@ -331,7 +242,7 @@ export default function ParentDashboard() {
 
                 {/* Retroalimentación */}
                 <Card>
-                  <SectionTitle>Retroalimentación por profesores</SectionTitle>
+                  <SectionTitle>{t.feedbackTitle}</SectionTitle>
                   <div className="divide-y divide-gray-200 dark:divide-gray-700">
                     {feedbackFiltered.map((f) => {
                       const label = coherentTitle(f.title, f.student);
@@ -347,7 +258,7 @@ export default function ParentDashboard() {
                       );
                     })}
                     {feedbackFiltered.length === 0 && (
-                      <div className="py-6 text-sm text-gray-500 dark:text-gray-400">Sin retroalimentación para el filtro seleccionado.</div>
+                      <div className="py-6 text-sm text-gray-500 dark:text-gray-400">{t.empty.noFeedback}</div>
                     )}
                   </div>
                 </Card>
@@ -367,19 +278,19 @@ export default function ParentDashboard() {
                     return (
                       <Card key={n.id} className="p-4 relative">
                         {/* Barra de color del estudiante */}
-                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${kidStyle.bar} rounded-l-lg`}></div>
-                        
+                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${kidStyle.bar} rounded-l-lg`} />
+
                         {/* Header con información del estudiante */}
                         <div className="flex items-center gap-2 mb-2">
-                          <div className={`w-3 h-3 rounded-full ${kidStyle.bar}`}></div>
+                          <div className={`w-3 h-3 rounded-full ${kidStyle.bar}`} />
                           <span className={`text-xs font-medium ${kidStyle.text}`}>
                             {KIDS[student]?.name || "Daniel Chet"}
                           </span>
                         </div>
-                        
+
                         {/* Contenido de la nota */}
                         <p className="text-sm text-gray-700 dark:text-gray-200 ml-5">{n.text}</p>
-                        
+
                         {/* Botones de acción */}
                         <div className="mt-3 flex gap-2 ml-5">
                           <Button size="xs" color="light" onClick={() => openEdit(n)} title={t.notes.edit}>{t.notes.edit}</Button>
@@ -422,13 +333,13 @@ export default function ParentDashboard() {
                         : 'border-gray-300 text-gray-600 hover:border-gray-400'
                     }`}
                   >
-                    <div className={`w-3 h-3 rounded-full ${kid.bar}`}></div>
+                    <div className={`w-3 h-3 rounded-full ${kid.bar}`} />
                     <span className="text-sm font-medium">{kid.name}</span>
                   </button>
                 ))}
               </div>
             </div>
-            
+
             {/* Textarea para la nota */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">

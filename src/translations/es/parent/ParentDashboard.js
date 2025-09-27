@@ -1,64 +1,35 @@
 // src/translations/es/parent/ParentDashboard.js
 export default {
-  title: "Dashboard",
-  welcomeMessage: "Bienvenido al Panel de Padres",
-  todaysClasses: "Clases de Hoy",
-  upcomingClasses: "Próximas Clases",
-  viewCalendar: "Ver calendario",
+  title: "Panel de padres",
+  todaysClasses: "Clases de hoy",
   classDetails: {
-    today: "Hoy",
-    todayAt: "Hoy {time}",
-    at: "a las",
-    with: "con",
-    teacher: "Profesor",
-    place: "Lugar",
-    time: "Hora",
-  },
-  actions: {
-    viewDetails: "Ver detalles",
-    contactTeacher: "Contactar profesor",
-    reschedule: "Reprogramar",
-    cancel: "Cancelar",
-  },
-  students: {
-    daniel: "Daniel Chet",
-    david: "David Chet",
-  },
-  classTypes: {
-    piano: "Clase de Piano",
-    singing: "Clase de Canto", 
-    music: "Estimulación Musical",
-  },
-  modal: {
-    contactTeacher: "Contactar Profesor",
-    message: "Mensaje",
-    send: "Enviar",
-    cancel: "Cancelar",
-    messagePlaceholder: "Escribe tu mensaje aquí...",
-  },
-  empty: {
-    noClasses: "No hay clases programadas",
-    noClassesToday: "No hay clases programadas para hoy",
-    noClassesFiltered: "No hay clases para el filtro seleccionado",
-    noNotes: "No hay anotaciones todavía",
+    // Usa {time} como placeholder: t.classDetails.todayAt.replace('{time}', c.time)
+    todayAt: "Hoy a las {time}",
   },
   status: {
-    canceled: "CANCELADA",
-    confirmed: "CONFIRMADA",
-    pending: "PENDIENTE",
+    canceled: "Cancelada",
   },
+  empty: {
+    noClassesFiltered: "No hay clases para los estudiantes seleccionados.",
+    noFeedback: "Aún no hay retroalimentación.",
+    noNotes: "Aún no has creado notas.",
+  },
+  viewCalendar: "Ver calendario",
+
+  feedbackTitle: "Retroalimentación reciente",
+
   notes: {
     title: "Anotaciones",
-    addNew: "+ Agregar nota",
+    addNew: "Agregar nota",
     edit: "Editar",
     delete: "Eliminar",
-    newNote: "Nueva nota",
     editNote: "Editar nota",
+    newNote: "Nueva nota",
     student: "Estudiante",
     note: "Nota",
-    placeholder: "Escribe tu nota aquí...",
-    save: "Guardar cambios",
-    add: "Agregar nota",
+    placeholder: "Escribe una nota aquí…",
+    save: "Guardar",
+    add: "Agregar",
     cancel: "Cancelar",
   },
 };

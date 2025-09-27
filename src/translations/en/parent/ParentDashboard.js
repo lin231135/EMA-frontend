@@ -1,64 +1,35 @@
 // src/translations/en/parent/ParentDashboard.js
 export default {
-  title: "Dashboard",
-  welcomeMessage: "Welcome to Parent Dashboard",
-  todaysClasses: "Today's Classes",
-  upcomingClasses: "Upcoming Classes",
-  viewCalendar: "View calendar",
+  title: "Parent dashboard",
+  todaysClasses: "Today's classes",
   classDetails: {
-    today: "Today",
-    todayAt: "Today {time}",
-    at: "at",
-    with: "with",
-    teacher: "Teacher",
-    place: "Location",
-    time: "Time",
-  },
-  actions: {
-    viewDetails: "View details",
-    contactTeacher: "Contact teacher",
-    reschedule: "Reschedule",
-    cancel: "Cancel",
-  },
-  students: {
-    daniel: "Daniel Chet",
-    david: "David Chet",
-  },
-  classTypes: {
-    piano: "Piano Class",
-    singing: "Singing Class",
-    music: "Music Stimulation",
-  },
-  modal: {
-    contactTeacher: "Contact Teacher",
-    message: "Message",
-    send: "Send",
-    cancel: "Cancel",
-    messagePlaceholder: "Write your message here...",
-  },
-  empty: {
-    noClasses: "No classes scheduled",
-    noClassesToday: "No classes scheduled for today",
-    noClassesFiltered: "No classes for the selected filter",
-    noNotes: "No notes yet",
+    // Usa {time} como placeholder: t.classDetails.todayAt.replace('{time}', c.time)
+    todayAt: "Today at {time}",
   },
   status: {
-    canceled: "CANCELED",
-    confirmed: "CONFIRMED",
-    pending: "PENDING",
+    canceled: "Canceled",
   },
+  empty: {
+    noClassesFiltered: "No classes for the selected students.",
+    noFeedback: "No feedback yet.",
+    noNotes: "No notes created yet.",
+  },
+  viewCalendar: "View calendar",
+
+  feedbackTitle: "Latest feedback",
+
   notes: {
     title: "Notes",
-    addNew: "+ Add note",
+    addNew: "Add note",
     edit: "Edit",
     delete: "Delete",
-    newNote: "New note",
     editNote: "Edit note",
+    newNote: "New note",
     student: "Student",
     note: "Note",
-    placeholder: "Write your note here...",
-    save: "Save changes",
-    add: "Add note",
+    placeholder: "Write a note here…",
+    save: "Save",
+    add: "Add",
     cancel: "Cancel",
   },
 };

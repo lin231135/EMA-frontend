@@ -1,11 +1,10 @@
 // src/translations/es/parent/ParentNavbar.js
 export default {
-  notifications: "Notificaciones",
-  profile: "Perfil",
-  parent: "Padre",
-  logout: "Cerrar Sesión",
   language: {
-    english: "English",
+    english: "Inglés",
     spanish: "Español",
   },
+  notifications: "Notificaciones",
+  parent: "Padre",
+  logout: "Cerrar sesión",
 };

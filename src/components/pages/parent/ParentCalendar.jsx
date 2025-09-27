@@ -1,38 +1,19 @@
 // src/components/pages/parent/ParentCalendar.jsx
 import { useMemo, useState } from "react";
-import {
-  Card,
-  Button,
-  Avatar,
-  Badge,
-} from "flowbite-react";
+import { Card, Button, Avatar, Badge } from "flowbite-react";
 import ParentLayout from "../../layout/parent/ParentLayout";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
 
 /* ======= Colores por hijo (misma paleta que el Dashboard) ======= */
 const KIDS = {
-  daniel: {
-    name: "Daniel Chet",
-    bar: "bg-violet-500",
-    ring: "ring-violet-500",
-    tagText: "text-violet-700",
-    chipBg: "bg-violet-100",
-    chipBorder: "border-violet-400",
-  },
-  david: {
-    name: "David Chet",
-    bar: "bg-pink-500",
-    ring: "ring-pink-500",
-    tagText: "text-pink-700",
-    chipBg: "bg-pink-100",
-    chipBorder: "border-pink-400",
-  },
+  daniel: { name: "Daniel Chet", bar: "bg-violet-500", ring: "ring-violet-500", tagText: "text-violet-700", chipBg: "bg-violet-100", chipBorder: "border-violet-400" },
+  david:  { name: "David Chet",  bar: "bg-pink-500",   ring: "ring-pink-500",   tagText: "text-pink-700",   chipBg: "bg-pink-100",   chipBorder: "border-pink-400" },
 };
 
 /* ======= Utilidades de fechas (semana inicia lunes) ======= */
 const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
-const endOfMonth = (d) => new Date(d.getFullYear(), d.getMonth() + 1, 0);
+const endOfMonth   = (d) => new Date(d.getFullYear(), d.getMonth() + 1, 0);
 const mondayOfWeek = (d) => {
   const x = new Date(d);
   const day = (x.getDay() + 6) % 7; // 0..6 (L..D)
@@ -40,80 +21,26 @@ const mondayOfWeek = (d) => {
   x.setHours(0, 0, 0, 0);
   return x;
 };
-const sundayOfWeek = (d) => {
-  const x = mondayOfWeek(d);
-  x.setDate(x.getDate() + 6);
-  return x;
-};
-const addDays = (d, n) => {
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
-};
-const sameDay = (a, b) =>
-  a.getFullYear() === b.getFullYear() &&
-  a.getMonth() === b.getMonth() &&
-  a.getDate() === b.getDate();
+const sundayOfWeek = (d) => { const x = mondayOfWeek(d); x.setDate(x.getDate() + 6); return x; };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
 /* ======= Datos de ejemplo (ajústalos a tu API cuando conectes) ======= */
 const today = new Date();
 const MOCK_EVENTS = [
   // Daniel
-  {
-    id: 1,
-    student: "daniel",
-    title: "Clase de Piano",
-    date: addDays(startOfMonth(today), 3), // 4 del mes
-    time: "11:00 AM",
-    place: "56 Davion Mission Suite 157",
-    avatar: "https://i.pravatar.cc/64?img=11",
-  },
-  {
-    id: 2,
-    student: "daniel",
-    title: "Piano Recital",
-    date: addDays(endOfMonth(today), -1), // 30/31
-    time: "18:00 PM",
-    place: "Auditorio",
-    avatar: "https://i.pravatar.cc/64?img=15",
-  },
+  { id: 1, student: "daniel", title: "Clase de Piano", date: addDays(startOfMonth(today), 3), time: "11:00 AM", place: "56 Davion Mission Suite 157", avatar: "https://i.pravatar.cc/64?img=11" },
+  { id: 2, student: "daniel", title: "Piano Recital",  date: addDays(endOfMonth(today), -1), time: "18:00 PM", place: "Auditorio", avatar: "https://i.pravatar.cc/64?img=15" },
   // David
-  {
-    id: 3,
-    student: "david",
-    title: "Clase de Canto",
-    date: addDays(startOfMonth(today), 4), // 5 del mes
-    time: "13:00 PM",
-    place: "853 Moore Flats Suite 158, Sweden",
-    avatar: "https://i.pravatar.cc/64?img=12",
-  },
-  {
-    id: 4,
-    student: "david",
-    title: "Ensayo de Canto",
-    date: addDays(startOfMonth(today), 15), // 16 del mes
-    time: "16:00 PM",
-    place: "Sala 203",
-    avatar: "https://i.pravatar.cc/64?img=16",
-  },
+  { id: 3, student: "david",  title: "Clase de Canto", date: addDays(startOfMonth(today), 4), time: "13:00 PM", place: "853 Moore Flats Suite 158, Sweden", avatar: "https://i.pravatar.cc/64?img=12" },
+  { id: 4, student: "david",  title: "Ensayo de Canto", date: addDays(startOfMonth(today), 15), time: "16:00 PM", place: "Sala 203", avatar: "https://i.pravatar.cc/64?img=16" },
   // Evento general (no ligado a hijo)
-  {
-    id: 5,
-    student: null,
-    title: "Holiday",
-    date: addDays(startOfMonth(today), 25), // 26 del mes
-    time: "All day",
-    place: "",
-  },
+  { id: 5, student: null, title: "Holiday", date: addDays(startOfMonth(today), 25), time: "All day", place: "" },
 ];
 
 /* ======= Componentes auxiliares ======= */
 function SectionTitle({ children }) {
-  return (
-    <h3 className="text-sm font-semibold tracking-wide text-black dark:text-gray-400">
-      {children}
-    </h3>
-  );
+  return <h3 className="text-sm font-semibold tracking-wide text-black dark:text-gray-400">{children}</h3>;
 }
 function ColoredSide({ student, children, className = "" }) {
   const color = KIDS[student]?.bar ?? "bg-cyan-500";
@@ -174,7 +101,7 @@ function DayCell({ d, inMonth, events = [] }) {
 export default function ParentCalendar() {
   const { lang } = useAuth();
   const t = translations[lang]?.parentCalendar || translations.es.parentCalendar;
-  
+
   /* filtros compartidos en el Sidebar */
   const [kidsFilter, setKidsFilter] = useState({ all: true, daniel: true, david: true });
   const onToggleKid = (key) =>
