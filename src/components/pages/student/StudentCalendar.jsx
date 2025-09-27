@@ -46,7 +46,7 @@ const SCHEDULE_HOURS = Array.from({ length: 13 }, (_, i) => 8 + i);
 
 export default function StudentCalendar() {
   const { lang } = useAuth();
-  const t = translations[lang].studentCalendar;
+  const t = translations[lang]?.studentCalendar || translations.es.studentCalendar;
   // Fallback por si el orquestador aún no entrega arrays
   const dayNames =
     t.dayNamesShort || ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
@@ -225,12 +225,24 @@ export default function StudentCalendar() {
     if (!data?.date) return;
     const key = data.date;
     const hour = data.hour || "";
-    // Intenta usar helper traducible "Today {time}" si el usuario crea clases para "hoy"
-    const label = `${data.classType} — ${hour}`;
+    const classType = data.classType || "Nueva Clase";
+    
+    // Crear label con formato consistente
+    const label = hour ? `${classType} — ${hour}` : classType;
+    
+    // Agregar el evento al día correcto
     setEvents((prev) => ({
       ...prev,
       [key]: [...(prev[key] || []), { label, color: "cyan" }],
     }));
+    
+    // Si se agregó una clase para hoy, actualizar automáticamente el sidebar
+    const today = new Date();
+    const todayKey = fmtKey(today);
+    if (key === todayKey) {
+      // El componente TodayClassesList se actualizará automáticamente
+      console.log(`Nueva clase agregada para hoy: ${label}`);
+    }
   };
 
   const hatchStyle = {
@@ -269,7 +281,7 @@ export default function StudentCalendar() {
                 aria-label={t.a11y.openCreateClass || "Open create class modal"}
                 className="w-full mb-4 px-4 py-2 text-white bg-cyan-500 rounded-lg hover:bg-cyan-600 transition"
               >
-                {t.addNewClass || "+ Add New Class"}
+                {t.addNewEvent || "+ Add New Event"}
               </button>
 
               <h2 className="text-base font-semibold text-gray-700 dark:text-gray-200">
@@ -277,35 +289,8 @@ export default function StudentCalendar() {
               </h2>
               <div className="mt-2 mb-3 h-px bg-gray-200 dark:bg-gray-700" />
 
-              {/* Lista de ejemplo (traducida) */}
-              <div className="space-y-0 divide-y divide-gray-200/70 dark:divide-gray-700/70 flex-1">
-                <div className="py-3 flex items-start gap-3">
-                  <span className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 inline-flex" />
-                  <div>
-                    <p className="font-medium text-gray-800 dark:text-white">
-                      {t.samples.pianoClass || "Piano Class"}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {(t.samples.todayAt || "Today {time}").replace("{time}", "11:00 AM")}
-                    </p>
-                    <p className="text-xs text-gray-400">56 Davion Mission Suite 157</p>
-                    <p className="text-xs text-gray-400">Meaghanberg</p>
-                  </div>
-                </div>
-                <div className="py-3 flex items-start gap-3">
-                  <span className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 inline-flex" />
-                  <div>
-                    <p className="font-medium text-gray-800 dark:text-white">
-                      {t.samples.singClass || "Sing Class"}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {(t.samples.todayAt || "Today {time}").replace("{time}", "13:00 PM")}
-                    </p>
-                    <p className="text-xs text-gray-400">853 Moore Flats Suite 15B</p>
-                    <p className="text-xs text-gray-400">Sweden</p>
-                  </div>
-                </div>
-              </div>
+              {/* Lista dinámica de clases de hoy */}
+              <TodayClassesList events={events} t={t} />
             </div>
           </aside>
 
@@ -617,6 +602,73 @@ function DayView({ currentDay, events, t, lang }) {
           </div>
         </Card>
       </div>
+    </div>
+  );
+}
+
+/** Componente para mostrar las clases de hoy dinámicamente */
+function TodayClassesList({ events, t }) {
+  const today = new Date();
+  const todayKey = fmtKey(today);
+  const todayEvents = events[todayKey] || [];
+
+  const colorIconMap = {
+    indigo: "bg-indigo-500",
+    pink: "bg-pink-500", 
+    violet: "bg-violet-500",
+    rose: "bg-rose-500",
+    orange: "bg-orange-500",
+    cyan: "bg-cyan-500",
+  };
+
+  if (todayEvents.length === 0) {
+    return (
+      <div className="flex-1 flex items-center justify-center py-8">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {t.sidebar?.noClassesToday || "No classes scheduled for today"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-0 divide-y divide-gray-200/70 dark:divide-gray-700/70 flex-1">
+      {todayEvents.map((event, index) => {
+        // Extraer la hora del label si existe (formato: "Tipo — Hora")
+        const parts = event.label.split(" — ");
+        const classType = parts[0];
+        const timeStr = parts[1] || "";
+        
+        return (
+          <div key={index} className="py-3 flex items-start gap-3">
+            <span className={`h-10 w-10 rounded-full ${colorIconMap[event.color] || 'bg-gray-200 dark:bg-gray-700'} inline-flex items-center justify-center`}>
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l6 6-6 6z" />
+              </svg>
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-gray-800 dark:text-white truncate">
+                {classType}
+              </p>
+              <p className="text-sm text-gray-500">
+                {timeStr ? (
+                  (t.samples?.todayAt || "Today {time}").replace("{time}", timeStr)
+                ) : (
+                  t.samples?.todayScheduled || "Scheduled for today"
+                )}
+              </p>
+              <p className="text-xs text-gray-400">Ellie's Music Academy</p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

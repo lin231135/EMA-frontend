@@ -10,10 +10,10 @@ export default function AdminDashboard() {
 
   // Datos hard-coded para los KPIs
   const kpiData = {
-    totalStudents: 245,
-    totalTeachers: 18,
-    totalClasses: 156,
-    monthlyRevenue: 12450
+    totalStudents: 25,
+    totalTeachers: 10,
+    totalClasses: 50,
+    monthlyRevenue: 1000000
   };
 
   const KPICard = ({ title, value, icon, color }) => (
@@ -37,15 +37,7 @@ export default function AdminDashboard() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {t.welcomeMessage}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">
-            Panel de control principal con métricas y estadísticas de la academia
-          </p>
-        </div>
+
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -126,7 +118,7 @@ export default function AdminDashboard() {
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               <div className="flex-1">
                 <p className="text-sm text-gray-900 dark:text-white">
-                  Clase de piano programada para mañana
+                  Clase de Estimulación Musical programada para mañana
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Hace 4 horas

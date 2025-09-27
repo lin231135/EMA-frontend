@@ -1,5 +1,7 @@
 import { NavLink, Link } from "react-router-dom";
 import { Logo } from "../Logo";
+import { useAuth } from "../../../contexts/AuthContext";
+import translations from "../../../translations";
 
 /* ---- Paleta por hijo ---- */
 const KID_STYLES = {
@@ -17,13 +19,13 @@ const linkCls = (isActive, collapsed) =>
     collapsed ? "justify-center" : "justify-start",
   ].join(" ");
 
-/* Rutas según tu App.jsx actual */
-const items = [
-  { to: "/parent/ParentDashboard", label: "Dashboard", icon: "grid" },
-  { to: "/parent/ParentCalendar",  label: "Calendar",  icon: "calendar" },
-  // { to: "/parent/PaymentHistory", label: "Payment History", icon: "card" },
-  // { to: "/parent/Books",          label: "Books",           icon: "book" },
-  // { to: "/parent/Account",        label: "Account",         icon: "user" },
+/* Generar items dinámicamente con traducciones */
+const getItems = (t) => [
+  { to: "/parent/ParentDashboard", label: t.dashboard, icon: "grid" },
+  { to: "/parent/ParentCalendar",  label: t.calendar,  icon: "calendar" },
+  // { to: "/parent/PaymentHistory", label: t.paymentHistory, icon: "card" },
+  // { to: "/parent/Books",          label: t.books,           icon: "book" },
+  // { to: "/parent/Account",        label: t.account,         icon: "user" },
 ];
 
 function Icon({ name }) {
@@ -53,6 +55,9 @@ export default function Sidebar({
   onToggleKid,
   kidsLabels = { daniel: "Daniel Chet", david: "David Chet" },
 }) {
+  const { lang } = useAuth();
+  const t = translations[lang]?.parentSidebar || translations.es.parentSidebar;
+  const items = getItems(t);
   return (
     <aside
       className={[

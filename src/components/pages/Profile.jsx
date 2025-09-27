@@ -106,7 +106,7 @@ export default function Profile() {
           <div className="flex flex-col md:flex-row items-center gap-6 mb-8 pb-8 border-b border-gray-200">
             <div className="flex-shrink-0">
               <img 
-                src={user?.avatar || "/teacher.jpg"} 
+                src={user?.avatar || "https://i.pravatar.cc/150?img=3"} 
                 alt={user?.name || "User"} 
                 className="w-20 h-20 rounded-full object-cover border-3 border-[#01A6CC]"
               />
@@ -245,10 +245,9 @@ export default function Profile() {
                 >
                   <option value="">{t.select}</option>
                   <option value="piano">{t.piano}</option>
-                  <option value="violin">{t.violin}</option>
-                  <option value="guitar">{t.guitar}</option>
-                  <option value="flute">{t.flute}</option>
                   <option value="voice">{t.voice}</option>
+                  <option value="musical_stimulation_2_3">Estimulación Musical (2-3 años)</option>
+                  <option value="musical_stimulation_4_5">Estimulación Musical (4-5 años)</option>
                 </select>
               </div>
 

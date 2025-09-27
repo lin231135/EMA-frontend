@@ -27,6 +27,7 @@ export default {
   },
   sidebar: {
     todayClasses: "Clases de Hoy",
+    noClassesToday: "No hay clases programadas para hoy",
   },
   samples: {
     pianoClass: "Clase de Piano",
@@ -35,6 +36,7 @@ export default {
     pianoRecital: "Recital de Piano",
     holiday: "Feriado",
     todayAt: "Hoy {time}",
+    todayScheduled: "Programada para hoy",
   },
   a11y: {
     prevMonth: "Mes anterior",

@@ -30,7 +30,7 @@ export default {
       address: "19 Avenida \"A\" 4-39, Vista Hermosa 1,\nZona 15, Guatemala"
     },
     client: {
-      name: "Oscar (Parent)",
+      name: "Daniel Chet",
       address: "Client Address"
     }
   }

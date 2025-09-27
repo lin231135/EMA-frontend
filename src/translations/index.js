@@ -14,6 +14,11 @@ import esStudentDashboard from "./es/student/StudentDashboard";
 import esAdminDashboard from "./es/admin/AdminDashboard";
 import esAdminPayment from "./es/admin/AdminPayment";
 import esStudentProfile from "./es/student/StudentProfile";
+import esParentDashboard from "./es/parent/ParentDashboard";
+import esParentNavbar from "./es/parent/ParentNavbar";
+import esParentSidebar from "./es/parent/ParentSidebar";
+import esParentCalendar from "./es/parent/ParentCalendar";
+import esCharts from "./es/charts";
 
 import enAbout from "./en/about";
 import enCommon from "./en/common";
@@ -28,9 +33,14 @@ import enStudentCalendar from "./en/student/StudentCalendar";
 import enStudentHistoryPayment from "./en/student/StudentHistoryPayment";
 import enAddClassModal from "./en/AddClassModal";
 import enStudentDashboard from "./en/student/StudentDashboard";
-import enAdminDashboard from "./en/admin/AdminDashboard";
+import enAdminDashboard from "./en/admin/AdminDashboard"; 
 import enAdminPayment from "./en/admin/AdminPayment";
 import enStudentProfile from "./en/student/StudentProfile";
+import enParentDashboard from "./en/parent/ParentDashboard";
+import enParentNavbar from "./en/parent/ParentNavbar";
+import enParentSidebar from "./en/parent/ParentSidebar";
+import enParentCalendar from "./en/parent/ParentCalendar";
+import enCharts from "./en/charts";
 
 const translations = {
   es: {
@@ -50,6 +60,11 @@ const translations = {
     adminDashboard: esAdminDashboard,
     adminPayment: esAdminPayment,
     studentProfile: esStudentProfile,
+    parentDashboard: esParentDashboard,
+    parentNavbar: esParentNavbar,
+    parentSidebar: esParentSidebar,
+    parentCalendar: esParentCalendar,
+    charts: esCharts,
   },
   en: {
     about: enAbout,
@@ -68,6 +83,11 @@ const translations = {
     adminDashboard: enAdminDashboard,
     adminPayment: enAdminPayment,
     studentProfile: enStudentProfile,
+    parentDashboard: enParentDashboard,
+    parentNavbar: enParentNavbar,
+    parentSidebar: enParentSidebar,
+    parentCalendar: enParentCalendar,
+    charts: enCharts,
   },
 };
 

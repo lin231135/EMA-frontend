@@ -58,13 +58,13 @@ export default function StudentNavbar({ onLogout }) {
           to="/profile"
           className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg px-2 py-1"
         >
-          <Avatar img="https://i.pravatar.cc/64?img=21" rounded />
+          <Avatar img="" rounded />
           <div className="hidden sm:flex flex-col leading-tight">
             <span className="text-sm font-medium text-gray-900 dark:text-white">
-              Moni Roy
+              Daniel Chet
             </span>
             <span className="text-[11px] text-gray-500 dark:text-gray-400">
-              Admin
+              Student
             </span>
           </div>
         </NavLink>

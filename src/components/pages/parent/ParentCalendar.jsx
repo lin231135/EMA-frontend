@@ -7,6 +7,8 @@ import {
   Badge,
 } from "flowbite-react";
 import ParentLayout from "../../layout/parent/ParentLayout";
+import { useAuth } from "../../../contexts/AuthContext";
+import translations from "../../../translations";
 
 /* ======= Colores por hijo (misma paleta que el Dashboard) ======= */
 const KIDS = {
@@ -170,6 +172,9 @@ function DayCell({ d, inMonth, events = [] }) {
 }
 
 export default function ParentCalendar() {
+  const { lang } = useAuth();
+  const t = translations[lang]?.parentCalendar || translations.es.parentCalendar;
+  
   /* filtros compartidos en el Sidebar */
   const [kidsFilter, setKidsFilter] = useState({ all: true, daniel: true, david: true });
   const onToggleKid = (key) =>
@@ -215,7 +220,7 @@ export default function ParentCalendar() {
     [kidsFilter]
   );
 
-  const monthLabel = cursor.toLocaleString("en-US", { month: "long", year: "numeric" });
+  const monthLabel = `${t.monthNames[cursor.getMonth()]} ${cursor.getFullYear()}`;
 
   return (
     <ParentLayout
@@ -224,7 +229,7 @@ export default function ParentCalendar() {
       kidsLabels={{ daniel: KIDS.daniel.name, david: KIDS.david.name }}
     >
       <div className="px-6 pt-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Calendar</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t.title}</h1>
       </div>
 
       <div className="px-6 pb-6 grid grid-cols-12 gap-4">
@@ -232,11 +237,11 @@ export default function ParentCalendar() {
         <div className="col-span-12 lg:col-span-3 space-y-4">
           <Card className="p-0">
             <div className="p-4">
-              <Button fullSized>+ Add New Event</Button>
+              <Button fullSized>{t.sections.addNewEvent}</Button>
             </div>
 
             <div className="px-4 pb-4">
-              <SectionTitle>Clases de Hoy</SectionTitle>
+              <SectionTitle>{t.sections.todaysClasses}</SectionTitle>
             </div>
 
             <div className="px-2 pb-4 space-y-6">
@@ -251,7 +256,7 @@ export default function ParentCalendar() {
                       <div className="min-w-0">
                         <p className="font-medium text-gray-900 dark:text-white">{c.title}</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          Today {c.time}
+                          {t.today} {c.time}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">{c.place}</p>
                       </div>
@@ -260,7 +265,7 @@ export default function ParentCalendar() {
                 );
               })}
               {classesToday.length === 0 && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 px-2">No hay clases para hoy con el filtro actual.</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 px-2">{t.empty.noEventsToday}</p>
               )}
             </div>
           </Card>
@@ -275,8 +280,8 @@ export default function ParentCalendar() {
                 <button
                   className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={() => setCursor(addDays(startOfMonth(cursor), -1))}
-                  aria-label="Prev month"
-                  title="Prev month"
+                  aria-label={t.navigation.previousMonth}
+                  title={t.navigation.previousMonth}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M15 6l-6 6 6 6"/></svg>
                 </button>
@@ -284,8 +289,8 @@ export default function ParentCalendar() {
                 <button
                   className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={() => setCursor(addDays(endOfMonth(cursor), 1))}
-                  aria-label="Next month"
-                  title="Next month"
+                  aria-label={t.navigation.nextMonth}
+                  title={t.navigation.nextMonth}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 6l6 6-6 6"/></svg>
                 </button>
@@ -293,15 +298,15 @@ export default function ParentCalendar() {
 
               {/* Toggler (solo Month implementado por ahora) */}
               <div className="flex gap-2">
-                <Button size="xs" color="light" disabled>Day</Button>
-                <Button size="xs" color="light" disabled>Week</Button>
-                <Button size="xs">Month</Button>
+                <Button size="xs" color="light" disabled>{t.views.day}</Button>
+                <Button size="xs" color="light" disabled>{t.views.week}</Button>
+                <Button size="xs">{t.views.month}</Button>
               </div>
             </div>
 
             {/* Cabecera de días */}
             <div className="grid grid-cols-7 gap-2 px-1 pb-2">
-              {["MON","TUE","WED","THU","FRI","SAT","SUN"].map((d) => (
+              {t.dayNamesShort.map((d, index) => (
                 <div key={d} className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 px-1">
                   {d}
                 </div>
@@ -321,15 +326,15 @@ export default function ParentCalendar() {
           {/* Nota opcional de leyenda */}
           <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
             <span className="inline-flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded bg-violet-500" /> {KIDS.daniel.name}
+              <span className="inline-block w-3 h-3 rounded bg-violet-500" /> {t.students.daniel}
             </span>
             <span className="inline-flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded bg-pink-500" /> {KIDS.david.name}
+              <span className="inline-block w-3 h-3 rounded bg-pink-500" /> {t.students.david}
             </span>
             <span className="inline-flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded bg-orange-400" /> Eventos generales
+              <span className="inline-block w-3 h-3 rounded bg-orange-400" /> {t.legend.generalEvents}
             </span>
-            <span className="ml-auto text-gray-400">* Las celdas rayadas pertenecen a días fuera del mes.</span>
+            <span className="ml-auto text-gray-400">{t.legend.outsideMonthNote}</span>
           </div>
         </div>
       </div>

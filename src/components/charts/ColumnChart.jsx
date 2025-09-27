@@ -1,8 +1,13 @@
 // src/components/charts/ColumnChart.jsx
 import React from 'react';
 import Chart from 'react-apexcharts';
+import { useAuth } from '../../contexts/AuthContext';
+import translations from '../../translations';
 
 const ColumnChart = ({ title = "Gráfica de Columnas" }) => {
+  const { lang } = useAuth();
+  const t = translations[lang]?.charts || translations.es.charts;
+
   const options = {
     chart: {
       type: 'bar',
@@ -36,11 +41,11 @@ const ColumnChart = ({ title = "Gráfica de Columnas" }) => {
       }
     },
     xaxis: {
-      categories: ['Piano', 'Violín', 'Guitarra', 'Canto', 'Batería', 'Flauta', 'Saxofón']
+      categories: t.columnChart.categories
     },
     yaxis: {
       title: {
-        text: 'Número de Estudiantes'
+        text: t.columnChart.yAxisTitle
       }
     },
     fill: {
@@ -58,16 +63,16 @@ const ColumnChart = ({ title = "Gráfica de Columnas" }) => {
 
   const series = [
     {
-      name: 'Nivel Básico',
-      data: [25, 18, 32, 15, 12, 8, 6]
+      name: t.columnChart.levels.basic,
+      data: [8, 6, 4, 5]
     },
     {
-      name: 'Nivel Intermedio',
-      data: [18, 15, 22, 12, 8, 5, 4]
+      name: t.columnChart.levels.intermediate,
+      data: [4, 3, 2, 2]
     },
     {
-      name: 'Nivel Avanzado',
-      data: [12, 8, 15, 8, 5, 3, 2]
+      name: t.columnChart.levels.advanced,
+      data: [2, 1, 0, 0]
     }
   ];
 

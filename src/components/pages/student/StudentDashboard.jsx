@@ -25,16 +25,16 @@ const addDays = (d, n) => {
 };
 
 const MOCK_CLASSES_TODAY = [
-  { id: 1, title: "Tim's piano class", date: today, time: "11:00 AM", place: "56 Davion Mission Suite 157", teacher: "Meaghanberg", avatar: "https://i.pravatar.cc/64?img=11", status: "normal" },
-  { id: 2, title: "Clase de Canto para Laura", date: today, time: "13:00 PM", place: "853 Moore Flats Suite 158, Sweden", teacher: "—", avatar: "https://i.pravatar.cc/64?img=12", status: "normal" },
-  { id: 3, title: "Sofía's Piano Class", date: today, time: "15:00 PM", place: "646 Walter Road Apt. 571, Turks and Caicos Islands", teacher: "—", avatar: "https://i.pravatar.cc/64?img=13", status: "canceled" },
+  { id: 1, title: "Tim's piano class", date: today, time: "11:00 AM", place: "56 Davion Mission Suite 157", teacher: "Meaghanberg", avatar: "", status: "normal" },
+  { id: 2, title: "Clase de Canto para Laura", date: today, time: "13:00 PM", place: "853 Moore Flats Suite 158, Sweden", teacher: "—", avatar: "", status: "normal" },
+  { id: 3, title: "Sofía's Piano Class", date: today, time: "15:00 PM", place: "646 Walter Road Apt. 571, Turks and Caicos Islands", teacher: "—", avatar: "", status: "canceled" },
 ];
 
 const MOCK_UPCOMING = [
   ...MOCK_CLASSES_TODAY,
-  { id: 4, title: "Guitarra Intermedia", date: addDays(today, 1), time: "09:30 AM", place: "Campus Central", teacher: "Sr. Pérez", avatar: "https://i.pravatar.cc/64?img=14", status: "normal" },
-  { id: 5, title: "Teoría Musical", date: addDays(today, 2), time: "10:00 AM", place: "Sala 204", teacher: "Lic. Gómez", avatar: "https://i.pravatar.cc/64?img=15", status: "normal" },
-  { id: 6, title: "Ensamble", date: addDays(today, 5), time: "16:00 PM", place: "Auditorio", teacher: "—", avatar: "https://i.pravatar.cc/64?img=16", status: "normal" },
+  { id: 4, title: "Estimulación Musical (4-5 años)", date: addDays(today, 1), time: "09:30 AM", place: "Campus Central", teacher: "Sr. Pérez", avatar: "", status: "normal" },
+  { id: 5, title: "Estimulación Musical (2-3 años)", date: addDays(today, 2), time: "10:00 AM", place: "Sala 204", teacher: "Lic. Gómez", avatar: "", status: "normal" },
+  { id: 6, title: "Canto", date: addDays(today, 5), time: "16:00 PM", place: "Auditorio", teacher: "—", avatar: "", status: "normal" },
 ];
 
 const MOCK_FEEDBACK = [
@@ -177,7 +177,7 @@ export default function StudentDashboard({
             <div className="grid grid-cols-12 gap-6">
               {/* Centro */}
               <div className="col-span-12 lg:col-span-8 space-y-6">
-                <Card className="relative overflow-hidden cursor-pointer" onClick={() => navigate("/calendar")}>
+                <Card className="relative overflow-hidden cursor-pointer" onClick={() => navigate("/student/StudentCalendar")}>
                   <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{ backgroundImage: "url('RecitalInicio.jpg')" }}
@@ -191,7 +191,7 @@ export default function StudentDashboard({
                           .replace("{count}", classesNext3Days.length)
                       }
                     </p>
-                    <Button className="mt-4" onClick={() => navigate("/calendar")}>
+                    <Button className="mt-4" onClick={() => navigate("/student/StudentCalendar")}>
                       {t.viewCalendar}
                     </Button>
                   </div>

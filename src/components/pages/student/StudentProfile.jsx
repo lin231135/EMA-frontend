@@ -74,7 +74,7 @@ export default function StudentProfile() {
     role: "Estudiante",
     email: "daniel@gmail.com",
     phone: "+502 12423946",
-    avatar: "/teacher.jpg",
+    avatar: "",
     address: {
       city: "Guatemala",
       apt: "----",

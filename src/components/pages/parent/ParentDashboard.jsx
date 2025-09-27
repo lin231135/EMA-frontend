@@ -12,6 +12,8 @@ import {
   Textarea,
 } from "flowbite-react";
 import ParentLayout from "../../layout/parent/ParentLayout";
+import { useAuth } from "../../../contexts/AuthContext";
+import translations from "../../../translations";
 
 /* ======= Paleta + nombres por hijo (coherente en toda la vista) ======= */
 const KIDS = {
@@ -46,7 +48,7 @@ const MOCK_CLASSES_TODAY = [
     time: "11:00 AM",
     place: "56 Davion Mission Suite 157",
     teacher: "Meaghanberg",
-    avatar: "https://i.pravatar.cc/64?img=11",
+    avatar: "",
     status: "normal",
   },
   {
@@ -57,7 +59,7 @@ const MOCK_CLASSES_TODAY = [
     time: "13:00 PM",
     place: "853 Moore Flats Suite 158, Sweden",
     teacher: "—",
-    avatar: "https://i.pravatar.cc/64?img=12",
+    avatar: "",
     status: "normal",
   },
   {
@@ -68,7 +70,7 @@ const MOCK_CLASSES_TODAY = [
     time: "15:00 PM",
     place: "646 Walter Road Apt. 571, Turks and Caicos Islands",
     teacher: "—",
-    avatar: "https://i.pravatar.cc/64?img=13",
+    avatar: "",
     status: "canceled",
   },
 ];
@@ -78,12 +80,12 @@ const MOCK_UPCOMING = [
   {
     id: 4,
     student: "david",
-    title: "Guitarra Intermedia",
+    title: "Estimulación Musical (4-5 años)",
     date: addDays(today, 1),
     time: "09:30 AM",
     place: "Campus Central",
     teacher: "Sr. Pérez",
-    avatar: "https://i.pravatar.cc/64?img=14",
+    avatar: "",
     status: "normal",
   },
   {
@@ -94,7 +96,7 @@ const MOCK_UPCOMING = [
     time: "10:00 AM",
     place: "Sala 204",
     teacher: "Lic. Gómez",
-    avatar: "https://i.pravatar.cc/64?img=15",
+    avatar: "",
     status: "normal",
   },
   {
@@ -105,7 +107,7 @@ const MOCK_UPCOMING = [
     time: "16:00 PM",
     place: "Auditorio",
     teacher: "—",
-    avatar: "https://i.pravatar.cc/64?img=16",
+    avatar: "",
     status: "normal",
   },
 ];
@@ -143,7 +145,7 @@ function coherentTitle(originalTitle, studentKey) {
 
   if (t.includes("piano")) return `Clase de Piano de ${kid}`;
   if (t.includes("canto") || t.includes("sing")) return `Clase de Canto de ${kid}`;
-  if (t.includes("guitarra")) return `Clase de Guitarra de ${kid}`;
+  if (t.includes("estimulación") || t.includes("estimulacion")) return `Estimulación Musical de ${kid}`;
   if (t.includes("teoría")) return `Clase de Teoría Musical de ${kid}`;
   if (t.includes("ensamble")) return `Ensamble — ${kid}`;
   // fallback:
@@ -163,6 +165,8 @@ function ColoredItem({ student, children, className = "" }) {
 
 export default function ParentDashboard() {
   const navigate = useNavigate();
+  const { lang } = useAuth();
+  const t = translations[lang]?.parentDashboard || translations.es.parentDashboard;
 
   // filtros (render en sidebar)
   const [kidsFilter, setKidsFilter] = useState({
@@ -207,19 +211,25 @@ export default function ParentDashboard() {
   );
 
   // Notas
-  const [notes, setNotes] = useState([{ id: 1, text: "Comprar el libro de Piano para Daniel" }]);
+  const [notes, setNotes] = useState([
+    { id: 1, text: "Comprar el libro de Piano para Daniel", student: "daniel" },
+    { id: 2, text: "Recordar clase extra de canto", student: "david" }
+  ]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [noteText, setNoteText] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState("daniel");
 
   const openNew = () => {
     setEditing(null);
     setNoteText("");
+    setSelectedStudent("daniel");
     setModalOpen(true);
   };
   const openEdit = (note) => {
     setEditing(note);
     setNoteText(note.text);
+    setSelectedStudent(note.student || "daniel");
     setModalOpen(true);
   };
   const saveNote = () => {
@@ -227,13 +237,14 @@ export default function ParentDashboard() {
     if (!txt) return;
     if (!editing) {
       const newId = Math.max(0, ...notes.map((n) => n.id)) + 1;
-      setNotes((ns) => [{ id: newId, text: txt }, ...ns]);
+      setNotes((ns) => [{ id: newId, text: txt, student: selectedStudent }, ...ns]);
     } else {
-      setNotes((ns) => ns.map((n) => (n.id === editing.id ? { ...n, text: txt } : n)));
+      setNotes((ns) => ns.map((n) => (n.id === editing.id ? { ...n, text: txt, student: selectedStudent } : n)));
     }
     setModalOpen(false);
     setEditing(null);
     setNoteText("");
+    setSelectedStudent("daniel");
   };
   const deleteNote = (id) => setNotes((ns) => ns.filter((n) => n.id !== id));
 
@@ -244,14 +255,14 @@ export default function ParentDashboard() {
       kidsLabels={{ daniel: KIDS.daniel.name, david: KIDS.david.name }}
     >
       <div className="px-6 pt-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t.title}</h1>
       </div>
 
       <div className="px-6 py-4 grid grid-cols-12 gap-4">
         {/* Columna izquierda: Clases de Hoy */}
         <div className="col-span-12 lg:col-span-3 space-y-4">
           <Card className="h-full pt-0">
-            <SectionTitle className="text-center font-bold text-xl mt-0">Clases de Hoy</SectionTitle>
+            <SectionTitle className="text-center font-bold text-xl mt-0">{t.todaysClasses}</SectionTitle>
             <div className="border-b border-gray-200 dark:border-gray-700 mx-2" />
 
             <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700 px-1">
@@ -269,8 +280,8 @@ export default function ParentDashboard() {
                         <p className="font-medium text-gray-900 dark:text-white">{label}</p>
 
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          Today {c.time}
-                          {c.status === "canceled" && <Badge color="failure" size="xs" className="ml-2">CANCELED</Badge>}
+                          {t.classDetails.todayAt.replace('{time}', c.time)}
+                          {c.status === "canceled" && <Badge color="failure" size="xs" className="ml-2">{t.status.canceled}</Badge>}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">{c.place}</p>
                       </div>
@@ -279,7 +290,7 @@ export default function ParentDashboard() {
                 );
               })}
               {classesTodayFiltered.length === 0 && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 px-2 pb-4">No hay clases para el filtro seleccionado.</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 px-2 pb-4">{t.empty.noClassesFiltered}</p>
               )}
             </div>
           </Card>
@@ -292,7 +303,7 @@ export default function ParentDashboard() {
               {/* Centro */}
               <div className="col-span-12 lg:col-span-8 space-y-6">
                 {/* Hero resumen próximos 3 días */}
-                <Card className="relative overflow-hidden cursor-pointer" onClick={() => navigate("/calendar")}>
+                <Card className="relative overflow-hidden cursor-pointer" onClick={() => navigate("/parent/ParentCalendar")}>
                   <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{ backgroundImage: "url('RecitalInicio.jpg')" }}
@@ -300,11 +311,20 @@ export default function ParentDashboard() {
                   <div className="absolute inset-0 bg-black/40" />
                   <div className="relative py-10 px-6 sm:px-10">
                     <p className="text-2xl sm:text-3xl font-semibold text-white leading-snug">
-                      En los próximos <span className="text-white/90 font-bold">3</span> días tienes{" "}
-                      <span className="text-red-400 font-extrabold">{upcomingFiltered.length}</span> clases
+                      {lang === 'es' ? (
+                        <>
+                          En los próximos <span className="text-white/90 font-bold">3</span> días tienes{" "}
+                          <span className="text-red-400 font-extrabold">{upcomingFiltered.length}</span> clases
+                        </>
+                      ) : (
+                        <>
+                          In the next <span className="text-white/90 font-bold">3</span> days you have{" "}
+                          <span className="text-red-400 font-extrabold">{upcomingFiltered.length}</span> classes
+                        </>
+                      )}
                     </p>
-                    <Button className="mt-4" onClick={() => navigate("/calendar")}>
-                      Ver calendario
+                    <Button className="mt-4" onClick={() => navigate("/parent/ParentCalendar")}>
+                      {t.viewCalendar}
                     </Button>
                   </div>
                 </Card>
@@ -336,23 +356,41 @@ export default function ParentDashboard() {
               {/* Derecha: Anotaciones */}
               <div className="col-span-12 lg:col-span-4 space-y-4">
                 <div className="flex items-center justify-between">
-                  <SectionTitle className="m-0">Anotaciones</SectionTitle>
-                  <Button size="xs" onClick={openNew}>+ Add new note</Button>
+                  <SectionTitle className="m-0">{t.notes.title}</SectionTitle>
+                  <Button size="xs" onClick={openNew}>{t.notes.addNew}</Button>
                 </div>
 
                 <div className="space-y-3">
-                  {notes.map((n) => (
-                    <Card key={n.id} className="p-4">
-                      <p className="text-sm text-gray-700 dark:text-gray-200">{n.text}</p>
-                      <div className="mt-3 flex gap-2">
-                        <Button size="xs" color="light" onClick={() => openEdit(n)} title="Edit">Edit</Button>
-                        <Button size="xs" color="failure" onClick={() => deleteNote(n.id)} title="Delete">Delete</Button>
-                      </div>
-                    </Card>
-                  ))}
+                  {notes.map((n) => {
+                    const student = n.student || "daniel";
+                    const kidStyle = KIDS[student] || KIDS.daniel;
+                    return (
+                      <Card key={n.id} className="p-4 relative">
+                        {/* Barra de color del estudiante */}
+                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${kidStyle.bar} rounded-l-lg`}></div>
+                        
+                        {/* Header con información del estudiante */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`w-3 h-3 rounded-full ${kidStyle.bar}`}></div>
+                          <span className={`text-xs font-medium ${kidStyle.text}`}>
+                            {KIDS[student]?.name || "Daniel Chet"}
+                          </span>
+                        </div>
+                        
+                        {/* Contenido de la nota */}
+                        <p className="text-sm text-gray-700 dark:text-gray-200 ml-5">{n.text}</p>
+                        
+                        {/* Botones de acción */}
+                        <div className="mt-3 flex gap-2 ml-5">
+                          <Button size="xs" color="light" onClick={() => openEdit(n)} title={t.notes.edit}>{t.notes.edit}</Button>
+                          <Button size="xs" color="failure" onClick={() => deleteNote(n.id)} title={t.notes.delete}>{t.notes.delete}</Button>
+                        </div>
+                      </Card>
+                    );
+                  })}
                   {notes.length === 0 && (
                     <Card className="p-6 text-sm text-gray-500 dark:text-gray-400">
-                      No hay anotaciones todavía.
+                      {t.empty.noNotes}
                     </Card>
                   )}
                 </div>
@@ -364,18 +402,50 @@ export default function ParentDashboard() {
 
       {/* Modal de nota */}
       <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
-        <ModalHeader>{editing ? "Editar nota" : "Nueva nota"}</ModalHeader>
+        <ModalHeader>{editing ? t.notes.editNote : t.notes.newNote}</ModalHeader>
         <ModalBody>
-          <Textarea
-            rows={6}
-            placeholder="Escribe tu nota aquí..."
-            value={noteText}
-            onChange={(e) => setNoteText(e.target.value)}
-          />
+          <div className="space-y-4">
+            {/* Selector de estudiante */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                {t.notes.student}
+              </label>
+              <div className="flex gap-3">
+                {Object.entries(KIDS).map(([key, kid]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSelectedStudent(key)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all ${
+                      selectedStudent === key
+                        ? `border-current ${kid.text} bg-opacity-10`
+                        : 'border-gray-300 text-gray-600 hover:border-gray-400'
+                    }`}
+                  >
+                    <div className={`w-3 h-3 rounded-full ${kid.bar}`}></div>
+                    <span className="text-sm font-medium">{kid.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Textarea para la nota */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                {t.notes.note}
+              </label>
+              <Textarea
+                rows={6}
+                placeholder={t.notes.placeholder}
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+              />
+            </div>
+          </div>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={saveNote}>{editing ? "Guardar cambios" : "Agregar nota"}</Button>
-          <Button color="gray" onClick={() => setModalOpen(false)}>Cancelar</Button>
+          <Button onClick={saveNote}>{editing ? t.notes.save : t.notes.add}</Button>
+          <Button color="gray" onClick={() => setModalOpen(false)}>{t.notes.cancel}</Button>
         </ModalFooter>
       </Modal>
     </ParentLayout>

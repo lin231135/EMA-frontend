@@ -1,8 +1,13 @@
 // src/components/charts/LineChart.jsx
 import React from 'react';
 import Chart from 'react-apexcharts';
+import { useAuth } from '../../contexts/AuthContext';
+import translations from '../../translations';
 
 const LineChart = ({ title = "Gráfica de Líneas" }) => {
+  const { lang } = useAuth();
+  const t = translations[lang]?.charts || translations.es.charts;
+
   const options = {
     chart: {
       height: 350,
@@ -41,7 +46,7 @@ const LineChart = ({ title = "Gráfica de Líneas" }) => {
     },
     yaxis: {
       title: {
-        text: 'Puntuación Promedio'
+        text: t.lineChart.yAxisTitle
       },
       min: 0,
       max: 100
@@ -58,15 +63,15 @@ const LineChart = ({ title = "Gráfica de Líneas" }) => {
 
   const series = [
     {
-      name: "Evaluaciones Teóricas",
+      name: t.lineChart.theoreticalEvaluations,
       data: [65, 72, 68, 75, 78, 82, 85, 88]
     },
     {
-      name: "Evaluaciones Prácticas",
+      name: t.lineChart.practicalEvaluations,
       data: [70, 75, 73, 78, 82, 85, 87, 90]
     },
     {
-      name: "Participación en Clase",
+      name: t.lineChart.classParticipation,
       data: [80, 82, 85, 87, 88, 90, 92, 94]
     }
   ];
