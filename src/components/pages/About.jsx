@@ -77,7 +77,7 @@ export default function About() {
               {/* Mission */}
               <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
-                <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                <div className="absolute bottom-0 left-0 w-full h-20 bg-cyan-500 flex items-center justify-center">
                   <h3 className="text-white text-2xl font-bold">
                     {t.mission.toUpperCase()}
                   </h3>
@@ -92,7 +92,7 @@ export default function About() {
               {/* Vision */}
               <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1/4 h-2 bg-purple-500"></div>
-                <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                <div className="absolute bottom-0 left-0 w-full h-20 bg-cyan-500 flex items-center justify-center">
                   <h3 className="text-white text-2xl font-bold">
                     {t.vision.toUpperCase()}
                   </h3>
@@ -107,7 +107,7 @@ export default function About() {
               {/* Commitment */}
               <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1/4 h-2 bg-pink-500"></div>
-                <div className="absolute bottom-0 left-0 w-full h-20 bg-slate-800 flex items-center justify-center">
+                <div className="absolute bottom-0 left-0 w-full h-20 bg-cyan-500 flex items-center justify-center">
                   <h3 className="text-white text-2xl font-bold">
                     {t.commitment.toUpperCase()}
                   </h3>

@@ -10,7 +10,7 @@ export default function TestimonialCard({ testimonial }) {
         <p className="text-gray-600 italic mb-4 text-sm leading-relaxed flex-1">"{testimonial.text}"</p>
       </div>
       <div className="flex items-center mt-auto">
-        <div className="w-12 h-12 bg-teal-700 text-white rounded-full flex items-center justify-center font-bold text-lg mr-4 flex-shrink-0">
+        <div className="w-12 h-12 bg-cyan-500 text-white rounded-full flex items-center justify-center font-bold text-lg mr-4 flex-shrink-0">
           {testimonial.name.charAt(0)}
         </div>
         <div className="min-w-0 flex-1">

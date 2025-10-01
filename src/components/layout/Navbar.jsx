@@ -29,7 +29,3 @@ export function NavbarItem({ href, children, className = "" }) {
 export function NavbarDivider({ className = "" }) {
   return <div className={`w-px h-6 bg-gray-900 mx-4 ${className}`} />;
 }
-
-export function NavbarScheduleItem({ label = "Horario" }) {
-  return <NavbarItem href="/schedule">{label}</NavbarItem>;
-}

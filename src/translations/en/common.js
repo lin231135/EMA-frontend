@@ -6,7 +6,7 @@ const common = {
   login: "Sign In",
   register: "Sign Up",
   profile: "My Profile",
-  settings: "Settings",
+  dashboard: "Dashboard",
   logout: "Sign Out",
   footerDescription:
     "Music school dedicated to training artists with excellence and passion for music.",

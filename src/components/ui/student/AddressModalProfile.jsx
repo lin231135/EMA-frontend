@@ -191,7 +191,7 @@ export default function AddressModalProfile({ open, onClose, user, onSubmit }) {
           <div className="pt-2 flex justify-center">
             <button
               type="submit"
-              className="w-72 max-w-full px-6 py-3 rounded-md text-white font-semibold bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-72 max-w-full px-6 py-3 rounded-md text-white font-semibold bg-cyan-500 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               {t.buttons.save}
             </button>

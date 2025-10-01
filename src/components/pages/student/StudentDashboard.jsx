@@ -191,7 +191,7 @@ export default function StudentDashboard({
                           .replace("{count}", classesNext3Days.length)
                       }
                     </p>
-                    <Button className="mt-4" onClick={() => navigate("/student/StudentCalendar")}>
+                    <Button className="mt-4 bg-cyan-500 text-white" onClick={() => navigate("/student/StudentCalendar")}>
                       {t.viewCalendar}
                     </Button>
                   </div>
@@ -216,7 +216,7 @@ export default function StudentDashboard({
                 <Card>
                   <div className="flex items-center justify-between">
                     <SectionTitle>{t.notesTitle}</SectionTitle>
-                    <Button size="xs" onClick={openNew}>{t.addNote}</Button>
+                    <Button size="xs" onClick={openNew} className="bg-cyan-500 text-white">{t.addNote}</Button>
                   </div>
 
                   <div className="space-y-4 mt-2">

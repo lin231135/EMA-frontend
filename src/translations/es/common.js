@@ -6,7 +6,7 @@ const common = {
   login: "Iniciar Sesión",
   register: "Registrarse",
   profile: "Mi Perfil",
-  settings: "Configuración",
+  dashboard: "Tablero",
   logout: "Cerrar Sesión",
   footerDescription:
     "Escuela de música dedicada a formar artistas con excelencia y pasión por la música.",

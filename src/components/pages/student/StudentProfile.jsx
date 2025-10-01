@@ -24,7 +24,7 @@ function ReadonlyField({ label, value }) {
  */
 function EditButton({ onClick, children }) {
   return (
-    <Button size="sm" onClick={onClick} className="gap-2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-300">
+    <Button size="sm" onClick={onClick} className="gap-2 text-white bg-cyan-500 hover:bg-cyan-600 focus:ring-4 focus:ring-cyan-300">
       <svg
         className="w-4 h-4 "
         aria-hidden="true"

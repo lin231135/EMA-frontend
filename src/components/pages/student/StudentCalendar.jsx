@@ -341,7 +341,7 @@ export default function StudentCalendar() {
                     <Button
                       key={v}
                       size="sm"
-                      color={view === v ? "blue" : "light"}
+                      color={view === v ? "cyan" : "light"}
                       onClick={() => setView(v)}
                       className="capitalize"
                     >

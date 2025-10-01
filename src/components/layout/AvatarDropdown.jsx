@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Avatar } from '../ui/Avatar';
 import { Dropdown, DropdownButton, DropdownMenu, DropdownItem, DropdownLabel, DropdownDivider } from '../ui/Dropdown';
-import { UserIcon, CogIcon, LogoutIcon, LoginIcon, RegisterIcon } from '../ui/Icons';
+import { UserIcon, CogIcon, LogoutIcon, LoginIcon, RegisterIcon, Dashboard  } from '../ui/Icons';
 
 export function AvatarDropdown({ isAuthenticated = false, user = null, onLogin, onRegister, onLogout, translations }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,13 +56,13 @@ export function AvatarDropdown({ isAuthenticated = false, user = null, onLogin, 
           ) : (
             // Usuario autenticado
             <>
-              <DropdownItem href="/profile">
+              <DropdownItem href="/student/StudentProfile">
                 <UserIcon />
                 <DropdownLabel>{translations.profile}</DropdownLabel>
               </DropdownItem>
-              <DropdownItem href="/settings">
-                <CogIcon />
-                <DropdownLabel>{translations.settings}</DropdownLabel>
+              <DropdownItem href="/student/StudentDashboard">
+                <Dashboard />
+                <DropdownLabel>{translations.dashboard}</DropdownLabel>
               </DropdownItem>
               <DropdownDivider />
               <DropdownItem onClick={() => handleItemClick(onLogout)}>

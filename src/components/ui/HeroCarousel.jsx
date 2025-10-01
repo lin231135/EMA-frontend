@@ -43,7 +43,7 @@ export default function HeroCarousel({
       <Carousel
         leftControl={leftArrow}
         rightControl={rightArrow}
-        className="h-full [&>div]:overflow-hidden" // ⬅️ oculta el scroll horizontal
+        className="h-full [&>div]:overflow-hidden" 
         slideInterval={6000}
         indicators
       >
@@ -74,7 +74,7 @@ export default function HeroCarousel({
                     <Button pill onClick={onSecondary} color="light" className="text-gray-900">
                       {ctaSecondary}
                     </Button>
-                    <Button pill onClick={onPrimary} color="blue">
+                    <Button pill onClick={onPrimary} className="bg-[#01A6CC] hover:bg-[#018bb0] text-white">
                       {ctaPrimary}
                     </Button>
                   </div>

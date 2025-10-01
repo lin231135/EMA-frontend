@@ -74,7 +74,7 @@ export default function Home() {
             <p className="text-gray-600 mb-8 leading-relaxed">
               {t.enrollText}
             </p>
-            <button className="bg-[#01A6CC] hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+            <button className="bg-cyan-500 hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
               {t.viewCoursesButton}
             </button>
           </div>
