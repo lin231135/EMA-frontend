@@ -1,47 +1,81 @@
+// src/components/pages/Contact.jsx
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 import { Button, Card, Label, TextInput, Textarea } from "flowbite-react";
-import { PageLayout } from '../layout'
-import translations from '../../translations'
+import { PageLayout } from "../layout";
+import translations from "../../translations";
+import { Location, Phone, Email, Clock } from "../ui/Icons";
 
 export default function Contact() {
   const { lang } = useAuth();
   const t = translations[lang].contact;
 
+  // Normaliza la base del API y evita doble slash al concatenar
+  const API_BASE = String(import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Datos del formulario:', formData);
-    // Aquí se puede agregar la lógica para enviar el formulario
-    alert(t.messageSent || 'Mensaje enviado correctamente');
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    });
+    setLoading(true);
+
+    // Enviar valores “limpios” (sin espacios a los lados)
+    const payload = Object.fromEntries(
+      Object.entries(formData).map(([k, v]) => [
+        k,
+        typeof v === "string" ? v.trim() : v,
+      ])
+    );
+
+    try {
+      const res = await fetch(`${API_BASE}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      // Si el backend responde 202 { ok: true }, res.ok será true
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Request failed");
+      }
+
+      alert(t.messageSent || "Mensaje enviado correctamente");
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    } catch (err) {
+      console.error(err);
+      alert(t.messageError || "Ocurrió un error al enviar tu mensaje.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <PageLayout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-teal-600 to-teal-800 text-white py-16">
+      <section className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-4">
             {t.contactTitle}
@@ -56,16 +90,15 @@ export default function Contact() {
       <main className="flex-1 py-16 px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
             {/* Contact Form */}
             <div>
               <Card className="p-8 bg-white border-gray-200 shadow-lg">
-                <h2 className="text-2xl font-bold mb-6 text-teal-500">
+                <h2 className="text-2xl font-bold mb-6 text-cyan-600">
                   {t.sendMessage}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <Label htmlFor="name" value={t.name} className="text-gray-200" />
+                    <Label htmlFor="name" value={t.name} />
                     <TextInput
                       id="name"
                       name="name"
@@ -74,12 +107,11 @@ export default function Contact() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="bg-white border-gray-300 text-gray-200"
                     />
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="email" value={t.email} className="text-gray-200" />
+                    <Label htmlFor="email" value={t.email} />
                     <TextInput
                       id="email"
                       name="email"
@@ -88,12 +120,11 @@ export default function Contact() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="bg-white border-gray-300 text-gray-200"
                     />
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="phone" value={t.phone} className="text-gray-200" />
+                    <Label htmlFor="phone" value={t.phone} />
                     <TextInput
                       id="phone"
                       name="phone"
@@ -101,12 +132,11 @@ export default function Contact() {
                       placeholder={t.phonePlaceholder}
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="bg-white border-gray-300 text-gray-200"
                     />
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="subject" value={t.subject} className="text-gray-200" />
+                    <Label htmlFor="subject" value={t.subject} />
                     <TextInput
                       id="subject"
                       name="subject"
@@ -115,12 +145,11 @@ export default function Contact() {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      className="bg-white border-gray-300 text-gray-200"
                     />
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="message" value={t.message} className="text-gray-200" />
+                    <Label htmlFor="message" value={t.message} />
                     <Textarea
                       id="message"
                       name="message"
@@ -129,16 +158,17 @@ export default function Contact() {
                       value={formData.message}
                       onChange={handleInputChange}
                       required
-                      className="bg-white border-gray-300 text-gray-200 resize-none"
+                      className="resize-none"
                     />
                   </div>
-                  
-                  <Button 
-                    type="submit" 
-                    size="lg" 
-                    className="w-full bg-teal-700 hover:bg-teal-800 text-white border-teal-700"
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={loading}
+                    className="w-full bg-cyan-500 hover:bg-cyan-600 text-white border-cyan-700 disabled:opacity-60"
                   >
-                    {t.sendButton}
+                    {loading ? t.sending || "Enviando..." : t.sendButton}
                   </Button>
                 </form>
               </Card>
@@ -147,78 +177,72 @@ export default function Contact() {
             {/* Contact Information */}
             <div className="space-y-8">
               <Card className="p-8 bg-white border-gray-200 shadow-lg">
-                <h2 className="text-2xl font-bold mb-6 text-teal-500">
+                <h2 className="text-2xl font-bold mb-6 text-cyan-600">
                   {t.contactInfo}
                 </h2>
                 <div className="space-y-6">
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-teal-600 text-lg">📍</span>
+                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
+                      <Location className="text-cyan-600 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-200">
+                      <h3 className="font-semibold text-gray-600">
                         {t.address}
                       </h3>
-                      <p className="text-gray-200">
-                        {t.addressDetails}
-                      </p>
+                      <p className="text-gray-500">{t.addressDetails}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-teal-600 text-lg">📞</span>
+                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
+                      <Phone className="text-cyan-600 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-200">
+                      <h3 className="font-semibold text-gray-600">
                         {t.phoneContact}
                       </h3>
-                      <p className="text-gray-200">+502 1234-5678</p>
+                      <p className="text-gray-500">+502 5126-9532</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-teal-600 text-lg">✉️</span>
+                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
+                      <Email className="text-cyan-600 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-200">
+                      <h3 className="font-semibold text-gray-600">
                         {t.emailContact}
                       </h3>
-                      <p className="text-gray-200">info@emamusic.com</p>
+                      <p className="text-gray-500">
+                        elidelgado@elliesmusicacademy.com
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-teal-600 text-lg">🕒</span>
+                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
+                      <Clock className="text-cyan-600 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-200">
+                      <h3 className="font-semibold text-gray-600">
                         {t.schedule}
                       </h3>
-                      <p className="text-gray-200">
-                        {t.scheduleDetails}
-                      </p>
-                      <p className="text-gray-200">
-                        {t.scheduleWeekend}
-                      </p>
+                      <p className="text-gray-500">{t.scheduleDetails}</p>
                     </div>
                   </div>
                 </div>
               </Card>
 
               {/* Quick Info Card */}
-              <Card className="p-8 bg-teal-50 border-teal-200 shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-teal-500">
+              <Card className="p-8 bg-cyan-50 border-cyan-200 shadow-lg">
+                <h3 className="text-xl font-bold mb-4 text-cyan-600">
                   {t.quickInfo}
                 </h3>
-                <ul className="space-y-2 text-gray-200">
+                <ul className="space-y-2 text-gray-600">
                   <li>• {t.quickInfo1}</li>
                   <li>• {t.quickInfo2}</li>
                   <li>• {t.quickInfo3}</li>
                   <li>• {t.quickInfo4}</li>
-                  <li>• {t.quickInfo5}</li>
                 </ul>
               </Card>
             </div>
