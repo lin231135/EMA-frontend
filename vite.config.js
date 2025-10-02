@@ -11,5 +11,9 @@ export default defineConfig({
     setupFiles: './src/setupTests.js',
     threads: false,
     pool: 'forks'
-  }
+  },
+  server: {
+    host: true,
+    allowedHosts: ['elliesmusicacademy.com', 'www.elliesmusicacademy.com']
+  },
 });
