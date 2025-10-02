@@ -16,4 +16,9 @@ export default defineConfig({
     host: true,
     allowedHosts: ['elliesmusicacademy.com', 'www.elliesmusicacademy.com']
   },
+  preview: {
+    host: '0.0.0.0',
+    port: 5173,
+    allowedHosts: ['elliesmusicacademy.com', 'www.elliesmusicacademy.com']
+  },
 });
