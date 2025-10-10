@@ -11,3 +11,4 @@ export { default as AdminDashboard } from './admin/AdminDashboard';
 export { default as StudentListReport } from './admin/StudentListReport';
 export { default as AdminPayment } from './admin/AdminPayment';
 export { default as StudentProfile } from './student/StudentProfile';
+export { default as Service } from './Service';

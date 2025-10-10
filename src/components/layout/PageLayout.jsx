@@ -63,7 +63,7 @@ export default function PageLayout({ children, className = "", hideUserMenu = fa
         <NavbarCollapse>
           <NavbarLink href="/" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/')}>{t.home}</NavbarLink>
           <NavbarLink href="/about" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/about')}>{t.about}</NavbarLink>
-          <NavbarLink href="#content" className={'text-gray-500 hover:!text-[#038EFE]'}>{t.services}</NavbarLink>
+          <NavbarLink href="/service" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/service')}>{t.service}</NavbarLink>
           <NavbarLink href="/contact" className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/contact')}>{t.contact}</NavbarLink>
         </NavbarCollapse>
       </FlowbiteNavbar>

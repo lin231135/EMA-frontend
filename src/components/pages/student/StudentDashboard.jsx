@@ -289,8 +289,8 @@ export default function StudentDashboard({
           />
         </ModalBody>
         <ModalFooter>
-          <Button onClick={saveNote}>{editing ? t.modal.saveChanges : t.modal.add}</Button>
-          <Button color="gray" onClick={() => setModalOpen(false)}>{t.modal.cancel}</Button>
+          <Button className="bg-cyan-500 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-300 text-white" onClick={saveNote}>{editing ? t.modal.saveChanges : t.modal.add}</Button>
+          <Button className="bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 text-white" onClick={() => setModalOpen(false)}>{t.modal.cancel}</Button>
         </ModalFooter>
       </Modal>
     </StudentLayout>

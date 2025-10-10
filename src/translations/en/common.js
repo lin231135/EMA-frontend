@@ -18,6 +18,7 @@ const common = {
   home: "Home",
   about: "About",
   services: "Services",
+  service: "Service",
   privacy: "Privacy Policy",
   terms: "Terms of Service",
   copyright: "All rights reserved.",

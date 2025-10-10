@@ -80,7 +80,7 @@ export default function AddClassModal({ open, onClose, onSubmit }) {
         <button
           onClick={onClose}
           aria-label={t.a11y.close || "Close"}
-          className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-black/80 text-white flex items-center justify-center hover:bg-black"
+          className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-red-600 text-white dark:bg-red-600 flex items-center justify-center hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"
         >
           <svg
             className="w-6 h-6 text-white"

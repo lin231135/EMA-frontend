@@ -14,6 +14,7 @@ import StudentListReport from "./components/pages/admin/StudentListReport";
 import ParentCalendar from "./components/pages/parent/ParentCalendar";
 import AdminPayment from "./components/pages/admin/AdminPayment";
 import StudentProfile from "./components/pages/student/StudentProfile";
+import Service from "./components/pages/Service";
 
 export function AppRoutes() {
   return (
@@ -48,6 +49,7 @@ export function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/schedule" element={<Schedule />} />
       <Route path="/preregister" element={<PreRegisterForm />} />
+      <Route path="/service" element={<Service />} />
 
       {/* 404 → home */}
       <Route path="*" element={<Navigate to="/" replace />} />
