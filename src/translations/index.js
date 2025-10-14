@@ -19,6 +19,7 @@ import esParentNavbar from "./es/parent/ParentNavbar";
 import esParentSidebar from "./es/parent/ParentSidebar";
 import esParentCalendar from "./es/parent/ParentCalendar";
 import esCharts from "./es/charts";
+import esService from "./es/service";
 
 import enAbout from "./en/about";
 import enCommon from "./en/common";
@@ -41,6 +42,7 @@ import enParentNavbar from "./en/parent/ParentNavbar";
 import enParentSidebar from "./en/parent/ParentSidebar";
 import enParentCalendar from "./en/parent/ParentCalendar";
 import enCharts from "./en/charts";
+import enService from "./en/service";
 
 const translations = {
   es: {
@@ -65,6 +67,7 @@ const translations = {
     parentSidebar: esParentSidebar,
     parentCalendar: esParentCalendar,
     charts: esCharts,
+    service: esService,
   },
   en: {
     about: enAbout,
@@ -88,6 +91,7 @@ const translations = {
     parentSidebar: enParentSidebar,
     parentCalendar: enParentCalendar,
     charts: enCharts,
+    service: enService,
   },
 };
 
