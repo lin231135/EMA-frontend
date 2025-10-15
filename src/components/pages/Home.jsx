@@ -1,10 +1,18 @@
 import { useAuth } from "../../contexts/AuthContext";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../layout";
 import translations from "../../translations";
 import HeroCarousel from "../ui/HeroCarousel";
+import { Button, Alert } from "flowbite-react";
+
+// librerías para el mapa
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+
+// librerias para sonidos (notas musicales)
+import * as Tone from "tone";
 
 // Ícono personalizado para el marcador
 const markerIcon = new L.Icon({
@@ -16,6 +24,141 @@ const markerIcon = new L.Icon({
 export default function Home() {
   const { lang } = useAuth();
   const t = translations[lang].home;
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
+  const navigate = useNavigate();
+  //sonidos
+  const synthRef = useRef(null);
+  const samplerReadyRef = useRef(false);
+
+  const API_BASE = String(import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+
+  // envio de correo
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.name.trim()) errors.name = "Name is required";
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Invalid email address";
+    }
+    if (!formData.subject.trim()) errors.subject = "Subject is required";
+    if (!formData.message.trim()) errors.message = "Message is required";
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setLoading(true);
+    setAlert(null); // limpia alertas previas
+
+    try {
+      const response = await fetch(`${API_BASE}/join-team`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setAlert({
+          type: "success",
+          message: "Formulario enviado con éxito. Nos pondremos en contacto contigo pronto.",
+        });
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setAlert({
+          type: "error",
+          message: "Error al enviar el formulario, intente más tarde.",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setAlert({
+        type: "error",
+        message: "Error de conexión con el servidor. Intente más tarde.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //efecto notas musicales
+  useEffect(() => {
+    const onUserGesture = async () => {
+      try {
+        await Tone.start();
+
+        // Ambience para sonido más realista
+        const reverb = new Tone.Reverb({ decay: 2.8, wet: 0.25 }).toDestination();
+        const comp = new Tone.Compressor({ threshold: -24, ratio: 3 }).connect(reverb);
+
+        const sampler = new Tone.Sampler({
+          // Más zonas para mejor timbre
+          urls: {
+            A1: "A1.mp3",
+            C2: "C2.mp3",
+            "D#2": "Ds2.mp3",
+            "F#2": "Fs2.mp3",
+            A2: "A2.mp3",
+            C3: "C3.mp3",
+            "D#3": "Ds3.mp3",
+            "F#3": "Fs3.mp3",
+            A3: "A3.mp3",
+            C4: "C4.mp3",
+            "D#4": "Ds4.mp3",
+            "F#4": "Fs4.mp3",
+            A4: "A4.mp3",
+            C5: "C5.mp3",
+            "D#5": "Ds5.mp3",
+            "F#5": "Fs5.mp3",
+            A5: "A5.mp3",
+          },
+          baseUrl: "https://tonejs.github.io/audio/salamander/",
+          attack: 0.003,
+          release: 1.2,
+        });
+
+        sampler.volume.value = -6; // menos duro
+        sampler.connect(comp);
+
+        await sampler.loaded; // espera carga
+        synthRef.current = sampler;
+        samplerReadyRef.current = true;
+      } catch (e) {
+        console.error(e);
+      }
+      window.removeEventListener("pointerdown", onUserGesture);
+    };
+
+    window.addEventListener("pointerdown", onUserGesture, { once: true });
+    return () => window.removeEventListener("pointerdown", onUserGesture);
+  }, []);
+
+  const playCourseNote = (i) => {
+    if (!samplerReadyRef.current || !synthRef.current) return;
+    const notes = ["C5", "D5", "E5", "F5"]; 
+    synthRef.current.triggerAttackRelease(notes[i % notes.length], "8n", undefined, 0.9);
+  };
 
   return (
     <PageLayout>
@@ -74,7 +217,9 @@ export default function Home() {
             <p className="text-gray-600 mb-8 leading-relaxed">
               {t.enrollText}
             </p>
-            <button className="bg-cyan-500 hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+            <button className="bg-cyan-500 hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+              onClick={() => navigate("/service")}
+            >
               {t.viewCoursesButton}
             </button>
           </div>
@@ -107,42 +252,146 @@ export default function Home() {
               { title: "Music Stimulation 2-3 years old", image: "est1.png" },
               { title: "Music Stimulation 4-5 years old", image: "est2.png" },
             ].map((course, index) => (
-              <div key={index} className="group cursor-pointer">
-                <div className="aspect-w-16 aspect-h-9 mb-3">
+              <div
+                key={index}
+                onMouseEnter={() => playCourseNote(index)}
+                className="group h-80 flex flex-col rounded-xl bg-white border border-gray-100 shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-cyan-200"
+              >
+                {/* Imagen = 80% de alto */}
+                <div className="flex-[4] overflow-hidden">
                   <img
                     src={course.image}
                     alt={course.title}
-                    className="w-full h-48 object-cover rounded-lg group-hover:shadow-lg transition-shadow"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                <h4 className="font-semibold text-gray-900 text-center">{course.title}</h4>
+
+                {/* Título = 20% de alto */}
+                <div className="flex-[1] p-4 flex items-center justify-center bg-white">
+                  <h4 className="font-semibold text-gray-900 text-center">{course.title}</h4>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Dirección Interactiva */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      {/* Join Our Team */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Our location</h2>
-          <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
-            <MapContainer
-              center={[14.6173, -90.5222]} // Coordenadas aproximadas de Vista Hermosa 1, Zona 15
-              zoom={16}
-              scrollWheelZoom={false}
-              className="w-full h-full"
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              />
-              <Marker position={[14.6173, -90.5222]} icon={markerIcon}>
-                <Popup>
-                  19 avenida A 4-39, Vista Hermosa 1, Zona 15
-                </Popup>
-              </Marker>
-            </MapContainer>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">
+            Join Our Team
+          </h2>
+          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+            This form is for professional teachers who would like to be part of our academy.
+            Please fill out your information and we will contact you soon.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white rounded-lg shadow-xl overflow-hidden">
+            {/* Mapa */}
+            <div className="w-full h-full min-h-[500px]">
+              <MapContainer
+                center={[14.594403587646779, -90.49196870798745]}
+                zoom={17}
+                scrollWheelZoom={false}
+                className="w-full h-full"
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                />
+                <Marker position={[14.594116, -90.489854]} icon={markerIcon}>
+                  <Popup>
+                    19 Avenida A 4-35, Ciudad de Guatemala <br />
+                    <a
+                      href="https://www.google.com/maps?q=19+Avenida+A+4-39,+Ciudad+de+Guatemala"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      Ver en Google Maps
+                    </a>
+                  </Popup>
+                </Marker>
+              </MapContainer>
+            </div>
+
+            {/* Formulario */}
+            <div className="p-8 flex flex-col items-center justify-center w-full">
+              {/* Alertas dinámicas */}
+              {alert && (
+                <Alert
+                  color={alert.type === "success" ? "success" : "failure"}
+                  onDismiss={() => setAlert(null)}
+                  className="mb-4 w-full"
+                >
+                  <span className="font-medium">
+                    {alert.type === "success" ? "Éxito! " : "Error! "}
+                  </span>
+                  {alert.message}
+                </Alert>
+              )}
+
+              <form className="w-full space-y-6" onSubmit={handleSubmit}>
+                <div>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                  />
+                  {errors?.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                </div>
+
+                <div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter your email"
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                  />
+                  {errors?.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    placeholder="Enter the subject"
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                  />
+                </div>
+
+                <div>
+                  <textarea
+                    rows={4}
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Tell us a bit about your teaching experience..."
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                  ></textarea>
+                  {errors?.message && (
+                    <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  style={{ backgroundColor: "#01A6CC" }}
+                  className="w-1/3 ml-auto block text-white font-semibold py-3 rounded-lg hover:bg-[#018bb0] transition-colors"
+                  isProcessing={loading}
+                >
+                  {loading ? "Sending..." : "Send Application"}
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
       </section>

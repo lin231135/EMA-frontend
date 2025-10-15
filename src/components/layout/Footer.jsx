@@ -37,11 +37,6 @@ export default function AppFooter() {
               />
               <FooterIcon
                 href="#"
-                icon={BsYoutube}
-                className="text-white hover:text-red-200"
-              />
-              <FooterIcon
-                href="#"
                 icon={BsWhatsapp}
                 className="text-white hover:text-green-200"
               />
@@ -78,26 +73,7 @@ export default function AppFooter() {
           </div>
         </div>
 
-        {/* Newsletter debajo del grid */}
-        <div className="mt-12 text-center">
-          <h3 className="text-xl font-semibold mb-4 text-white">
-            {t.newsletterSubscribe}
-          </h3>
-          <form className="flex justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder={t.emailPlaceholder}
-              className="flex-1 rounded-l-lg px-4 py-2 bg-white text-gray-800 placeholder-purple-500 border-0 focus:ring-2 focus:ring-blue-300"
-              required
-            />
-            <button
-              type="submit"
-              className="rounded-r-lg bg-blue-400 hover:bg-blue-500 px-6 py-2 text-white font-medium transition-colors"
-            >
-              {t.subscribe}
-            </button>
-          </form>
-        </div>
+        
       </div>
     </Footer>
   );

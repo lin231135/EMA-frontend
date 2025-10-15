@@ -1,14 +1,26 @@
 // src/components/pages/Contact.jsx
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
-import { Button, Card, Label, TextInput, Textarea } from "flowbite-react";
+import { Button, Card, Label, TextInput, Textarea, Alert } from "flowbite-react";
 import { PageLayout } from "../layout";
 import translations from "../../translations";
 import { Location, Phone, Email, Clock } from "../ui/Icons";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Ícono personalizado para el marcador
+const markerIcon = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+});
+
 
 export default function Contact() {
   const { lang } = useAuth();
   const t = translations[lang].contact;
+  const [alert, setAlert] = useState(null);
 
   // Normaliza la base del API y evita doble slash al concatenar
   const API_BASE = String(import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
@@ -34,6 +46,7 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setAlert(null); // Limpiar alertas previas
 
     // Enviar valores “limpios” (sin espacios a los lados)
     const payload = Object.fromEntries(
@@ -51,22 +64,31 @@ export default function Contact() {
       });
 
       // Si el backend responde 202 { ok: true }, res.ok será true
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Request failed");
+      if (res.ok) {
+        setAlert({
+          type: "success",
+          message: "Mensaje enviado correctamente",
+        });
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        setAlert({
+          type: "error",
+          message: "Ocurrió un error al enviar tu mensaje. Intente más tarde.",
+        });
       }
 
-      alert(t.messageSent || "Mensaje enviado correctamente");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      });
     } catch (err) {
       console.error(err);
-      alert(t.messageError || "Ocurrió un error al enviar tu mensaje.");
+      setAlert({
+        type: "error",
+        message: "Error de conexión con el servidor. Intente más tarde.",
+      });
     } finally {
       setLoading(false);
     }
@@ -93,6 +115,19 @@ export default function Contact() {
             {/* Contact Form */}
             <div>
               <Card className="p-8 bg-white border-gray-200 shadow-lg">
+                {/* Alertas dinámicas */}
+                {alert && (
+                  <Alert
+                    color={alert.type === "success" ? "success" : "failure"}
+                    onDismiss={() => setAlert(null)}
+                    className="mb-4 w-full"
+                  >
+                    <span className="font-medium">
+                      {alert.type === "success" ? "Éxito! " : "Error! "}
+                    </span>
+                    {alert.message}
+                  </Alert>
+                )}
                 <h2 className="text-2xl font-bold mb-6 text-cyan-600">
                   {t.sendMessage}
                 </h2>
@@ -248,6 +283,48 @@ export default function Contact() {
             </div>
           </div>
         </div>
+
+        {/* Dirección Interactiva */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+          <div className="max-w-7xl mx-auto">
+            <Card className="p-8 bg-white border-gray-200 shadow-lg">
+              <h2 className="text-3xl font-bold text-cyan-600 text-center mb-8">
+                {t.locationTitle || "Our Location"}
+              </h2>
+              <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
+                <MapContainer
+                  center={[14.594403587646779, -90.49196870798745]} // coordenadas corregidas
+                  zoom={17}
+                  scrollWheelZoom={false}
+                  className="w-full h-full"
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  />
+                  <Marker
+                    position={[14.594116, -90.489854]}
+                    icon={markerIcon}
+                  >
+                    <Popup>
+                      19 Avenida A 4-35, Ciudad de Guatemala <br />
+                      <a
+                        href="https://www.google.com/maps?q=19+Avenida+A+4-39,+Ciudad+de+Guatemala"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-cyan-600 underline font-semibold"
+                      >
+                        Ver en Google Maps
+                      </a>
+                    </Popup>
+                  </Marker>
+                </MapContainer>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+
       </main>
     </PageLayout>
   );
