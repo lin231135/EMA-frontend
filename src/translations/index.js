@@ -18,6 +18,7 @@ import esParentDashboard from "./es/parent/ParentDashboard";
 import esParentNavbar from "./es/parent/ParentNavbar";
 import esParentSidebar from "./es/parent/ParentSidebar";
 import esParentCalendar from "./es/parent/ParentCalendar";
+import esParentProfileSelect from "./es/parent/ParentProfileSelect";
 import esCharts from "./es/charts";
 import esService from "./es/service";
 
@@ -41,6 +42,7 @@ import enParentDashboard from "./en/parent/ParentDashboard";
 import enParentNavbar from "./en/parent/ParentNavbar";
 import enParentSidebar from "./en/parent/ParentSidebar";
 import enParentCalendar from "./en/parent/ParentCalendar";
+import enParentProfileSelect from "./en/parent/ParentProfileSelect";
 import enCharts from "./en/charts";
 import enService from "./en/service";
 
@@ -66,6 +68,7 @@ const translations = {
     parentNavbar: esParentNavbar,
     parentSidebar: esParentSidebar,
     parentCalendar: esParentCalendar,
+    profiles: esParentProfileSelect.profiles,
     charts: esCharts,
     service: esService,
   },
@@ -90,6 +93,7 @@ const translations = {
     parentNavbar: enParentNavbar,
     parentSidebar: enParentSidebar,
     parentCalendar: enParentCalendar,
+    profiles: enParentProfileSelect.profiles,
     charts: enCharts,
     service: enService,
   },

@@ -15,6 +15,7 @@ import ParentCalendar from "./components/pages/parent/ParentCalendar";
 import AdminPayment from "./components/pages/admin/AdminPayment";
 import StudentProfile from "./components/pages/student/StudentProfile";
 import Service from "./components/pages/Service";
+import ParentProfileSelect from "./components/pages/parent/ParentProfileSelect";
 
 export function AppRoutes() {
   return (
@@ -24,6 +25,7 @@ export function AppRoutes() {
       {/* Parent */}
       <Route path="/parent/ParentCalendar" element={<ParentCalendar />} />
       <Route path="/parent/ParentDashboard" element={<ParentDashboard />} />
+      <Route path="/parent/ParentProfileSelect" element={<ParentProfileSelect />} />
 
       <Route path="/parent/calendar" element={<Navigate to="/parent/ParentCalendar" replace />} />
       <Route path="/parent/dashboard" element={<Navigate to="/parent/ParentDashboard" replace />} />
@@ -34,7 +36,7 @@ export function AppRoutes() {
       <Route path="/admin/AdminPayment" element={<AdminPayment />} />
 
       {/* Student */}
-      <Route path="/student/StudentDashboard" element={<StudentDashboard />} />
+      <Route path="/student/dashboard/:studentId" element={<StudentDashboard />} />
       <Route path="/student/StudentCalendar" element={<StudentCalendar />} />
       <Route path="/student/payments" element={<StudentHistoryPayments />} />
       <Route path="/student/StudentHistoryPayments" element={<StudentHistoryPayments />} />
