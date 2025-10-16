@@ -38,7 +38,7 @@ export const useAuth = () => {
  * URL base del API, obtenida de variables de entorno.
  * Se elimina cualquier slash final para evitar URLs duplicadas.
  */
-const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/+$/, "");
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
 
 /**
  * Decodifica un token JWT y extrae su payload.
@@ -173,7 +173,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, rememberMe = false) => {
     try {
       // Realiza petición de login al backend
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type":"application/json" },
         body: JSON.stringify({ email, password }),
@@ -275,7 +275,7 @@ export const AuthProvider = ({ children }) => {
       if (!token) return false;
       
       // Solicita un nuevo token al backend
-      const res = await fetch(`${API_BASE}/api/auth/refresh`, {
+      const res = await fetch(`${API_BASE}/auth/refresh`, {
         method: "POST",
         headers: {
           "Content-Type":"application/json",
