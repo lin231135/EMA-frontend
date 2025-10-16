@@ -143,10 +143,10 @@ export default function ParentProfileSelect() {
         setErrMsg("");
         
         // Construir URL base desde variable de entorno
-        const base = (import.meta.env.VITE_API_URL?.replace(/\/+$/, "") || "http://localhost:5000");
+        const base = (import.meta.env.VITE_API_URL?.replace(/\/+$/, "") || "http://localhost:5000/api");
         
         // Petición autenticada al endpoint de perfiles
-        const res = await authFetch(`${base}/api/parents/profiles`);
+        const res = await authFetch(`${base}/parents/profiles`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         
         const data = await res.json();

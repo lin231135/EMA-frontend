@@ -16,6 +16,7 @@ import AdminPayment from "./components/pages/admin/AdminPayment";
 import StudentProfile from "./components/pages/student/StudentProfile";
 import Service from "./components/pages/Service";
 import ParentProfileSelect from "./components/pages/parent/ParentProfileSelect";
+import ScrollToTop from "./components/ui/ScrollToTop";
 
 export function AppRoutes() {
   return (
@@ -63,6 +64,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop /> 
         <AppRoutes />
       </Router>
     </AuthProvider>
