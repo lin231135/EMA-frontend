@@ -1,3 +1,4 @@
+// src/translations/en/forms/PaymentForm.js
 export default {
     header: {
       breadcrumb: "Payments >",

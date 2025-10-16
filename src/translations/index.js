@@ -12,7 +12,6 @@ import esStudentHistoryPayment from "./es/student/StudentHistoryPayment";
 import esAddClassModal from "./es/AddClassModal";
 import esStudentDashboard from "./es/student/StudentDashboard";
 import esAdminDashboard from "./es/admin/AdminDashboard";
-import esAdminPayment from "./es/admin/AdminPayment";
 import esStudentProfile from "./es/student/StudentProfile";
 import esParentDashboard from "./es/parent/ParentDashboard";
 import esParentNavbar from "./es/parent/ParentNavbar";
@@ -21,6 +20,7 @@ import esParentCalendar from "./es/parent/ParentCalendar";
 import esParentProfileSelect from "./es/parent/ParentProfileSelect";
 import esCharts from "./es/charts";
 import esService from "./es/service";
+import esPaymentForm from "./es/form/PaymentForm";
 
 import enAbout from "./en/about";
 import enCommon from "./en/common";
@@ -36,7 +36,6 @@ import enStudentHistoryPayment from "./en/student/StudentHistoryPayment";
 import enAddClassModal from "./en/AddClassModal";
 import enStudentDashboard from "./en/student/StudentDashboard";
 import enAdminDashboard from "./en/admin/AdminDashboard"; 
-import enAdminPayment from "./en/admin/AdminPayment";
 import enStudentProfile from "./en/student/StudentProfile";
 import enParentDashboard from "./en/parent/ParentDashboard";
 import enParentNavbar from "./en/parent/ParentNavbar";
@@ -45,6 +44,8 @@ import enParentCalendar from "./en/parent/ParentCalendar";
 import enParentProfileSelect from "./en/parent/ParentProfileSelect";
 import enCharts from "./en/charts";
 import enService from "./en/service";
+import enPaymentForm from "./en/form/PaymentForm";
+
 
 const translations = {
   es: {
@@ -62,7 +63,6 @@ const translations = {
     addClassModal: esAddClassModal,
     studentDashboard: esStudentDashboard,
     adminDashboard: esAdminDashboard,
-    adminPayment: esAdminPayment,
     studentProfile: esStudentProfile,
     parentDashboard: esParentDashboard,
     parentNavbar: esParentNavbar,
@@ -71,6 +71,7 @@ const translations = {
     profiles: esParentProfileSelect.profiles,
     charts: esCharts,
     service: esService,
+    paymentForm: esPaymentForm,
   },
   en: {
     about: enAbout,
@@ -87,7 +88,6 @@ const translations = {
     addClassModal: enAddClassModal,
     studentDashboard: enStudentDashboard,
     adminDashboard: enAdminDashboard,
-    adminPayment: enAdminPayment,
     studentProfile: enStudentProfile,
     parentDashboard: enParentDashboard,
     parentNavbar: enParentNavbar,
@@ -96,6 +96,7 @@ const translations = {
     profiles: enParentProfileSelect.profiles,
     charts: enCharts,
     service: enService,
+    paymentForm: enPaymentForm,
   },
 };
 

@@ -17,6 +17,9 @@ import StudentProfile from "./components/pages/student/StudentProfile";
 import Service from "./components/pages/Service";
 import ParentProfileSelect from "./components/pages/parent/ParentProfileSelect";
 import ScrollToTop from "./components/ui/ScrollToTop";
+import PaymentForm from "./components/forms/PaymentForm";
+import StudentPayment from "./components/pages/student/StudentPayment";
+import ParentPayment from "./components/pages/parent/ParentPayment";
 
 export function AppRoutes() {
   return (
@@ -28,13 +31,14 @@ export function AppRoutes() {
       <Route path="/parent/ParentDashboard" element={<ParentDashboard />} />
       <Route path="/parent/ParentProfileSelect" element={<ParentProfileSelect />} />
 
+      <Route path="/parent/payment" element={<ParentPayment />} />
       <Route path="/parent/calendar" element={<Navigate to="/parent/ParentCalendar" replace />} />
       <Route path="/parent/dashboard" element={<Navigate to="/parent/ParentDashboard" replace />} />
 
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/student-list-report" element={<StudentListReport />} />
-      <Route path="/admin/AdminPayment" element={<AdminPayment />} />
+      <Route path="/admin/payment" element={<AdminPayment />} />
 
       {/* Student */}
       <Route path="/student/dashboard/:studentId" element={<StudentDashboard />} />
@@ -42,6 +46,7 @@ export function AppRoutes() {
       <Route path="/student/payments" element={<StudentHistoryPayments />} />
       <Route path="/student/StudentHistoryPayments" element={<StudentHistoryPayments />} />
       <Route path="/student/StudentProfile" element={<StudentProfile />} />
+      <Route path="/student/payment" element={<StudentPayment />} />
 
       {/* Varios */}
       <Route path="/about" element={<About />} />
@@ -53,6 +58,7 @@ export function AppRoutes() {
       <Route path="/schedule" element={<Schedule />} />
       <Route path="/preregister" element={<PreRegisterForm />} />
       <Route path="/service" element={<Service />} />
+      <Route path="/paymentForm" element={<PaymentForm />} />
 
       {/* 404 → home */}
       <Route path="*" element={<Navigate to="/" replace />} />
