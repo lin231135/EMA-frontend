@@ -1,43 +1,28 @@
-// src/translations/en/forms/PaymentForm.js
+// src/translations/en/form/PaymentForm.js
 export default {
-    header: {
-      breadcrumb: "Payments >",
-      title: "New Payment",
-      back: "Back",
-    },
-    form: {
-      studentName: "Student Name",
-      studentName_ph: "Student name",
-      parentName: "Parent Name",
-      parentName_ph: "Parent name",
-      method: "Payment Method",
-      date: "Payment Date",
-      total: "Total Payment",
-      total_ph: "0000.00",
-      proof: "Proof of Payment",
-      proof_btn: "+ Add .jpg .png .pdf",
-      selected: "Selected:",
-      notes: "Notes",
-      notes_ph: "Add optional information",
-      currencySymbol: "Q",
-    },
-    methodOptions: {
-      cash: "Cash",
-      card: "Card",
-      transfer: "Bank transfer",
-      check: "Check",
-    },
-    statusOptions: {
-      completed: "Completed",
-      pending: "Pending",
-      failed: "Failed",
-    },
-    actions: {
-      cancel: "Cancel",
-      submit: "+ Add New Payment",
-    },
-    alerts: {
-      required:
-        "Please complete Student name, Payment Date and Total Payment.",
-    },
+  header: { breadcrumb: "Payments /", title: "New payment", back: "Back" },
+  form: {
+    currencySymbol: "Q",
+    studentName: "Student",
+    student_select_ph: "Select a student",
+    studentName_ph: "Student name",
+    parentName: "Parent/Guardian",
+    parentName_ph: "Parent or guardian",
+    method: "Payment method",
+    date: "Payment date",
+    total: "Total",
+    total_ph: "0.00",
+    proof: "Proof",
+    proof_btn: "Upload proof",
+    selected: "Selected:",
+    notes: "Notes",
+    notes_ph: "Add a note (optional)",
+  },
+  methodOptions: {
+    transfer: "Bank transfer",
+    cash: "Cash",
+    deposit: "Deposit",
+  },
+  actions: { cancel: "Cancel", submit: "Submit" },
+  alerts: { required: "Please fill in the required fields." },
 };

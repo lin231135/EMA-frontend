@@ -1,21 +1,14 @@
 // src/components/forms/PaymentForm.jsx
-/**
- * Componente reutilizable para gestionar pagos
- * Puede ser usado por Admin, Parent y Student con diferentes contextos
- */
-
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Button, Label, Textarea } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
-import en from "../../translations/en/form/PaymentForm.js";
-import es from "../../translations/es/form/PaymentForm.js";
+
+// i18n directo por archivos
+import en from "../../translations/en/form/PaymentForm";
+import es from "../../translations/es/form/PaymentForm";
+
 import { useAuth } from "../../contexts/AuthContext";
 
-/**
- * Formatea una fecha ISO a formato visual mm / dd / yyyy
- * @param {string} iso - Fecha en formato ISO (YYYY-MM-DD)
- * @returns {string} Fecha formateada o placeholder por defecto
- */
 const fmtDate = (iso) => {
   if (!iso) return "mm / dd / yyyy";
   const d = new Date(iso);
@@ -26,51 +19,50 @@ const fmtDate = (iso) => {
 };
 
 /**
- * PaymentForm - Componente de formulario de pagos reutilizable
- * 
- * @component
- * @param {Object} props - Propiedades del componente
- * @param {Function} props.onSubmit - Callback ejecutado al enviar el formulario (payload) => void
- * @param {Function} props.onCancel - Callback ejecutado al cancelar (opcional)
- * @param {string} props.contextRole - Rol del contexto: "admin" | "parent" | "student" (para logging/telemetría)
- * @param {boolean} props.showHeader - Mostrar u ocultar el encabezado (default: true)
+ * PaymentForm (reutilizable)
+ * Props:
+ * - onSubmit: (payload) => void
+ * - onCancel: () => void
+ * - contextRole: "admin" | "parent" | "student"
+ * - showHeader: boolean
+ * - initialValues: objeto parcial para precargar el form
+ * - readOnlyFields: { studentName?: boolean, parentName?: boolean, total?: boolean }
  */
 export default function PaymentForm({
   onSubmit,
   onCancel,
   contextRole = "admin",
   showHeader = true,
+  initialValues = {},
+  readOnlyFields = {},
 }) {
-  // Hook de navegación para redirigir al usuario
   const navigate = useNavigate();
-  
-  // Obtiene el idioma actual del contexto de autenticación
-  const { lang } = useAuth();
-  
-  // Selecciona las traducciones según el idioma (español o inglés)
+  const { lang, user } = useAuth();
   const t = (lang === "es" ? es : en) ?? en;
 
-  // Referencias para controlar el input de fecha y archivo
   const dateRef = useRef(null);
   const fileRef = useRef(null);
 
-  // Estado del formulario con todos los campos necesarios
-  const [form, setForm] = useState({
-    studentName: "",      // Nombre del estudiante
-    parentName: "",       // Nombre del encargado/padre
-    method: "cash",       // Método de pago (efectivo por defecto)
-    date: "",            // Fecha de pago
-    status: "completed", // Estado del pago
-    currency: t.form.currencySymbol ?? "Q", // Símbolo de moneda
-    total: "",           // Monto total
-    notes: "",           // Notas adicionales
-    proof: null,         // Archivo de comprobante
-  });
+  const defaults = {
+    studentName: "",
+    parentName: "",
+    method: "cash",
+    date: "",
+    status: "completed",
+    currency: t.form.currencySymbol ?? "Q",
+    total: "",
+    notes: "",
+    proof: null,
+  };
 
-  /**
-   * Maneja los cambios en los campos del formulario
-   * Actualiza el estado según el tipo de input (archivo o texto)
-   */
+  const [form, setForm] = useState({ ...defaults, ...initialValues });
+
+  useEffect(() => {
+    // si cambian initialValues por props (p.ej. al cargar deuda)
+    setForm((s) => ({ ...s, ...initialValues }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues.total, initialValues.studentName, initialValues.parentName, initialValues.date]);
+
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
     setForm((s) => ({
@@ -79,34 +71,16 @@ export default function PaymentForm({
     }));
   };
 
-  /**
-   * Maneja el envío del formulario
-   * Valida campos requeridos antes de procesar
-   */
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Validación de campos obligatorios
     if (!form.studentName || !form.date || !form.total) {
       alert(t.alerts.required);
       return;
     }
-    
-    // Construye el payload con los datos del formulario y el contexto
-    const payload = { ...form, contextRole };
-    
-    // Ejecuta el callback onSubmit si existe, sino hace log
-    if (onSubmit) {
-      onSubmit(payload);
-    } else {
-      console.log("[PaymentForm] payload:", payload);
-    }
+    const payload = { ...form, contextRole, userId: user?.id };
+    onSubmit ? onSubmit(payload) : console.log("[PaymentForm] payload:", payload);
   };
 
-  /**
-   * Maneja la cancelación del formulario
-   * Ejecuta onCancel si existe, sino navega hacia atrás
-   */
   const handleCancel = () => {
     if (onCancel) onCancel();
     else navigate(-1);
@@ -114,10 +88,8 @@ export default function PaymentForm({
 
   return (
     <div className="w-full">
-      {/* Encabezado del formulario - opcional según showHeader */}
       {showHeader && (
         <div className="px-6 pt-4 flex items-center justify-between">
-          {/* Título */}
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
             <span className="text-gray-900 dark:text-gray-100">
               {t.header.breadcrumb}{" "}
@@ -125,7 +97,6 @@ export default function PaymentForm({
             {t.header.title}
           </h1>
 
-          {/* Botón de regresar */}
           <Button
             onClick={() => navigate(-1)}
             className="shrink-0 flex items-center gap-2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-300"
@@ -153,12 +124,10 @@ export default function PaymentForm({
         </div>
       )}
 
-      {/* Contenedor principal del formulario */}
       <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900 min-h-[550px]">
         <form onSubmit={handleSubmit} className="w-full">
-          {/* Grid para los campos del formulario */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Campo: Nombre del estudiante */}
+            {/* Student name */}
             <div>
               <label
                 htmlFor="studentName"
@@ -174,6 +143,7 @@ export default function PaymentForm({
                 value={form.studentName}
                 onChange={handleChange}
                 required
+                readOnly={!!readOnlyFields.studentName}
                 className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-2.5 
                   text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
                   dark:border-gray-600 dark:bg-gray-700 dark:text-white 
@@ -181,7 +151,7 @@ export default function PaymentForm({
               />
             </div>
 
-            {/* Campo: Nombre del encargado/padre */}
+            {/* Parent name */}
             <div>
               <label
                 htmlFor="parentName"
@@ -197,6 +167,7 @@ export default function PaymentForm({
                 value={form.parentName}
                 onChange={handleChange}
                 required
+                readOnly={!!readOnlyFields.parentName}
                 className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 p-2.5 
                   text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
                   dark:border-gray-600 dark:bg-gray-700 dark:text-white 
@@ -204,7 +175,7 @@ export default function PaymentForm({
               />
             </div>
 
-            {/* Campo: Método de pago (dropdown) */}
+            {/* Payment method */}
             <div>
               <label
                 htmlFor="paymentMethod"
@@ -216,7 +187,6 @@ export default function PaymentForm({
                 value={t.form.method}
                 className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
               />
-              {/* Select personalizado con icono de dropdown */}
               <div className="relative w-full max-w-xs">
                 <select
                   id="paymentMethod"
@@ -226,9 +196,10 @@ export default function PaymentForm({
                   className="w-full max-w-xs appearance-none rounded-lg bg-cyan-500 px-4 py-3 pr-10 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:bg-cyan-600"
                 >
                   <option value="cash">{t.methodOptions.cash}</option>
+                  <option value="card">{t.methodOptions.card}</option>
                   <option value="transfer">{t.methodOptions.transfer}</option>
+                  <option value="check">{t.methodOptions.check}</option>
                 </select>
-                {/* Icono de flecha para el select */}
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
                   <svg
                     className="h-4 w-4"
@@ -247,7 +218,7 @@ export default function PaymentForm({
               </div>
             </div>
 
-            {/* Fecha de pago */}
+            {/* Payment Date */}
             <div>
               <label
                 htmlFor="paymentDate"
@@ -259,7 +230,6 @@ export default function PaymentForm({
                 value={t.form.date}
                 className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 "
               />
-              {/* Input de fecha oculto  */}
               <input
                 ref={dateRef}
                 type="date"
@@ -292,7 +262,7 @@ export default function PaymentForm({
               </button>
             </div>
 
-            {/* Monto total del pago */}
+            {/* Total Payment */}
             <div>
               <label
                 htmlFor="totalPayment"
@@ -304,9 +274,7 @@ export default function PaymentForm({
                 value={t.form.total}
                 className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
               />
-              {/* Input de monto con icono de moneda */}
               <div className="flex items-stretch max-w-xs">
-                {/* Icono de símbolo de moneda */}
                 <div className="flex h-12 w-12 items-center justify-center rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700">
                   <svg
                     className="w-5 h-5 text-gray-600 dark:text-gray-400"
@@ -326,7 +294,6 @@ export default function PaymentForm({
                     />
                   </svg>
                 </div>
-                {/* Input numérico para el monto */}
                 <input
                   id="total"
                   name="total"
@@ -335,13 +302,14 @@ export default function PaymentForm({
                   placeholder={t.form.total_ph}
                   value={form.total}
                   onChange={handleChange}
+                  readOnly={!!readOnlyFields.total}
                   className="h-12 flex-1 rounded-r-lg border border-gray-300 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
                   required
                 />
               </div>
             </div>
 
-            {/* Comprobante de pago (archivo) */}
+            {/* Proof of Payment */}
             <div>
               <label
                 htmlFor="proofOfPayment"
@@ -353,7 +321,6 @@ export default function PaymentForm({
                 value={t.form.proof}
                 className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
               />
-              {/* Input de archivo oculto */}
               <input
                 ref={fileRef}
                 type="file"
@@ -369,7 +336,6 @@ export default function PaymentForm({
               >
                 {t.form.proof_btn}
               </button>
-              {/* Muestra el nombre del archivo seleccionado */}
               {form.proof && (
                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                   {t.form.selected}{" "}
@@ -378,7 +344,7 @@ export default function PaymentForm({
               )}
             </div>
 
-            {/* Notas adicionales (textarea) */}
+            {/* Notes */}
             <div className="sm:col-span-2">
               <label
                 htmlFor="notes"
@@ -403,9 +369,8 @@ export default function PaymentForm({
             </div>
           </div>
 
-          {/* Botones de acción: Cancelar y Enviar */}
+          {/* Actions */}
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            {/* Botón de cancelar */}
             <Button
               color="failure"
               onClick={handleCancel}
@@ -414,7 +379,6 @@ export default function PaymentForm({
             >
               {t.actions.cancel}
             </Button>
-            {/* Botón de enviar formulario */}
             <Button
               type="submit"
               className="w-full sm:w-auto min-w-[200px] bg-cyan-500 hover:bg-cyan-600 text-white"

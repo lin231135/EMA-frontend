@@ -1,42 +1,28 @@
+// src/translations/es/form/PaymentForm.js
 export default {
-    header: {
-      breadcrumb: "Pagos >",
-      title: "Nuevo Pago",
-      back: "Regresar",
-    },
-    form: {
-      studentName: "Nombre del Estudiante",
-      studentName_ph: "Nombre del estudiante",
-      parentName: "Nombre del Encargado",
-      parentName_ph: "Nombre del encargado",
-      method: "Método de Pago",
-      date: "Fecha de Pago",
-      total: "Pago Total",
-      total_ph: "0000.00",
-      proof: "Comprobante de Pago",
-      proof_btn: "+ Agregar .jpg .png .pdf",
-      selected: "Seleccionado:",
-      notes: "Notas",
-      notes_ph: "Agregar información opcional",
-      currencySymbol: "Q",
-    },
-    methodOptions: {
-      cash: "Efectivo",
-      card: "Tarjeta",
-      transfer: "Transferencia",
-      check: "Cheque",
-    },
-    statusOptions: {
-      completed: "Completado",
-      pending: "Pendiente",
-      failed: "Fallido",
-    },
-    actions: {
-      cancel: "Cancelar",
-      submit: "+ Agregar Nuevo Pago",
-    },
-    alerts: {
-      required:
-        "Por favor completa Nombre del estudiante, Fecha de pago y Pago total.",
-    },
+  header: { breadcrumb: "Pagos /", title: "Nuevo pago", back: "Volver" },
+  form: {
+    currencySymbol: "Q",
+    studentName: "Estudiante",
+    student_select_ph: "Selecciona un estudiante",
+    studentName_ph: "Nombre del estudiante",
+    parentName: "Padre/Encargado",
+    parentName_ph: "Nombre del padre o encargado",
+    method: "Método de pago",
+    date: "Fecha de pago",
+    total: "Total",
+    total_ph: "0.00",
+    proof: "Comprobante",
+    proof_btn: "Subir comprobante",
+    selected: "Seleccionado:",
+    notes: "Notas",
+    notes_ph: "Agregar una nota (opcional)",
+  },
+  methodOptions: {
+    transfer: "Transferencia",
+    cash: "Efectivo",
+    deposit: "Depósito",
+  },
+  actions: { cancel: "Cancelar", submit: "Enviar" },
+  alerts: { required: "Por favor completa los campos obligatorios." },
 };
