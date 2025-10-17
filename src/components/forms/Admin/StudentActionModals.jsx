@@ -1,11 +1,16 @@
 // src/components/forms/Admin/StudentActionModals.jsx
 import { useState } from "react";
-import { deactivateStudent, deleteStudent } from "../../../services/studentsService";
+import { deactivateStudent, reactivateStudent, deleteStudent } from "../../../services/studentsService";
+import { useAuth } from "../../../contexts/AuthContext";
+import translations from "../../../translations";
 
 /**
  * Modal de confirmación para desactivar un estudiante (soft delete)
  */
 export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) {
+  const { lang } = useAuth();
+  const t = translations[lang].studentActionModals.deactivate;
+  
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -52,7 +57,7 @@ export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Desactivar Estudiante
+                {t.title}
               </h3>
             </div>
             <button
@@ -70,28 +75,29 @@ export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
           <div className="p-6 space-y-4">
             {error && (
               <div className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
-                <span className="font-medium">Error:</span> {error}
+                <span className="font-medium">{t.errorLabel}</span> {error}
               </div>
             )}
 
             <div className="text-gray-700 dark:text-gray-300">
               <p className="mb-2">
-                <strong>Estudiante:</strong> {student.name}
+                <strong>{t.studentLabel}</strong> {student.name}
               </p>
               <p className="mb-4 text-sm">
-                Esta acción:
+                {t.confirmQuestion}
+              </p>
+              <p className="mb-4 text-sm">
+                {t.actionTitle}
               </p>
               <ul className="list-disc list-inside text-sm space-y-1 mb-4 text-gray-600 dark:text-gray-400">
-                <li>Marcará la cuenta como inactiva (is_active = false)</li>
-                <li>Cancelará todas sus clases futuras</li>
-                <li>Agregará una nota explicativa</li>
-                <li>NO afectará su estado de solvencia (pagos)</li>
-                <li>El registro NO se eliminará (reversible)</li>
+                {t.actions.map((action, index) => (
+                  <li key={index}>{action}</li>
+                ))}
               </ul>
               
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Razón de desactivación (opcional)
+                  {t.reasonLabel}
                 </label>
                 <textarea
                   value={reason}
@@ -99,11 +105,11 @@ export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
                   disabled={loading}
                   rows="3"
                   maxLength="500"
-                  placeholder="Ej: Estudiante cambió de academia"
+                  placeholder={t.reasonPlaceholder}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-cyan-500 dark:focus:border-cyan-500"
                 ></textarea>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  {reason.length}/500 caracteres
+                  {reason.length}/500 {t.characterCount}
                 </p>
               </div>
             </div>
@@ -116,7 +122,7 @@ export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
               disabled={loading}
               className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:focus:ring-gray-800 disabled:opacity-50"
             >
-              Cancelar
+              {t.cancelButton}
             </button>
             <button
               onClick={handleDeactivate}
@@ -129,7 +135,7 @@ export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               )}
-              {loading ? 'Desactivando...' : 'Desactivar'}
+              {loading ? t.loadingButton : t.confirmButton}
             </button>
           </div>
         </div>
@@ -142,6 +148,9 @@ export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
  * Modal de confirmación doble para eliminar un estudiante permanentemente (hard delete)
  */
 export function DeleteStudentModal({ student, isOpen, onClose, onSuccess }) {
+  const { lang } = useAuth();
+  const t = translations[lang].studentActionModals.delete;
+  
   const [step, setStep] = useState(1); // 1: primera confirmación, 2: segunda confirmación
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -198,7 +207,7 @@ export function DeleteStudentModal({ student, isOpen, onClose, onSuccess }) {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-red-900 dark:text-red-300">
-                {step === 1 ? 'ADVERTENCIA' : 'CONFIRMACIÓN FINAL'}
+                {step === 1 ? t.warningTitle : t.finalConfirmationTitle}
               </h3>
             </div>
             <button
@@ -216,41 +225,39 @@ export function DeleteStudentModal({ student, isOpen, onClose, onSuccess }) {
           <div className="p-6 space-y-4">
             {error && (
               <div className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
-                <span className="font-medium">Error:</span> {error}
+                <span className="font-medium">{t.errorLabel}</span> {error}
               </div>
             )}
 
             {step === 1 ? (
               <div className="text-gray-700 dark:text-gray-300">
                 <p className="mb-2 font-semibold">
-                  ¿Estás seguro de ELIMINAR PERMANENTEMENTE a "{student.name}"?
+                  {t.step1Question.replace('{name}', student.name)}
                 </p>
                 <p className="mb-4 text-sm text-red-600 dark:text-red-400 font-medium">
-                  Esta acción es IRREVERSIBLE y eliminará:
+                  {t.step1WarningMessage}
                 </p>
                 <ul className="list-disc list-inside text-sm space-y-1 mb-4 text-gray-600 dark:text-gray-400">
-                  <li>El registro del estudiante</li>
-                  <li>Todas sus reservas de clases</li>
-                  <li>Todas sus notas</li>
-                  <li>Sus asociaciones con direcciones</li>
-                  <li>Sus referencias en pagos</li>
+                  {t.step1Actions.map((action, index) => (
+                    <li key={index}>{action}</li>
+                  ))}
                 </ul>
                 <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                   <p className="text-sm text-yellow-800 dark:text-yellow-300">
-                    💡 <strong>Recomendación:</strong> En lugar de eliminar, considera <strong>desactivar</strong> el estudiante para mantener el historial.
+                    {t.step1Recommendation}
                   </p>
                 </div>
               </div>
             ) : (
               <div className="text-gray-700 dark:text-gray-300">
                 <p className="mb-4 text-lg font-bold text-red-600 dark:text-red-400">
-                  Esta es tu última oportunidad.
+                  {t.step2Question}
                 </p>
                 <p className="mb-2">
-                  ¿REALMENTE deseas eliminar a <strong>"{student.name}"</strong> PERMANENTEMENTE?
+                  {t.step2FinalQuestion.replace('{name}', student.name)}
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Esta acción no se puede deshacer y toda la información se perderá para siempre.
+                  {t.step2Warning}
                 </p>
               </div>
             )}
@@ -263,14 +270,14 @@ export function DeleteStudentModal({ student, isOpen, onClose, onSuccess }) {
               disabled={loading}
               className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:focus:ring-gray-800 disabled:opacity-50"
             >
-              Cancelar
+              {t.cancelButton}
             </button>
             {step === 1 ? (
               <button
                 onClick={handleFirstConfirm}
                 className="px-5 py-2.5 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 rounded-lg dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
               >
-                Continuar
+                {t.continueButton}
               </button>
             ) : (
               <button
@@ -284,9 +291,149 @@ export function DeleteStudentModal({ student, isOpen, onClose, onSuccess }) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 )}
-                {loading ? 'Eliminando...' : 'Eliminar Permanentemente'}
+                {loading ? t.loadingButton : t.confirmButton}
               </button>
             )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Modal de confirmación para reactivar un estudiante
+ */
+export function ReactivateStudentModal({ student, isOpen, onClose, onSuccess }) {
+  const { lang } = useAuth();
+  const t = translations[lang].studentActionModals.reactivate;
+  
+  const [reason, setReason] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleReactivate = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const result = await reactivateStudent(student.id, reason);
+      
+      if (onSuccess) {
+        onSuccess(result);
+      }
+      
+      onClose();
+      setReason(''); // Limpiar
+    } catch (err) {
+      console.error('Error al reactivar estudiante:', err);
+      setError(err.message || 'Error al reactivar el estudiante');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen || !student) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        onClick={!loading ? onClose : undefined}
+      ></div>
+
+      {/* Modal */}
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+          {/* Header */}
+          <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 mr-3">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {t.title}
+              </h3>
+            </div>
+            <button
+              onClick={onClose}
+              disabled={loading}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
+              </svg>
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6 space-y-4">
+            {error && (
+              <div className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
+                <span className="font-medium">{t.errorLabel}</span> {error}
+              </div>
+            )}
+
+            <div className="text-gray-700 dark:text-gray-300">
+              <p className="mb-2">
+                <strong>{t.studentLabel}</strong> {student.name}
+              </p>
+              <p className="mb-4 text-sm">
+                {t.confirmQuestion}
+              </p>
+              <p className="mb-4 text-sm">
+                {t.actionTitle}
+              </p>
+              <ul className="list-disc list-inside text-sm space-y-1 mb-4 text-gray-600 dark:text-gray-400">
+                {t.actions.map((action, index) => (
+                  <li key={index}>{action}</li>
+                ))}
+              </ul>
+              
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  {t.reasonLabel}
+                </label>
+                <textarea
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  disabled={loading}
+                  rows="3"
+                  maxLength="500"
+                  placeholder={t.reasonPlaceholder}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-cyan-500 dark:focus:border-cyan-500"
+                ></textarea>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  {reason.length}/500 {t.characterCount}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-end gap-3 p-5 border-t border-gray-200 dark:border-gray-700">
+            <button
+              onClick={onClose}
+              disabled={loading}
+              className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:focus:ring-gray-800 disabled:opacity-50"
+            >
+              {t.cancelButton}
+            </button>
+            <button
+              onClick={handleReactivate}
+              disabled={loading}
+              className="px-5 py-2.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 disabled:opacity-50 flex items-center"
+            >
+              {loading && (
+                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              )}
+              {loading ? t.loadingButton : t.confirmButton}
+            </button>
           </div>
         </div>
       </div>

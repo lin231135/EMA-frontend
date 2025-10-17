@@ -104,13 +104,18 @@ export default function StudentFormModal({ mode = 'create', studentData = null, 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     
+    console.log('🔄 Campo cambiado:', { name, value, type, checked });
+    
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
+      const fieldValue = type === 'checkbox' ? checked : value;
+      console.log('📍 Actualizando dirección:', addressField, '=', fieldValue);
+      
       setFormData(prev => ({
         ...prev,
         address: {
           ...prev.address,
-          [addressField]: value
+          [addressField]: fieldValue
         }
       }));
     } else {
@@ -174,7 +179,11 @@ export default function StudentFormModal({ mode = 'create', studentData = null, 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('📝 Formulario enviado. Modo:', mode);
+    console.log('📝 Datos del formulario:', formData);
+    
     if (!validateForm()) {
+      console.error('❌ Validación falló');
       return;
     }
 
@@ -189,15 +198,39 @@ export default function StudentFormModal({ mode = 'create', studentData = null, 
         is_solvent: formData.is_solvent
       };
 
-      // Solo incluir parent_id en modo creación o si cambió en edición
-      if (!isEditMode || formData.parent_id) {
-        dataToSend.parent_id = parseInt(formData.parent_id);
+      // En modo creación, parent_id es OBLIGATORIO
+      if (!isEditMode) {
+        const parentId = parseInt(formData.parent_id);
+        if (isNaN(parentId)) {
+          throw new Error('Parent ID inválido');
+        }
+        dataToSend.parent_id = parentId;
+        console.log('✅ Parent ID agregado (crear):', parentId);
+      } else if (formData.parent_id) {
+        // En modo edición, solo incluir si se proporcionó
+        const parentId = parseInt(formData.parent_id);
+        if (!isNaN(parentId)) {
+          dataToSend.parent_id = parentId;
+          console.log('✅ Parent ID agregado (editar):', parentId);
+        }
       }
 
       // Incluir dirección solo si está habilitada y es modo creación
       if (!isEditMode && formData.includeAddress) {
-        dataToSend.address = formData.address;
+        dataToSend.address = {
+          city: formData.address.city.trim(),
+          apartment: formData.address.apartment.trim(),
+          street_avenue: formData.address.street_avenue.trim(),
+          zone: formData.address.zone.trim(),
+          house_number: formData.address.house_number.trim(),
+          neighborhood: formData.address.neighborhood.trim(),
+          municipality: formData.address.municipality.trim(),
+          is_primary: Boolean(formData.address.is_primary) // Forzar a boolean
+        };
+        console.log('✅ Dirección agregada:', dataToSend.address);
       }
+
+      console.log('📤 Datos finales a enviar:', dataToSend);
 
       let result;
       if (isEditMode) {
@@ -205,6 +238,8 @@ export default function StudentFormModal({ mode = 'create', studentData = null, 
       } else {
         result = await createStudent(dataToSend);
       }
+
+      console.log('✅ Estudiante guardado exitosamente:', result);
 
       // Notificar éxito
       if (onSuccess) {

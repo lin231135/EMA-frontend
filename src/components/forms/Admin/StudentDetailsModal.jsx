@@ -198,7 +198,7 @@ export default function StudentDetailsModal({ studentId, isOpen, onClose }) {
                         <div key={address.id || `address-${index}`} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           {address.is_primary && (
                             <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 mb-2">
-                              Dirección Principal
+                              {t.primaryAddress}
                             </span>
                           )}
                           <p className="text-gray-900 dark:text-white">

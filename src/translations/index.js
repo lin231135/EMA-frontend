@@ -12,6 +12,7 @@ import esStudentHistoryPayment from "./es/student/StudentHistoryPayment";
 import esAddClassModal from "./es/AddClassModal";
 import esStudentDashboard from "./es/student/StudentDashboard";
 import esAdminDashboard from "./es/admin/AdminDashboard";
+import esStudentActionModals from "./es/admin/studentActionModals";
 import esStudentProfile from "./es/student/StudentProfile";
 import esParentDashboard from "./es/parent/ParentDashboard";
 import esParentNavbar from "./es/parent/ParentNavbar";
@@ -36,7 +37,8 @@ import enStudentCalendar from "./en/student/StudentCalendar";
 import enStudentHistoryPayment from "./en/student/StudentHistoryPayment";
 import enAddClassModal from "./en/AddClassModal";
 import enStudentDashboard from "./en/student/StudentDashboard";
-import enAdminDashboard from "./en/admin/AdminDashboard"; 
+import enAdminDashboard from "./en/admin/AdminDashboard";
+import enStudentActionModals from "./en/admin/studentActionModals";
 import enStudentProfile from "./en/student/StudentProfile";
 import enParentDashboard from "./en/parent/ParentDashboard";
 import enParentNavbar from "./en/parent/ParentNavbar";
@@ -65,6 +67,7 @@ const translations = {
     addClassModal: esAddClassModal,
     studentDashboard: esStudentDashboard,
     adminDashboard: esAdminDashboard,
+    studentActionModals: esStudentActionModals,
     studentProfile: esStudentProfile,
     parentDashboard: esParentDashboard,
     parentNavbar: esParentNavbar,
@@ -91,6 +94,7 @@ const translations = {
     addClassModal: enAddClassModal,
     studentDashboard: enStudentDashboard,
     adminDashboard: enAdminDashboard,
+    studentActionModals: enStudentActionModals,
     studentProfile: enStudentProfile,
     parentDashboard: enParentDashboard,
     parentNavbar: enParentNavbar,

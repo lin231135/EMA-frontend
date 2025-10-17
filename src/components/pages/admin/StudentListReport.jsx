@@ -6,7 +6,7 @@ import translations from "../../../translations";
 import { getStudents } from "../../../services/studentsService";
 import StudentDetailsModal from "../../forms/Admin/StudentDetailsModal";
 import StudentFormModal from "../../forms/Admin/StudentFormModal";
-import { DeactivateStudentModal, DeleteStudentModal } from "../../forms/Admin/StudentActionModals";
+import { DeactivateStudentModal, ReactivateStudentModal, DeleteStudentModal } from "../../forms/Admin/StudentActionModals";
 
 export default function StudentListReport() {
   const { lang } = useAuth();
@@ -31,6 +31,7 @@ export default function StudentListReport() {
   const [detailsModal, setDetailsModal] = useState({ isOpen: false, studentId: null });
   const [formModal, setFormModal] = useState({ isOpen: false, mode: 'create', studentData: null });
   const [deactivateModal, setDeactivateModal] = useState({ isOpen: false, student: null });
+  const [reactivateModal, setReactivateModal] = useState({ isOpen: false, student: null });
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, student: null });
 
   // Cargar estudiantes del backend
@@ -83,6 +84,10 @@ export default function StudentListReport() {
 
   const handleOpenDeactivate = (student) => {
     setDeactivateModal({ isOpen: true, student });
+  };
+
+  const handleOpenReactivate = (student) => {
+    setReactivateModal({ isOpen: true, student });
   };
 
   const handleOpenDelete = (student) => {
@@ -450,7 +455,7 @@ export default function StudentListReport() {
                             {/* Botón Ver Detalles */}
                             <button 
                               onClick={() => handleOpenDetails(student.id)}
-                              className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition-colors"
+                              className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition-colors w-24"
                               title={t.view}
                             >
                               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -463,7 +468,7 @@ export default function StudentListReport() {
                             {/* Botón Editar */}
                             <button 
                               onClick={() => handleOpenEditForm(student)}
-                              className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-green-700 bg-green-50 rounded-lg hover:bg-green-100 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 transition-colors"
+                              className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-green-700 bg-green-50 rounded-lg hover:bg-green-100 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 transition-colors w-24"
                               title={t.edit}
                             >
                               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -472,22 +477,35 @@ export default function StudentListReport() {
                               {t.edit}
                             </button>
 
-                            {/* Botón Desactivar */}
-                            <button 
-                              onClick={() => handleOpenDeactivate(student)}
-                              className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-yellow-700 bg-yellow-50 rounded-lg hover:bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800 transition-colors"
-                              title={t.deactivate}
-                            >
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
-                              </svg>
-                              {t.deactivate}
-                            </button>
+                            {/* Botón Desactivar/Activar (cambia según is_active) */}
+                            {student.is_active ? (
+                              <button 
+                                onClick={() => handleOpenDeactivate(student)}
+                                className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-yellow-700 bg-yellow-50 rounded-lg hover:bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800 transition-colors w-28"
+                                title={t.deactivate}
+                              >
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                </svg>
+                                {t.deactivate}
+                              </button>
+                            ) : (
+                              <button 
+                                onClick={() => handleOpenReactivate(student)}
+                                className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-green-700 bg-green-50 rounded-lg hover:bg-green-100 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 transition-colors w-28"
+                                title={t.reactivate}
+                              >
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {t.reactivate}
+                              </button>
+                            )}
 
                             {/* Botón Eliminar */}
                             <button 
                               onClick={() => handleOpenDelete(student)}
-                              className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 transition-colors"
+                              className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800 transition-colors w-24"
                               title={t.delete}
                             >
                               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -587,6 +605,13 @@ export default function StudentListReport() {
           student={deactivateModal.student}
           isOpen={deactivateModal.isOpen}
           onClose={() => setDeactivateModal({ isOpen: false, student: null })}
+          onSuccess={handleModalSuccess}
+        />
+
+        <ReactivateStudentModal
+          student={reactivateModal.student}
+          isOpen={reactivateModal.isOpen}
+          onClose={() => setReactivateModal({ isOpen: false, student: null })}
           onSuccess={handleModalSuccess}
         />
 

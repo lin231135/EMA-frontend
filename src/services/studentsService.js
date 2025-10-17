@@ -76,6 +76,9 @@ export async function getStudentById(studentId) {
  */
 export async function createStudent(studentData) {
   try {
+    console.log('📤 Datos enviados al backend:', studentData);
+    console.log('📤 JSON stringified:', JSON.stringify(studentData, null, 2));
+    
     const response = await fetch(STUDENTS_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -88,7 +91,9 @@ export async function createStudent(studentData) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error || 'Error al crear el estudiante');
+      console.error('❌ Error del backend:', error);
+      console.error('❌ Detalles de validación:', error.details);
+      throw new Error(error.error || error.message || 'Error al crear el estudiante');
     }
 
     return await response.json();
@@ -134,7 +139,7 @@ export async function updateStudent(studentId, studentData) {
 
 /**
  * Desactiva un estudiante (soft delete)
- * Esta acción marca is_solvent=false, cancela clases futuras y agrega una nota
+ * Esta acción marca is_active=false, cancela clases futuras y agrega una nota
  * @param {number} studentId - ID del estudiante
  * @param {string} [reason] - Razón de desactivación (opcional)
  * @returns {Promise<Object>} Resultado de la desactivación
@@ -159,6 +164,38 @@ export async function deactivateStudent(studentId, reason = '') {
     return await response.json();
   } catch (error) {
     console.error(`Error en deactivateStudent(${studentId}):`, error);
+    throw error;
+  }
+}
+
+/**
+ * Reactiva un estudiante previamente desactivado
+ * Esta acción marca is_active=true y agrega una nota explicativa
+ * ℹ️ NO restaura las clases canceladas (deben reprogramarse manualmente)
+ * @param {number} studentId - ID del estudiante
+ * @param {string} [reason] - Razón de reactivación (opcional)
+ * @returns {Promise<Object>} Resultado de la reactivación
+ */
+export async function reactivateStudent(studentId, reason = '') {
+  try {
+    const response = await fetch(`${STUDENTS_ENDPOINT}/${studentId}/reactivate`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        // TODO: Agregar token de autenticación cuando esté disponible
+        // 'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ reason })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Error al reactivar el estudiante');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error en reactivateStudent(${studentId}):`, error);
     throw error;
   }
 }

@@ -66,6 +66,7 @@ export default {
     view: "View",
     edit: "Edit",
     deactivate: "Deactivate",
+    reactivate: "Activate",
     delete: "Delete",
     // Messages
     noStudents: "No students registered.",
@@ -76,6 +77,7 @@ export default {
     personalInfo: "Personal Information",
     parentInfo: "Parent/Guardian Information",
     addresses: "Addresses",
+    primaryAddress: "Primary Address",
     scheduledClasses: "Scheduled Classes",
     notes: "Notes",
     birthDate: "Birth Date",
