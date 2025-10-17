@@ -7,9 +7,11 @@ import ParentNavbar from "./ParentNavbar";
 
 export default function ParentLayout({
   children,
-  kidsFilter,     // { all, daniel, david }  (opcional)
-  onToggleKid,    // (key) => void            (opcional)
-  kidsLabels,     // { daniel, david }        (opcional)
+  kidsFilter,      // { all, ...kidKeys }  (opcional)
+  onToggleKid,     // (key) => void        (opcional)
+  kidsLabels,      // { kid-<id>: name }   (opcional)
+  parentName = "", // nombre del padre logueado (opcional)
+  kidStyles = {},  // NUEVO: estilos por hijo { 'kid-<id>': { bar, ring, text, accent? } }
 }) {
   const navigate = useNavigate();
   const auth = useAuth ? useAuth() : null;
@@ -17,6 +19,7 @@ export default function ParentLayout({
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("ema_parent_sb_collapsed") === "1";
+    // Si nunca se guardó, Sidebar inicia expandido (false)
   });
 
   useEffect(() => {
@@ -38,10 +41,14 @@ export default function ParentLayout({
         kidsFilter={kidsFilter}
         onToggleKid={onToggleKid}
         kidsLabels={kidsLabels}
+        kidStyles={kidStyles}  // <-- pasa los colores por hijo al sidebar
       />
+
       <div className={contentShift}>
-        <ParentNavbar onLogout={logout} />
+        {/* Pasamos parentName al Navbar para que lo muestre */}
+        <ParentNavbar onLogout={logout} parentName={parentName} />
       </div>
+
       <main className={`flex-1 min-w-0 ${contentShift} px-4 sm:px-6 pt-4 pb-8`}>
         {children}
       </main>

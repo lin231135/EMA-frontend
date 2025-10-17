@@ -4,7 +4,14 @@ import { Dropdown, DropdownItem, Avatar } from "flowbite-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
 
-export default function ParentNavbar({ onLogout }) {
+function initialsFromName(name = "") {
+  const parts = name.trim().split(/\s+/);
+  const first = parts[0]?.[0] || "";
+  const last = parts[parts.length - 1]?.[0] || "";
+  return (first + last).toUpperCase();
+}
+
+export default function ParentNavbar({ onLogout, parentName = "" }) {
   const { lang, setLang } = useAuth();
   const t = translations[lang]?.parentNavbar || translations.es.parentNavbar;
 
@@ -13,6 +20,8 @@ export default function ParentNavbar({ onLogout }) {
     es: { label: t.language.spanish, flag: "🇪🇸" },
   };
   const safe = languages[lang] ?? languages.en;
+
+  const displayName = parentName || t.parent; // fallback si aún no cargó
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800">
@@ -37,10 +46,19 @@ export default function ParentNavbar({ onLogout }) {
         </Dropdown>
 
         {/* Profile */}
-        <NavLink to="/profile" className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg px-2 py-1">
-          <Avatar img="" rounded />
+        <NavLink
+          to="/profile"
+          className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg px-2 py-1"
+        >
+          <Avatar
+            img=""
+            rounded
+            placeholderInitials={initialsFromName(displayName)}
+          />
           <div className="hidden sm:flex flex-col leading-tight">
-            <span className="text-sm font-medium text-gray-900 dark:text-white">Oscar Chet</span>
+            <span className="text-sm font-medium text-gray-900 dark:text-white" title={displayName}>
+              {displayName}
+            </span>
             <span className="text-[11px] text-gray-500 dark:text-gray-400">{t.parent}</span>
           </div>
         </NavLink>
