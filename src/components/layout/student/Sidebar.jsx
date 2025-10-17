@@ -16,7 +16,7 @@ const linkCls = (isActive, collapsed) =>
 const items = [
   { to: "/student/dashboard", label: "Dashboard", icon: "grid" },
   { to: "/student/calendar", label: "Calendar", icon: "calendar" },
-  { to: "/student/StudentHistoryPayments", label: "Payment History", icon: "card" },
+  { to: "/student/history-payments", label: "Payment History", icon: "card" },
   { to: "/student/books", label: "Books", icon: "book" },
   { to: "/student/profile", label: "Profile", icon: "user" },
 ];

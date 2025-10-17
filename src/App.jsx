@@ -36,14 +36,14 @@ export function AppRoutes() {
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/student-list-report" element={<StudentListReport />} />
-      <Route path="/admin/payment" element={<AdminPayment />} />
+      <Route path="/admin/payments" element={<AdminPayment />} />
       <Route path="/admin/profile" element={<Profile />} />
 
       {/* Student */}
       <Route path="/student/dashboard/:studentId" element={<StudentDashboard />} />
       <Route path="/student/calendar" element={<StudentCalendar />} />
-      <Route path="/student/payments" element={<StudentHistoryPayments />} />
-      <Route path="/student/StudentHistoryPayments" element={<StudentHistoryPayments />} />
+      {/* <Route path="/student/payments" element={<StudentHistoryPayments />} /> */}
+      <Route path="/student/history-payments" element={<StudentHistoryPayments />} />
       <Route path="/student/payment" element={<StudentPayment />} />
       <Route path="/student/profile" element={<Profile />} />
 
