@@ -28,7 +28,8 @@ const COLOR_PALETTE = [
   { bar: "bg-amber-500", ring: "ring-amber-500", text: "text-amber-600" },
   { bar: "bg-sky-500", ring: "ring-sky-500", text: "text-sky-600" },
 ];
-const colorForIndex = (i) => COLOR_PALETTE[((i ?? 0) + COLOR_PALETTE.length) % COLOR_PALETTE.length];
+const colorForIndex = (i) =>
+  COLOR_PALETTE[((i ?? 0) + COLOR_PALETTE.length) % COLOR_PALETTE.length];
 
 /* ======= helpers UI ======= */
 function SectionTitle({ children, className = "" }) {
@@ -137,7 +138,7 @@ export default function ParentDashboard() {
   };
   const deleteNote = (id) => setNotes((ns) => ns.filter((n) => n.id !== id));
 
-  // Cargar perfil del padre (para mostrar su nombre real)
+  // Cargar perfil del padre
   useEffect(() => {
     let mounted = true;
     async function loadProfile() {
@@ -186,8 +187,8 @@ export default function ParentDashboard() {
         const styles = {};
         kids.forEach((kid, idx) => {
           const key = `kid-${kid.id}`;
-          dynamicFilter[key] = true;
           styles[key] = colorForIndex(idx);
+          dynamicFilter[key] = true;
         });
         setKidsFilter(dynamicFilter);
         setKidStyles(styles);
@@ -204,7 +205,7 @@ export default function ParentDashboard() {
     return () => { isMounted = false; };
   }, [token]);
 
-  // Cargar clases reales (hoy y próximos) una vez tengamos hijos
+  // Cargar clases (hoy + próximas)
   useEffect(() => {
     let alive = true;
     async function loadClasses() {
@@ -222,12 +223,10 @@ export default function ParentDashboard() {
           Authorization: `Bearer ${token}`,
         };
 
-        // Hoy
         const todayRes = await fetch(
           `${API}/parents/dashboard/today-classes?kid_ids=${encodeURIComponent(kidIds)}`,
           { headers }
         );
-        // Próximos 3 días
         const nextRes = await fetch(
           `${API}/parents/dashboard/next-classes?days=3&kid_ids=${encodeURIComponent(kidIds)}`,
           { headers }
@@ -260,7 +259,7 @@ export default function ParentDashboard() {
     return labels;
   }, [children]);
 
-  // Filtro aplicado a clases (según checkboxes)
+  // Filtro aplicado a clases
   const classesTodayFiltered = useMemo(() => {
     if (!classesTodayAll?.length) return [];
     if (kidsFilter.all) return classesTodayAll;
@@ -273,7 +272,6 @@ export default function ParentDashboard() {
     return upcomingAll.filter((c) => kidsFilter[`kid-${c.kid_id}`]);
   }, [upcomingAll, kidsFilter]);
 
-  // Aún sin endpoints de feedback -> estado vacío (sin quemar)
   const feedbackFiltered = [];
 
   return (
@@ -281,6 +279,7 @@ export default function ParentDashboard() {
       kidsFilter={kidsFilter}
       onToggleKid={onToggleKid}
       kidsLabels={kidsLabels}
+      kidStyles={kidStyles}
       parentName={parentName}
     >
       <div className="px-2 sm:px-4 pt-1">
@@ -297,13 +296,15 @@ export default function ParentDashboard() {
       </div>
 
       <div className="px-2 sm:px-4 py-4 grid grid-cols-12 gap-4">
-        {/* Columna izquierda: Clases de Hoy + Próximas (juntas) */}
+        {/* Columna izquierda: Hoy + Próximas */}
         <div className="col-span-12 lg:col-span-3 space-y-4">
           <Card className="h-full pt-0">
-            <SectionTitle className="text-center font-bold text-xl mt-0">{t.todaysClasses}</SectionTitle>
+            <SectionTitle className="text-center font-bold text-xl mt-0">
+              {t.todaysClasses}
+            </SectionTitle>
             <div className="border-b border-gray-200 dark:border-gray-700 mx-2" />
 
-            {/* BLOQUE: Hoy */}
+            {/* HOY */}
             <div className="px-1">
               <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-3 mb-2">
                 {lang === "es" ? "Hoy" : "Today"}
@@ -359,12 +360,11 @@ export default function ParentDashboard() {
                 })}
             </div>
 
-            {/* Separador */}
             <div className="border-t border-gray-200 dark:border-gray-700 my-3 mx-2" />
 
-            {/* BLOQUE: Próximas 3 días */}
+            {/* PRÓXIMAS */}
             <div className="px-1 pb-4">
-              <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-1 mb-2">
+              <p className="text=[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-1 mb-2">
                 {lang === "es" ? "Próximas (3 días)" : "Upcoming (3 days)"}
               </p>
 
@@ -427,7 +427,7 @@ export default function ParentDashboard() {
             <div className="grid grid-cols-12 gap-6">
               {/* Centro */}
               <div className="col-span-12 lg:col-span-8 space-y-6">
-                {/* Hero próximos 3 días (se mantiene el conteo) */}
+                {/* Hero próximos 3 días */}
                 <Card className="relative overflow-hidden cursor-pointer" onClick={() => navigate("/parent/ParentCalendar")}>
                   <div
                     className="absolute inset-0 bg-cover bg-center"
@@ -454,7 +454,7 @@ export default function ParentDashboard() {
                   </div>
                 </Card>
 
-                {/* Resumen de hijos (dinámico, filtrable) */}
+                {/* Resumen de hijos */}
                 <Card>
                   <SectionTitle className="mb-3">
                     {lang === "es" ? "Hijos inscritos" : "Enrolled children"}
@@ -515,7 +515,7 @@ export default function ParentDashboard() {
                   </div>
                 </Card>
 
-                {/* Retroalimentación (vacío por ahora) */}
+                {/* Retroalimentación */}
                 <Card>
                   <SectionTitle>{lang === "es" ? "Retroalimentación de profesores" : "Teacher feedback"}</SectionTitle>
                   {feedbackFiltered.length === 0 && (
@@ -526,7 +526,7 @@ export default function ParentDashboard() {
                 </Card>
               </div>
 
-              {/* Derecha: Anotaciones (local por ahora) */}
+              {/* Derecha: Anotaciones */}
               <div className="col-span-12 lg:col-span-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <SectionTitle className="m-0">{t.notes.title}</SectionTitle>

@@ -17,10 +17,7 @@ const linkCls = (isActive, collapsed) =>
 
 const getItems = (t) => [
   { to: "/parent/ParentDashboard", label: t.dashboard, icon: "grid" },
-  { to: "/parent/ParentCalendar",  label: t.calendar,  icon: "calendar" },
-  // { to: "/parent/PaymentHistory", label: t.paymentHistory, icon: "card" },
-  // { to: "/parent/Books",          label: t.books,           icon: "book" },
-  // { to: "/parent/Account",        label: t.account,         icon: "user" },
+  { to: "/parent/ParentCalendar", label: t.calendar, icon: "calendar" },
 ];
 
 function Icon({ name }) {
@@ -28,12 +25,6 @@ function Icon({ name }) {
     grid: "M4.857 3A1.857 1.857 0 0 0 3 4.857v4.286C3 10.169 3.831 11 4.857 11h4.286A1.857 1.857 0 0 0 11 9.143V4.857A1.857 1.857 0 0 0 9.143 3H4.857Zm10 0A1.857 1.857 0 0 0 13 4.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 9.143V4.857A1.857 1.857 0 0 0 19.143 3h-4.286Zm-10 10A1.857 1.857 0 0 0 3 14.857v4.286C3 20.169 3.831 21 4.857 21h4.286A1.857 1.857 0 0 0 11 19.143v-4.286A1.857 1.857 0 0 0 9.143 13H4.857Zm10 0A1.857 1.857 0 0 0 13 14.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 19.143v-4.286A1.857 1.857 0 0 0 19.143 13h-4.286Z",
     calendar:
       "M5 5a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1 2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a2 2 0 0 1 2-2ZM3 19v-7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm6.01-6a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm-10 4a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z",
-    card:
-      "M4 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm0 6h16v6H4v-6Z M5 14a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2H6a1 1 0 0 1-2-1Zm5 0a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2h-5a1 1 0 0 1-1-1Z",
-    book:
-      "M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z",
-    user:
-      "M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z",
   };
 
   return (
@@ -54,8 +45,8 @@ export default function Sidebar({
   onToggleCollapse,
   kidsFilter,
   onToggleKid,
-  kidsLabels = {},      // { 'kid-<id>': 'Nombre' }
-  kidStyles = {},       // { 'kid-<id>': { bar, ring, text, (opcional accent) } }
+  kidsLabels = {},   // { 'kid-<id>': 'Nombre' }
+  kidStyles = {},    // { 'kid-<id>': { bar, ring, text } }
 }) {
   const { lang } = useAuth();
   const t = translations[lang]?.parentSidebar || translations.es.parentSidebar;
@@ -118,7 +109,9 @@ export default function Sidebar({
       {/* Filtros de hijos (dinámicos y por color) */}
       {!collapsed && kidsFilter && onToggleKid && (
         <div className="mt-4 mx-3 p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">Students</p>
+          <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">
+            {t.students || "Students"}
+          </p>
 
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm">
@@ -130,14 +123,14 @@ export default function Sidebar({
               />
               <span className="inline-flex items-center gap-2">
                 <span className="inline-block w-2.5 h-2.5 rounded-full bg-cyan-500" />
-                All
+                {t.all || "All"}
               </span>
             </label>
 
             {Object.entries(kidsLabels).map(([kidKey, label]) => {
               const style = kidStyles[kidKey] || {};
               const dot = style.bar || "bg-cyan-500";
-              const accent = style.accent || barToAccent(dot);
+              const accent = barToAccent(dot);
               return (
                 <label key={kidKey} className="flex items-center gap-2 text-sm">
                   <input
