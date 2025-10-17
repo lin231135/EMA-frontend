@@ -1,14 +1,10 @@
+// src/components/layout/parent/Sidebar.jsx
 import { NavLink, Link } from "react-router-dom";
 import { Logo } from "../Logo";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
 
-/* ---- Paleta por hijo ---- */
-const KID_STYLES = {
-  daniel: { dot: "bg-violet-500", accent: "accent-violet-500" },
-  david:  { dot: "bg-pink-500",   accent: "accent-pink-500" },
-};
-
+/* Helpers */
 const linkCls = (isActive, collapsed) =>
   [
     "flex items-center rounded-lg text-sm font-medium transition",
@@ -19,10 +15,9 @@ const linkCls = (isActive, collapsed) =>
     collapsed ? "justify-center" : "justify-start",
   ].join(" ");
 
-/* Generar items dinámicamente con traducciones */
 const getItems = (t) => [
   { to: "/parent/ParentDashboard", label: t.dashboard, icon: "grid" },
-  { to: "/parent/ParentCalendar",  label: t.calendar,  icon: "calendar" },
+  { to: "/parent/ParentCalendar", label: t.calendar, icon: "calendar" },
  //{ to: "/parent/PaymentHistory", label: t.paymentHistory, icon: "card" },
  // { to: "/parent/books",          label: t.books,           icon: "book" },
   { to: "/parent/profile",        label: t.profile,         icon: "user" },
@@ -33,12 +28,6 @@ function Icon({ name }) {
     grid: "M4.857 3A1.857 1.857 0 0 0 3 4.857v4.286C3 10.169 3.831 11 4.857 11h4.286A1.857 1.857 0 0 0 11 9.143V4.857A1.857 1.857 0 0 0 9.143 3H4.857Zm10 0A1.857 1.857 0 0 0 13 4.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 9.143V4.857A1.857 1.857 0 0 0 19.143 3h-4.286Zm-10 10A1.857 1.857 0 0 0 3 14.857v4.286C3 20.169 3.831 21 4.857 21h4.286A1.857 1.857 0 0 0 11 19.143v-4.286A1.857 1.857 0 0 0 9.143 13H4.857Zm10 0A1.857 1.857 0 0 0 13 14.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 19.143v-4.286A1.857 1.857 0 0 0 19.143 13h-4.286Z",
     calendar:
       "M5 5a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1 2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a2 2 0 0 1 2-2ZM3 19v-7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm6.01-6a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm-10 4a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z",
-    card:
-      "M4 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm0 6h16v6H4v-6Z M5 14a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Zm5 0a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2h-5a1 1 0 0 1-1-1Z",
-    book:
-      "M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z",
-    user:
-      "M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z",
   };
 
   return (
@@ -48,16 +37,24 @@ function Icon({ name }) {
   );
 }
 
+/* Convierte 'bg-violet-500' -> 'accent-violet-500' para el checkbox */
+const barToAccent = (barClass) =>
+  typeof barClass === "string" && barClass.startsWith("bg-")
+    ? barClass.replace(/^bg-/, "accent-")
+    : "accent-cyan-500";
+
 export default function Sidebar({
   collapsed,
   onToggleCollapse,
   kidsFilter,
   onToggleKid,
-  kidsLabels = { daniel: "Daniel Chet", david: "David Chet" },
+  kidsLabels = {},   // { 'kid-<id>': 'Nombre' }
+  kidStyles = {},    // { 'kid-<id>': { bar, ring, text } }
 }) {
   const { lang } = useAuth();
   const t = translations[lang]?.parentSidebar || translations.es.parentSidebar;
   const items = getItems(t);
+
   return (
     <aside
       className={[
@@ -112,50 +109,46 @@ export default function Sidebar({
         </ul>
       </nav>
 
-      {/* Filtros de hijos */}
+      {/* Filtros de hijos (dinámicos y por color) */}
       {!collapsed && kidsFilter && onToggleKid && (
         <div className="mt-4 mx-3 p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">Students</p>
+          <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">
+            {t.students || "Students"}
+          </p>
 
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
                 className="accent-cyan-500"
-                checked={kidsFilter.all}
+                checked={!!kidsFilter.all}
                 onChange={() => onToggleKid("all")}
               />
               <span className="inline-flex items-center gap-2">
                 <span className="inline-block w-2.5 h-2.5 rounded-full bg-cyan-500" />
-                All
+                {t.all || "All"}
               </span>
             </label>
 
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                className={KID_STYLES.daniel.accent}
-                checked={kidsFilter.daniel}
-                onChange={() => onToggleKid("daniel")}
-              />
-              <span className="inline-flex items-center gap-2">
-                <span className={`inline-block w-2.5 h-2.5 rounded-full ${KID_STYLES.daniel.dot}`} />
-                {kidsLabels.daniel}
-              </span>
-            </label>
-
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                className={KID_STYLES.david.accent}
-                checked={kidsFilter.david}
-                onChange={() => onToggleKid("david")}
-              />
-              <span className="inline-flex items-center gap-2">
-                <span className={`inline-block w-2.5 h-2.5 rounded-full ${KID_STYLES.david.dot}`} />
-                {kidsLabels.david}
-              </span>
-            </label>
+            {Object.entries(kidsLabels).map(([kidKey, label]) => {
+              const style = kidStyles[kidKey] || {};
+              const dot = style.bar || "bg-cyan-500";
+              const accent = barToAccent(dot);
+              return (
+                <label key={kidKey} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className={accent}
+                    checked={!!kidsFilter[kidKey]}
+                    onChange={() => onToggleKid(kidKey)}
+                  />
+                  <span className="inline-flex items-center gap-2">
+                    <span className={`inline-block w-2.5 h-2.5 rounded-full ${dot}`} />
+                    {label}
+                  </span>
+                </label>
+              );
+            })}
           </div>
         </div>
       )}
