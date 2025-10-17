@@ -182,7 +182,7 @@ export default function Home() {
           {/* Image first */}
           <div className="md:w-1/2">
             <img
-              src="fotoPiano2.jpg"
+              src="Service/Piano/fotoPiano2.jpg"
               alt="Children learning music"
               className="rounded-lg shadow-lg w-full object-cover"
             />
@@ -227,7 +227,7 @@ export default function Home() {
           {/* Imagen */}
           <div className="md:w-1/2">
             <img
-              src="fotoPiano.jpg"
+              src="Service/Piano/fotoPiano.jpg"
               alt="Niños aprendiendo música"
               className="rounded-lg shadow-lg w-full object-cover"
             />
@@ -247,10 +247,10 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Singing Class", image: "canto.png" },
-              { title: "Piano", image: "piano.png" },
-              { title: "Music Stimulation 2-3 years old", image: "est1.png" },
-              { title: "Music Stimulation 4-5 years old", image: "est2.png" },
+              { title: "Singing Class", image: "Service/Canto/canto.png" },
+              { title: "Piano", image: "Service/Piano/fotoPiano5.jpg" },
+              { title: "Music Stimulation 2-3 years old", image: "Service/EstMusical/Est1.jpg" },
+              { title: "Music Stimulation 4-5 years old", image: "Service/EstMusical/Est2.jpg" },
             ].map((course, index) => (
               <div
                 key={index}
