@@ -4,7 +4,7 @@ export default {
   calendar: "Calendar", 
   paymentHistory: "Payment History",
   books: "Books",
-  account: "Account",
+  profile: "Profile",
   settings: "Settings",
   logout: "Logout",
 };

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { LoginForm } from "./components/forms";
 import Register from "./components/pages/Register";
-import { Home, About, Profile, Settings, Contact } from "./components/pages";
+import { Home, About, Settings, Contact } from "./components/pages";
 import Schedule from "./components/pages/Schedule";
 import { AuthProvider } from "./contexts/AuthContext";
 import PreRegisterForm from "./components/forms/PreRegisterForm";
@@ -13,7 +13,7 @@ import AdminDashboard from "./components/pages/admin/AdminDashboard";
 import StudentListReport from "./components/pages/admin/StudentListReport";
 import ParentCalendar from "./components/pages/parent/ParentCalendar";
 import AdminPayment from "./components/pages/admin/AdminPayment";
-import StudentProfile from "./components/pages/student/StudentProfile";
+import Profile from "./components/pages/app/Profile";
 import Service from "./components/pages/Service";
 import ParentProfileSelect from "./components/pages/parent/ParentProfileSelect";
 import ScrollToTop from "./components/ui/ScrollToTop";
@@ -27,31 +27,29 @@ export function AppRoutes() {
       <Route path="/" element={<Home />} />
 
       {/* Parent */}
-      <Route path="/parent/ParentCalendar" element={<ParentCalendar />} />
-      <Route path="/parent/ParentDashboard" element={<ParentDashboard />} />
       <Route path="/parent/ParentProfileSelect" element={<ParentProfileSelect />} />
-
+      <Route path="/parent/dashboard" element={<ParentDashboard />} />
       <Route path="/parent/payment" element={<ParentPayment />} />
-      <Route path="/parent/calendar" element={<Navigate to="/parent/ParentCalendar" replace />} />
-      <Route path="/parent/dashboard" element={<Navigate to="/parent/ParentDashboard" replace />} />
+      <Route path="/parent/calendar" element={<ParentCalendar />} />
+      <Route path="/parent/profile" element={<Profile />} />
 
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/student-list-report" element={<StudentListReport />} />
       <Route path="/admin/payment" element={<AdminPayment />} />
+      <Route path="/admin/profile" element={<Profile />} />
 
       {/* Student */}
       <Route path="/student/dashboard/:studentId" element={<StudentDashboard />} />
-      <Route path="/student/StudentCalendar" element={<StudentCalendar />} />
+      <Route path="/student/calendar" element={<StudentCalendar />} />
       <Route path="/student/payments" element={<StudentHistoryPayments />} />
       <Route path="/student/StudentHistoryPayments" element={<StudentHistoryPayments />} />
-      <Route path="/student/StudentProfile" element={<StudentProfile />} />
       <Route path="/student/payment" element={<StudentPayment />} />
+      <Route path="/student/profile" element={<Profile />} />
 
       {/* Varios */}
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/profile" element={<Profile />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<Register />} />

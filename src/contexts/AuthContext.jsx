@@ -184,8 +184,11 @@ export const AuthProvider = ({ children }) => {
 
       // Guarda en localStorage (persistente) o sessionStorage (temporal)
       const storage = rememberMe ? localStorage : sessionStorage;
+      const other   = rememberMe ? sessionStorage : localStorage;
       storage.setItem("token", data.token);
       storage.setItem("user", JSON.stringify(data.user));
+      other.removeItem("token");// Limpia el otro storage para borrar sesiones antiguas
+      other.removeItem("user");
 
       // Actualiza el estado de la aplicación
       setToken(data.token);

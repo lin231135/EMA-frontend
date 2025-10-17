@@ -19,7 +19,7 @@ const items = [
   { to: "/admin/payments", label: "Payments", icon: "card" },
   { to: "/admin/books", label: "Books", icon: "book" },
   { to: "/admin/student-list-report", label: "Student List Report", icon: "report" },
-  { to: "/admin/account", label: "Account", icon: "user" },
+  { to: "/admin/profile", label: "Profile", icon: "user" },
 ];
 
 function Icon({ name }) {

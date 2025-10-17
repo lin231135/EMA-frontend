@@ -4,7 +4,7 @@ export default {
   calendar: "Calendario",
   paymentHistory: "Historial de Pagos",
   books: "Libros",
-  account: "Cuenta",
+  profile: "Perfil",
   settings: "Configuración",
   logout: "Cerrar Sesión",
 };

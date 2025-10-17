@@ -23,9 +23,9 @@ const linkCls = (isActive, collapsed) =>
 const getItems = (t) => [
   { to: "/parent/ParentDashboard", label: t.dashboard, icon: "grid" },
   { to: "/parent/ParentCalendar",  label: t.calendar,  icon: "calendar" },
-  // { to: "/parent/PaymentHistory", label: t.paymentHistory, icon: "card" },
-  // { to: "/parent/Books",          label: t.books,           icon: "book" },
-  // { to: "/parent/Account",        label: t.account,         icon: "user" },
+ //{ to: "/parent/PaymentHistory", label: t.paymentHistory, icon: "card" },
+ // { to: "/parent/books",          label: t.books,           icon: "book" },
+  { to: "/parent/profile",        label: t.profile,         icon: "user" },
 ];
 
 function Icon({ name }) {

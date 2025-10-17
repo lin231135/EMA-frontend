@@ -3,5 +3,5 @@ export { Dropdown, DropdownButton, DropdownMenu, DropdownItem, DropdownLabel, Dr
 export { UserIcon, CogIcon, LogoutIcon, LoginIcon, RegisterIcon } from './Icons';
 export { default as TestimonialCard } from './TestimonialCard';
 export { default as RecitalCard } from './RecitalCard';
-export { default as AddressModalProfile } from './student/AddressModalProfile';
-export { default as PersonalInfoModalProfile } from './student/PersonalInfoModalProfile';
+export { default as AddressModalProfile } from './modalProfile/AddressModalProfile';
+export { default as PersonalInfoModalProfile } from './modalProfile/PersonalInfoModalProfile';

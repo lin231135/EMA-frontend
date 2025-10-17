@@ -19,7 +19,7 @@ const Login = () => {
   // Hooks de contexto y navegación
   const { lang, login } = useAuth();
   const t = translations[lang].login; // Traducciones según el idioma activo
-  
+
   // Estado para los campos de email y contraseña
   const [credentials, setCredentials] = useState({
     email: '',
@@ -30,14 +30,14 @@ const Login = () => {
 
   // Estado para el checkbox "Recordar sesión" (localStorage vs sessionStorage)
   const [rememberMe, setRememberMe] = useState(false);
-  
+
   // Estado para mostrar mensajes de error en el formulario
   const [error, setError] = useState('');
 
   // Estado para controlar la visibilidad del popup de restablecimiento de contraseña
   const [showResetPopup, setShowResetPopup] = useState(false);
   console.log('showResetPopup:', showResetPopup);
-  
+
   // Estado para detectar si es el primer login del usuario (requiere cambio de contraseña)
   const [isFirstLogin, setIsFirstLogin] = useState(false);
 
@@ -62,59 +62,66 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación: campos obligatorios
     if (!credentials.email || !credentials.password) {
       setError(t.errorAllFields);
       return;
     }
 
-    // Validación: formato de email
     if (!/^\S+@\S+\.\S+$/.test(credentials.email)) {
       setError(t.errorInvalidEmail);
       return;
     }
 
     try {
-      // Petición al backend para autenticar al usuario
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-      });
+      // Usa directamente el login del contexto
+      const { ok, data, error } = await login(
+        credentials.email,
+        credentials.password,
+        rememberMe
+      );
 
-      const data = await response.json();
-
-      // Manejo de respuesta del servidor
-      if (!response.ok) {
-        throw new Error(data.message || t.errorLogin);
-      }
-      
-      // Usar el contexto de autenticación para almacenar el token y usuario
-      login(data.user, data.token, rememberMe);
-      const { ok, error } = await login(credentials.email, credentials.password, rememberMe);
       if (!ok) throw new Error(error || t.errorLogin);
 
-      // Verifica si es el primer acceso del usuario (requiere cambio de contraseña)
-      const isFirst = data.user.is_first_login || false;
+      const user = data.user;
+      const isFirst = user.is_first_login || false;
 
       if (isFirst) {
-        // Si es primer login, mostrar popup para cambiar contraseña
+        // si es el primer login, mostrar popup de cambio de contraseña
         setIsFirstLogin(true);
         setShowResetPopup(true);
-      } else {
-        // Login exitoso, redirigir a selección de perfiles
-        alert(t.welcomeMessage.replace('{name}', data.user.name));
-        navigate('/parent/ParentProfileSelect');
+        return;
       }
 
-      setError(''); // Limpiar errores previos
+      // mensaje de bienvenida, hay que actualizarlo por un
+      // alert de flowbite o similar
+      alert(t.welcomeMessage.replace("{name}", user.name));
+
+      // Redirección según el rol
+      switch (user.role) {
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        case "padre":
+          navigate("/parent/ParentProfileSelect");
+          break;
+        case "estudiante":
+          navigate(`/student/dashboard/${user.id}`);
+          break;
+        case "maestro":
+          navigate(`/teacher/dashboard/${user.id}`);
+          break;
+        default:
+          navigate("/");
+          break;
+      }
+
+      setError("");
     } catch (err) {
-      console.error('Error al iniciar sesión:', err.message);
+      console.error("Error al iniciar sesión:", err);
       setError(err.message);
     }
   };
+
 
   /**
    * Maneja la actualización de contraseña del usuario
@@ -171,7 +178,7 @@ const Login = () => {
             {/* Columna derecha: Formulario de login */}
             <div className="flex-[1.2] flex items-center justify-center">
               <div className="flex-1 min-h-[400px] bg-white p-12 shadow-2xl flex flex-col justify-center rounded-lg">
-                
+
                 {/* Sección de encabezado: Logo y título */}
                 <div className="text-center mb-6">
                   {/* Logo de Ellie's Music Academy */}
@@ -182,7 +189,7 @@ const Login = () => {
                       className="w-30 h-30 object-contain"
                     />
                   </div>
-                  
+
                   {/* Título del formulario */}
                   <h2 className="text-center text-2xl lg:text-3xl font-extrabold text-gray-900">
                     {t.title}
@@ -198,7 +205,7 @@ const Login = () => {
 
                 {/* Formulario principal de inicio de sesión */}
                 <form className="space-y-4" onSubmit={handleSubmit}>
-                  
+
                   {/* Campo de entrada: Email */}
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900">

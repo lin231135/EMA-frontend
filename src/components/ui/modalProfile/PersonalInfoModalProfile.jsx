@@ -14,11 +14,15 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
   };
 
   const initial = splitPhone(user?.phone);
+  const [name, setName] = useState(user?.name || "");
+  const [lastName, setLastName] = useState(user?.lastName || "");
   const [email, setEmail] = useState(user?.email || "");
   const [code, setCode] = useState(initial.code);
   const [num, setNum] = useState(initial.num);
 
   useEffect(() => {
+    setName(user?.name || "");
+    setLastName(user?.lastName || "");
     setEmail(user?.email || "");
     const s = splitPhone(user?.phone);
     setCode(s.code);
@@ -40,6 +44,8 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit?.({
+      name: name.trim(),
+      lastName: lastName.trim(),
       email: email.trim(),
       phone: `${code} ${num}`.trim(),
     });
@@ -85,12 +91,28 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
           {/* Nombre / Apellido  */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">{t.fields.name}</p>
-              <p className="text-gray-900 dark:text-gray-100">{user?.name || "—"}</p>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t.fields.name}
+              </label>
+              <input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:bg-gray-700 dark:text-white"
+              />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">{t.fields.lastName}</p>
-              <p className="text-gray-900 dark:text-gray-100">{user?.lastName || "—"}</p>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t.fields.lastName}
+              </label>
+              <input
+                id="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:bg-gray-700 dark:text-white"
+              />
             </div>
           </div>
 
