@@ -1,6 +1,6 @@
 // src/components/forms/Admin/StudentActionModals.jsx
 import { useState } from "react";
-import { deactivateStudent, reactivateStudent, deleteStudent } from "../../../services/studentsService";
+import { deactivateStudent, reactivateStudent, deleteStudent } from "../../../services/admin/adminStudentsService";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
 
@@ -28,7 +28,6 @@ export function DeactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
       onClose();
       setReason(''); // Limpiar
     } catch (err) {
-      console.error('Error al desactivar estudiante:', err);
       setError(err.message || 'Error al desactivar el estudiante');
     } finally {
       setLoading(false);
@@ -172,7 +171,6 @@ export function DeleteStudentModal({ student, isOpen, onClose, onSuccess }) {
       
       handleClose();
     } catch (err) {
-      console.error('Error al eliminar estudiante:', err);
       setError(err.message || 'Error al eliminar el estudiante');
     } finally {
       setLoading(false);
@@ -325,7 +323,6 @@ export function ReactivateStudentModal({ student, isOpen, onClose, onSuccess }) 
       onClose();
       setReason(''); // Limpiar
     } catch (err) {
-      console.error('Error al reactivar estudiante:', err);
       setError(err.message || 'Error al reactivar el estudiante');
     } finally {
       setLoading(false);

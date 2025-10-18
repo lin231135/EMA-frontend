@@ -10,4 +10,5 @@ export { default as StudentHistoryPayments } from './student/StudentHistoryPayme
 export { default as AdminDashboard } from './admin/AdminDashboard';
 export { default as StudentListReport } from './admin/StudentListReport';
 export { default as AdminPayment } from './admin/AdminPayment';
+export { default as AdminPaymentsManagement } from './admin/AdminPaymentsManagement';
 export { default as Service } from './Service';

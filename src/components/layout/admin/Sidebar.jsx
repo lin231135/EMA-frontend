@@ -3,6 +3,7 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { Logo } from "../Logo";
 import { useAuth } from "../../../contexts/AuthContext";
+import translations from "../../../translations";
 
 const linkCls = (isActive, collapsed) =>
   [
@@ -13,14 +14,6 @@ const linkCls = (isActive, collapsed) =>
       : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700",
     collapsed ? "justify-center" : "justify-start",
   ].join(" ");
-
-const items = [
-  { to: "/admin/dashboard", label: "Dashboard", icon: "grid" },
-  { to: "/admin/payments", label: "Payments", icon: "card" },
-  { to: "/admin/books", label: "Books", icon: "book" },
-  { to: "/admin/student-list-report", label: "Student List Report", icon: "report" },
-  { to: "/admin/profile", label: "Profile", icon: "user" },
-];
 
 function Icon({ name }) {
   const pathMap = {
@@ -45,6 +38,16 @@ function Icon({ name }) {
 export default function AdminSidebar({ collapsed, onToggleCollapse }) {
   const navigate = useNavigate();
   const auth = useAuth ? useAuth() : null;
+  const { lang } = auth || { lang: "es" };
+  const t = translations[lang].adminDashboard.adminSidebar;
+
+  const items = [
+    { to: "/admin/dashboard", label: t.dashboard, icon: "grid" },
+    { to: "/admin/payments", label: t.paymentsManagement, icon: "card" },
+    { to: "/admin/books", label: t.books, icon: "book" },
+    { to: "/admin/student-list-report", label: t.studentListReport, icon: "report" },
+    { to: "/admin/profile", label: t.profile, icon: "user" },
+  ];
 
   return (
     // Sidebar fijo a la izquierda, sobre el navbar 
@@ -109,14 +112,14 @@ export default function AdminSidebar({ collapsed, onToggleCollapse }) {
         <NavLink
           to="/admin/settings"
           className={({ isActive }) => linkCls(isActive, collapsed)}
-          title={collapsed ? "Settings" : undefined}
+          title={collapsed ? t.settings : undefined}
         >
           <span className="me-2 flex-shrink-0">
             <svg className="w-5 h-5 text-gray-400 dark:text-gray-400" viewBox="0 0 24 24" fill="currentColor">
               <path d="M9.586 2.586A2 2 0 0 1 11 2h2a2 2 0 0 1 2 2v.089l.473.196.063-.063a2 2 0 0 1 2.828 0l1.414 1.414a2 2 0 0 1 0 2.827l-.063.064.196.473H20a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-.089l-.196.473.063.063a2 2 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0l-.063-.063-.473.196V20a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-.089l-.473-.196-.063.063a2.002 2.002 0 0 1-2.828 0l-1.414-1.414a2 2 0 0 1 0-2.827l.063-.064L4.089 15H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.09l.195-.473-.063-.063a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.827 0l.064.063L9 4.089V4a2 2 0 0 1 .586-1.414Z" />
             </svg>
           </span>
-          <span className={collapsed ? "hidden" : "ms-1 truncate"}>Settings</span>
+          <span className={collapsed ? "hidden" : "ms-1 truncate"}>{t.settings}</span>
         </NavLink>
         <button
           onClick={() => {
@@ -124,14 +127,14 @@ export default function AdminSidebar({ collapsed, onToggleCollapse }) {
             navigate("/login");
           }}
           className={linkCls(false, collapsed)}
-          title={collapsed ? "Logout" : undefined}
+          title={collapsed ? t.logout : undefined}
         >
           <span className="me-2 flex-shrink-0">
             <svg className="w-5 h-5 text-gray-400 dark:text-gray-400" viewBox="0 0 24 24" fill="none">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
             </svg>
           </span>
-          <span className={collapsed ? "hidden" : "ms-1 truncate"}>Logout</span>
+          <span className={collapsed ? "hidden" : "ms-1 truncate"}>{t.logout}</span>
         </button>
       </div>
     </aside>

@@ -13,6 +13,7 @@ import AdminDashboard from "./components/pages/admin/AdminDashboard";
 import StudentListReport from "./components/pages/admin/StudentListReport";
 import ParentCalendar from "./components/pages/parent/ParentCalendar";
 import AdminPayment from "./components/pages/admin/AdminPayment";
+import AdminPaymentsManagement from "./components/pages/admin/AdminPaymentsManagement";
 import Profile from "./components/pages/app/Profile";
 import Service from "./components/pages/Service";
 import ParentProfileSelect from "./components/pages/parent/ParentProfileSelect";
@@ -36,7 +37,8 @@ export function AppRoutes() {
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/student-list-report" element={<StudentListReport />} />
-      <Route path="/admin/payments" element={<AdminPayment />} />
+      <Route path="/admin/payments" element={<AdminPaymentsManagement />} />
+      <Route path="/admin/payments/create" element={<AdminPayment />} />
       <Route path="/admin/profile" element={<Profile />} />
 
       {/* Student */}

@@ -1,6 +1,6 @@
 // src/components/forms/Admin/StudentFormModal.jsx
 import { useState, useEffect } from "react";
-import { createStudent, updateStudent, getAvailableParents } from "../../../services/studentsService";
+import { createStudent, updateStudent, getAvailableParents } from "../../../services/admin/adminStudentsService";
 
 /**
  * Modal con formulario para crear o editar un estudiante
@@ -72,7 +72,6 @@ export default function StudentFormModal({ mode = 'create', studentData = null, 
       const data = await getAvailableParents();
       setParents(data);
     } catch (err) {
-      console.error('Error al cargar padres:', err);
       // Continuar aunque falle
     } finally {
       setLoadingParents(false);
@@ -183,7 +182,6 @@ export default function StudentFormModal({ mode = 'create', studentData = null, 
     console.log('📝 Datos del formulario:', formData);
     
     if (!validateForm()) {
-      console.error('❌ Validación falló');
       return;
     }
 
@@ -249,7 +247,6 @@ export default function StudentFormModal({ mode = 'create', studentData = null, 
       // Cerrar modal
       onClose();
     } catch (err) {
-      console.error('Error al guardar estudiante:', err);
       setError(err.message || 'Error al guardar el estudiante');
     } finally {
       setLoading(false);

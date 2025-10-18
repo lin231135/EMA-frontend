@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import AdminLayout from "../../layout/admin/AdminLayout";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
-import { getStudents } from "../../../services/studentsService";
+import { getStudents } from "../../../services/admin/adminStudentsService";
 import StudentDetailsModal from "../../forms/Admin/StudentDetailsModal";
 import StudentFormModal from "../../forms/Admin/StudentFormModal";
 import { DeactivateStudentModal, ReactivateStudentModal, DeleteStudentModal } from "../../forms/Admin/StudentActionModals";
@@ -56,12 +56,10 @@ export default function StudentListReport() {
         console.log('✅ Primer estudiante (campos disponibles):', data.students[0]);
         setStudents(data.students);
       } else {
-        console.error('Respuesta inesperada del backend:', data);
         setStudents([]);
         setError('Formato de respuesta inválido del servidor');
       }
     } catch (err) {
-      console.error('Error al cargar estudiantes:', err);
       setError(err.message || 'Error al cargar los estudiantes');
       setStudents([]); // Asegurar que students siempre sea un array
     } finally {
@@ -394,9 +392,6 @@ export default function StudentListReport() {
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-center">
-                      {t.id || "ID"}
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-center">
                       {t.name || "Nombre"}
                     </th>
                     <th scope="col" className="px-6 py-3 text-center">
@@ -416,17 +411,14 @@ export default function StudentListReport() {
                 <tbody>
                   {paginatedStudents.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                      <td colSpan="5" className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                         {searchTerm ? t.noResults : t.noStudents}
                       </td>
                     </tr>
                   ) : (
                     paginatedStudents.map((student) => (
                       <tr key={student.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                          {student.id}
-                        </th>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-6 py-4 text-center font-medium text-gray-900 dark:text-white">
                           {student.name}
                         </td>
                         <td className="px-6 py-4 text-center">

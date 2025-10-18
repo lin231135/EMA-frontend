@@ -1,6 +1,6 @@
-// src/services/studentsService.js
+// src/services/admin/adminStudentsService.js
 /**
- * Servicio para gestión de estudiantes (CRUD completo)
+ * Servicio para gestión de estudiantes por parte del administrador (CRUD completo)
  * Endpoints del backend: /api/admins/students
  */
 
@@ -29,7 +29,6 @@ export async function getStudents() {
 
     return await response.json();
   } catch (error) {
-    console.error('Error en getStudents:', error);
     throw error;
   }
 }
@@ -59,7 +58,6 @@ export async function getStudentById(studentId) {
     // El backend devuelve { student: {...} }, extraer el objeto student
     return data.student || data;
   } catch (error) {
-    console.error(`Error en getStudentById(${studentId}):`, error);
     throw error;
   }
 }
@@ -91,14 +89,11 @@ export async function createStudent(studentData) {
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('❌ Error del backend:', error);
-      console.error('❌ Detalles de validación:', error.details);
       throw new Error(error.error || error.message || 'Error al crear el estudiante');
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error en createStudent:', error);
     throw error;
   }
 }
@@ -132,7 +127,6 @@ export async function updateStudent(studentId, studentData) {
 
     return await response.json();
   } catch (error) {
-    console.error(`Error en updateStudent(${studentId}):`, error);
     throw error;
   }
 }
@@ -163,7 +157,6 @@ export async function deactivateStudent(studentId, reason = '') {
 
     return await response.json();
   } catch (error) {
-    console.error(`Error en deactivateStudent(${studentId}):`, error);
     throw error;
   }
 }
@@ -195,7 +188,6 @@ export async function reactivateStudent(studentId, reason = '') {
 
     return await response.json();
   } catch (error) {
-    console.error(`Error en reactivateStudent(${studentId}):`, error);
     throw error;
   }
 }
@@ -225,7 +217,6 @@ export async function deleteStudent(studentId) {
 
     return await response.json();
   } catch (error) {
-    console.error(`Error en deleteStudent(${studentId}):`, error);
     throw error;
   }
 }
@@ -255,7 +246,6 @@ export async function getAvailableParents() {
     // Manejar diferentes formatos de respuesta
     return Array.isArray(data) ? data : (data.users || data.parents || []);
   } catch (error) {
-    console.error('Error en getAvailableParents:', error);
     // Retornar array vacío si falla
     return [];
   }

@@ -1,6 +1,6 @@
 // src/components/forms/Admin/StudentDetailsModal.jsx
 import { useState, useEffect } from "react";
-import { getStudentById } from "../../../services/studentsService";
+import { getStudentById } from "../../../services/admin/adminStudentsService";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
 
@@ -29,7 +29,6 @@ export default function StudentDetailsModal({ studentId, isOpen, onClose }) {
       const data = await getStudentById(studentId);
       setStudent(data);
     } catch (err) {
-      console.error('Error al cargar detalles del estudiante:', err);
       setError(err.message || 'Error al cargar los detalles');
     } finally {
       setLoading(false);

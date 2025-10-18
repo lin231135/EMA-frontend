@@ -13,8 +13,12 @@ export default {
   adminSidebar: {
     dashboard: "Dashboard",
     payments: "Pagos",
+    paymentsManagement: "Gestión de Pagos",
     books: "Libros",
-    account: "Cuenta",
+    studentListReport: "Reporte de Estudiantes",
+    profile: "Perfil",
+    settings: "Configuración",
+    logout: "Cerrar Sesión",
   },
   adminNavbar: {
     notifications: "Notificaciones",

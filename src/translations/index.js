@@ -13,6 +13,7 @@ import esAddClassModal from "./es/AddClassModal";
 import esStudentDashboard from "./es/student/StudentDashboard";
 import esAdminDashboard from "./es/admin/AdminDashboard";
 import esStudentActionModals from "./es/admin/studentActionModals";
+import { paymentsManagement as esPaymentsManagement } from "./es/paymentsManagement";
 import esStudentProfile from "./es/student/StudentProfile";
 import esParentDashboard from "./es/parent/ParentDashboard";
 import esParentNavbar from "./es/parent/ParentNavbar";
@@ -39,6 +40,7 @@ import enAddClassModal from "./en/AddClassModal";
 import enStudentDashboard from "./en/student/StudentDashboard";
 import enAdminDashboard from "./en/admin/AdminDashboard";
 import enStudentActionModals from "./en/admin/studentActionModals";
+import { paymentsManagement as enPaymentsManagement } from "./en/paymentsManagement";
 import enStudentProfile from "./en/student/StudentProfile";
 import enParentDashboard from "./en/parent/ParentDashboard";
 import enParentNavbar from "./en/parent/ParentNavbar";
@@ -68,6 +70,7 @@ const translations = {
     studentDashboard: esStudentDashboard,
     adminDashboard: esAdminDashboard,
     studentActionModals: esStudentActionModals,
+    paymentsManagement: esPaymentsManagement,
     studentProfile: esStudentProfile,
     parentDashboard: esParentDashboard,
     parentNavbar: esParentNavbar,
@@ -95,6 +98,7 @@ const translations = {
     studentDashboard: enStudentDashboard,
     adminDashboard: enAdminDashboard,
     studentActionModals: enStudentActionModals,
+    paymentsManagement: enPaymentsManagement,
     studentProfile: enStudentProfile,
     parentDashboard: enParentDashboard,
     parentNavbar: enParentNavbar,
