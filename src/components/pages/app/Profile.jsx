@@ -1,4 +1,4 @@
-// src/components/pages/student/Profile.jsx
+// src/components/pages/app/Profile.jsx
 import { Card, Button, Avatar } from "flowbite-react";
 import StudentLayout from "../../layout/student/StudentLayout";
 import AdminLayout from "../../layout/admin/AdminLayout";
@@ -6,6 +6,7 @@ import ParentLayout from "../../layout/parent/ParentLayout";
 import { useState, useEffect, Fragment } from "react";
 import PersonalInfoModal from "../../ui/modalProfile/PersonalInfoModalProfile";
 import AddressModalProfile from "../../ui/modalProfile/AddressModalProfile";
+import ChildrenManagementSection from "../parent/ChildrenManagementSection";
 import translations from "../../../translations";
 import { useAuth } from "../../../contexts/AuthContext";
 import { EditIcon } from "../../ui/Icons";
@@ -324,6 +325,18 @@ export default function Profile() {
                             )}
                         </Section>
                     </div>
+
+                    {/* Gestión de Hijos - Solo visible para padres */}
+                    {authUser?.role === "padre" && (
+                        <div className="mt-6">
+                            <Card className="shadow-sm border border-gray-200/80 dark:border-gray-700">
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                                    Gestión de Perfiles de Hijos
+                                </h3>
+                                <ChildrenManagementSection addToast={addToast} />
+                            </Card>
+                        </div>
+                    )}
                 </div>
             </div>
 

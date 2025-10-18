@@ -24,6 +24,7 @@ import esCharts from "./es/charts";
 import esService from "./es/service";
 import esPaymentForm from "./es/form/PaymentForm";
 import esProfile from "./es/app/Profile";
+import esChildrenManagement from "./es/childrenManagement";
 
 import enAbout from "./en/about";
 import enCommon from "./en/common";
@@ -51,6 +52,7 @@ import enCharts from "./en/charts";
 import enService from "./en/service";
 import enPaymentForm from "./en/form/PaymentForm";
 import enProfile from "./en/app/Profile";
+import enChildrenManagement from "./en/childrenManagement";
 
 
 const translations = {
@@ -81,6 +83,7 @@ const translations = {
     service: esService,
     paymentForm: esPaymentForm,
     profile: esProfile,
+    childrenManagement: esChildrenManagement,
   },
   en: {
     about: enAbout,
@@ -109,6 +112,7 @@ const translations = {
     service: enService,
     paymentForm: enPaymentForm,
     profile: enProfile,
+    childrenManagement: enChildrenManagement,
   },
 };
 
