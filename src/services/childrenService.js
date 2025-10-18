@@ -135,4 +135,31 @@ export const childrenService = {
     const data = await handleResponse(response);
     return data.child;
   },
+
+  // TODO: Implementar updateChild cuando el endpoint esté disponible
+
+  /**
+   * Elimina (lógicamente) un perfil de hijo.
+   * 
+   * @param {number} childId - ID del hijo a eliminar
+   * @param {string} token - Token de autenticación
+   * @param {Function} authFetch - Función de fetch autenticada (opcional)
+   * @returns {Promise<Object>} Confirmación de la eliminación
+   * 
+   * @example
+   * await childrenService.deleteChild(1, token);
+   */
+  async deleteChild(childId, token, authFetch = null) {
+    const url = `${API_BASE}/parents/children/${childId}`;
+    const fetchFn = authFetch || fetch;
+    
+    const response = await fetchFn(url, {
+      method: "DELETE",
+      headers: buildHeaders(token, false),
+    });
+    
+    return handleResponse(response);
+  },
+
+  // TODO: Implementar archiveChild y restoreChild cuando los endpoints estén disponibles
 };

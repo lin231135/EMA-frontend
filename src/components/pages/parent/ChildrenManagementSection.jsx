@@ -83,6 +83,37 @@ function ChildCard({ child, onArchive, onRestore, onDelete, disabled }) {
             Archivado
           </Badge>
         )}
+
+        {/* Botones de acción */}
+        <div className="flex gap-2 pt-2 w-full">
+          {!isArchived ? (
+            <>
+              {/* TODO: Agregar funcionalidad de edición */}
+              <Button
+                size="xs"
+                color="failure"
+                onClick={() => onDelete(child)}
+                disabled={disabled}
+                className="flex-1"
+              >
+                <HiTrash className="w-4 h-4" />
+              </Button>
+            </>
+          ) : (
+            <>
+              {/* TODO: Agregar funcionalidad de edición */}
+              <Button
+                size="xs"
+                color="failure"
+                onClick={() => onDelete(child)}
+                disabled={disabled}
+                className="flex-1"
+              >
+                <HiTrash className="w-4 h-4" />
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </Card>
   );

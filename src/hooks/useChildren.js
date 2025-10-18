@@ -115,6 +115,40 @@ export function useChildren() {
     }
   }, [token, authFetch]);
 
+  // TODO: Implementar updateChild
+
+  /**
+   * Elimina un perfil de hijo.
+   * 
+   * @param {number} childId - ID del hijo a eliminar
+   * @returns {Promise<void>}
+   * @throws {Error} Si la eliminación falla
+   * 
+   * @example
+   * await deleteChild(1);
+   */
+  const deleteChild = useCallback(async (childId) => {
+    if (!token) throw new Error("No autenticado");
+
+    try {
+      setOperationLoading(true);
+      setError(null);
+
+      await childrenService.deleteChild(childId, token, authFetch);
+      
+      // Remover de la lista local
+      setChildren(prev => prev.filter(child => child.id !== childId));
+    } catch (err) {
+      console.error("Error eliminando hijo:", err);
+      setError(err.message || "Error al eliminar el perfil");
+      throw err;
+    } finally {
+      setOperationLoading(false);
+    }
+  }, [token, authFetch]);
+
+  // TODO: Implementar archiveChild y restoreChild
+
   /**
    * Recarga la lista de hijos desde el servidor.
    */
@@ -134,10 +168,9 @@ export function useChildren() {
     
     // Operaciones
     addChild,
-    updateChild,
+    // TODO: añadir updateChild cuando esté implementada
     deleteChild,
-    archiveChild,
-    restoreChild,
+    // TODO: añadir las funciones archiveChild y restoreChild cuando estén implementadas
     refresh,
   };
 }
