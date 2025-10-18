@@ -67,7 +67,7 @@ export default function Contact() {
       if (res.ok) {
         setAlert({
           type: "success",
-          message: "Mensaje enviado correctamente",
+          message: "Nos pondremos en contacto contigo.",
         });
         setFormData({
           name: "",
@@ -79,7 +79,7 @@ export default function Contact() {
       } else {
         setAlert({
           type: "error",
-          message: "Ocurrió un error al enviar tu mensaje. Intente más tarde.",
+          message: "Intente más tarde.",
         });
       }
 
@@ -123,7 +123,7 @@ export default function Contact() {
                     className="mb-4 w-full"
                   >
                     <span className="font-medium">
-                      {alert.type === "success" ? "Éxito! " : "Error! "}
+                      {alert.type === "success" ? "Mensaje enviado con éxito." : "Ocurrió un error al enviar tu mensaje."}
                     </span>
                     {alert.message}
                   </Alert>
