@@ -9,7 +9,7 @@
 import { useState, useMemo } from "react";
 import { Button, Spinner, Badge, Card, Avatar } from "flowbite-react";
 import { useAuth } from "../../../contexts/AuthContext";
-import AddChildModal from "../../ui/modalProfile/AddChildModal";
+import GetPutChildModal from "../../ui/modalProfile/GetPutChildModal";
 import { useChildren } from "../../../hooks/useChildren";
 import translations from "../../../translations";
 import { HiUserAdd, HiArchive, HiRefresh, HiTrash } from "react-icons/hi";
@@ -38,7 +38,7 @@ function CircleInitials({ name }) {
 /**
  * Tarjeta de perfil de hijo con opciones de gestión.
  */
-function ChildCard({ child, onArchive, onRestore, onDelete, disabled }) {
+function ChildCard({ child, onUpdate, onArchive, onRestore, onDelete, disabled }) {
   const age = calculateAge(child.birthDate);
   const isArchived = child.isActive === false;
 
@@ -98,6 +98,15 @@ function ChildCard({ child, onArchive, onRestore, onDelete, disabled }) {
               >
                 <HiArchive className="w-4 h-4 mr-1" />
                 Archivar
+              </Button>
+              <Button
+                size="xs"
+                color="failure"
+                onClick={() => onUpdate({ open: true, child: child })}
+                disabled={disabled}
+                className="flex-1 text-gray-900 dark:text-white cursor-pointer"
+              >
+                <EditIcon className="w-4 h-4 mr-1"/>
               </Button>
               <Button
                 size="xs"
@@ -171,26 +180,44 @@ function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText, c
 
 /**
  * Calcula la edad a partir de una fecha de nacimiento.
+ * Usa las partes de la fecha directamente para evitar problemas de zona horaria.
  */
 function calculateAge(birthDate) {
   if (!birthDate) return null;
-  const birth = new Date(birthDate);
+  
+  // Extraer partes de la fecha (YYYY-MM-DD)
+  const [year, month, day] = birthDate.split('-').map(Number);
+  if (!year || !month || !day) return null;
+  
   const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1; // getMonth() es 0-indexado
+  const currentDay = today.getDate();
+  
+  let age = currentYear - year;
+  
+  // Ajustar si aún no ha cumplido años este año
+  if (currentMonth < month || (currentMonth === month && currentDay < day)) {
     age--;
   }
+  
   return age;
 }
 
 /**
  * Formatea una fecha en formato local.
+ * Evita problemas de zona horaria trabajando directamente con las partes de la fecha.
  */
 function formatDate(dateString) {
   if (!dateString) return "—";
   try {
-    const date = new Date(dateString);
+    // Extraer partes de la fecha (YYYY-MM-DD)
+    const [year, month, day] = dateString.split('-').map(Number);
+    if (!year || !month || !day) return dateString;
+    
+    // Crear fecha en zona horaria local (sin conversión UTC)
+    const date = new Date(year, month - 1, day); // month es 0-indexado
+    
     return date.toLocaleDateString("es-GT", {
       year: "numeric",
       month: "long",
@@ -228,6 +255,7 @@ export default function ChildrenManagementSection({ addToast }) {
     error,
     operationLoading,
     addChild,
+    updateChild,
     deleteChild,
     archiveChild,
     restoreChild,
@@ -238,6 +266,10 @@ export default function ChildrenManagementSection({ addToast }) {
      ESTADO LOCAL
      ================== */
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState({
+    open: false,
+    child: null,
+  });
   const [confirmModal, setConfirmModal] = useState({
     open: false,
     type: null,
@@ -257,6 +289,20 @@ export default function ChildrenManagementSection({ addToast }) {
       await addChild(childData);
       addToast("success", t.toast?.childCreated || "Perfil creado exitosamente");
       setShowAddModal(false);
+    } catch (err) {
+      // El error ya se maneja en el modal
+      throw err;
+    }
+  };
+
+  /**
+   * Maneja la actualización de información de un hijo.
+   */
+  const handleUpdateChild = async (childId, childData) => {
+    try {
+      await updateChild(childId, childData);
+      addToast("success", t.toast?.childUpdated || "Perfil actualizado exitosamente");
+      setShowUpdateModal(false);
     } catch (err) {
       // El error ya se maneja en el modal
       throw err;
@@ -376,6 +422,7 @@ export default function ChildrenManagementSection({ addToast }) {
               <ChildCard
                 key={child.id}
                 child={child}
+                onUpdate={setShowUpdateModal}
                 onArchive={openArchiveConfirm}
                 onRestore={openRestoreConfirm}
                 onDelete={openDeleteConfirm}
@@ -404,10 +451,18 @@ export default function ChildrenManagementSection({ addToast }) {
       )}
 
       {/* Modal: Agregar hijo */}
-      <AddChildModal
+      <GetPutChildModal
         open={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddChild}
+      />
+
+      {/* Modal: Actualizar hijo */}
+      <GetPutChildModal
+        open={showUpdateModal.open}
+        child={showUpdateModal.child}
+        onClose={() => setShowUpdateModal({ open: false, child: null })}
+        onSubmit={handleUpdateChild}
       />
 
       {/* Modal: Confirmación */}

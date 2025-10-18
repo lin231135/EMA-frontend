@@ -25,7 +25,7 @@ import translations from "../../../translations";
  *   onSubmit={async (data) => await createChild(data)}
  * />
  */
-export default function AddChildModal({ open, onClose, onSubmit }) {
+export default function GetPutChildModal({ open, child, onClose, onSubmit }) {
   const { lang } = useAuth();
   const t = translations[lang]?.childrenManagement || {};
   const dialogRef = useRef(null);
@@ -34,8 +34,8 @@ export default function AddChildModal({ open, onClose, onSubmit }) {
      ESTADO
      ================== */
   const [formData, setFormData] = useState({
-    name: "",
-    birth_date: "",
+    name: child ? child.name || "" : "",
+    birth_date: child ? child.birthDate || "" : "",
   });
 
   const [errors, setErrors] = useState({});
@@ -45,6 +45,22 @@ export default function AddChildModal({ open, onClose, onSubmit }) {
   /* ==================
      EFECTOS
      ================== */
+  
+  // Actualizar formulario cuando cambia el hijo a editar
+  useEffect(() => {
+    if (open && child) {
+      setFormData({
+        name: child.name || "",
+        birth_date: child.birthDate || "",
+      });
+    } else if (open && !child) {
+      // Modal de creación (sin hijo)
+      setFormData({
+        name: "",
+        birth_date: "",
+      });
+    }
+  }, [open, child]);
   
   // Reset al cerrar
   useEffect(() => {
@@ -152,8 +168,8 @@ export default function AddChildModal({ open, onClose, onSubmit }) {
     try {
       setLoading(true);
       setSubmitError("");
-      
-      await onSubmit(formData);
+
+      child ? await onSubmit(child.id, formData) : await onSubmit(formData);
       
       // Cerrar modal solo si el submit fue exitoso
       onClose();
@@ -203,7 +219,7 @@ export default function AddChildModal({ open, onClose, onSubmit }) {
 
         {/* Título */}
         <h2 className="text-center text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
-          {t.addChildModal?.title || "Agregar Nuevo Hijo"}
+          {child ? t.updateChildModal?.title || "Editar Perfil de Hijo" : t.addChildModal?.title || "Agregar Nuevo Hijo"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -295,8 +311,8 @@ export default function AddChildModal({ open, onClose, onSubmit }) {
                 </svg>
               )}
               {loading 
-                ? (t.addChildModal?.creatingButton || "Creando...") 
-                : (t.addChildModal?.createButton || "Crear Perfil")
+                ? (child ? t.updateChildModal?.updatingButton || "Actualizando..." : t.addChildModal?.creatingButton || "Creando...") 
+                : ( child ? t.updateChildModal?.updateButton || "Actualizar Perfil" : t.addChildModal?.createButton || "Crear Perfil")
               }
             </button>
           </div>

@@ -115,7 +115,40 @@ export function useChildren() {
     }
   }, [token, authFetch]);
 
-  // TODO: Implementar updateChild
+  /**
+   * Actualiza un perfil de hijo existente.
+   * 
+   * @param {number} childId - ID del hijo
+   * @param {Object} updates - Datos a actualizar
+   * @returns {Promise<Object>} Perfil actualizado
+   * @throws {Error} Si la actualización falla
+   * 
+   * @example
+   * await updateChild(1, { name: "Ana María López" });
+   */
+  const updateChild = useCallback(async (childId, childData) => {
+    if (!token) throw new Error("No autenticado");
+
+    try {
+      setOperationLoading(true);
+      setError(null);
+
+      const updated = await childrenService.updateChild(childId, childData, token, authFetch);
+      
+      // Actualizar lista local
+      setChildren(prev =>
+        prev.map(child => child.id === childId ? updated : child)
+      );
+      
+      return updated;
+    } catch (err) {
+      console.error("Error actualizando hijo:", err);
+      setError(err.message || "Error al actualizar el perfil");
+      throw err;
+    } finally {
+      setOperationLoading(false);
+    }
+  }, [token, authFetch]);
 
   /**
    * Elimina un perfil de hijo.
@@ -234,7 +267,7 @@ export function useChildren() {
     
     // Operaciones
     addChild,
-    // TODO: añadir updateChild cuando esté implementada
+    updateChild,
     deleteChild,
     archiveChild,
     restoreChild,

@@ -125,7 +125,35 @@ export const childrenService = {
     return data.child;
   },
 
-  // TODO: Implementar updateChild cuando el endpoint esté disponible
+  /**
+   * Actualiza los datos de un hijo existente.
+   * 
+   * @param {number} childId - ID del hijo a actualizar
+   * @param {Object} updates - Datos a actualizar
+   * @param {string} token - Token de autenticación
+   * @param {Function} authFetch - Función de fetch autenticada (opcional)
+   * @returns {Promise<Object>} Perfil actualizado del hijo
+   * 
+   * @example
+   * const updated = await childrenService.updateChild(
+   *   1,
+   *   { name: "María García López" },
+   *   token
+   * );
+   */
+  async updateChild(childId, updates, token, authFetch = null) {
+    const url = `${API_BASE}/parents/children/${childId}`;
+    const fetchFn = authFetch || fetch;
+    
+    const response = await fetchFn(url, {
+      method: "PUT",
+      headers: buildHeaders(token),
+      body: JSON.stringify(updates),
+    });
+    
+    const data = await handleResponse(response);
+    return data.child;
+  },
 
   /**
    * Elimina (lógicamente) un perfil de hijo.

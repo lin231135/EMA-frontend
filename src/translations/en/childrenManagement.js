@@ -50,6 +50,13 @@ export default {
     creatingButton: "Creating...",
   },
 
+  // Modal: Update child's profile
+  updateChildModal: {
+    title: "Update Child's Profile",
+    updateButton: "Update Profile",
+    updatingButton: "Updating...",
+  },
+
   // Modal: Confirmation
   confirmModal: {
     deleteTitle: "Delete Profile",

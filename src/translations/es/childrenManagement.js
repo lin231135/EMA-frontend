@@ -50,6 +50,13 @@ export default {
     creatingButton: "Creando...",
   },
 
+  // Modal: Actualizar perfil de hijo
+  updateChildModal: {
+    title: "Actualizar Perfil de Hijo",
+    updateButton: "Actualizar Perfil",
+    updatingButton: "Actualizando...",
+  },
+
   // Modal: Confirmación
   confirmModal: {
     deleteTitle: "Eliminar Perfil",
