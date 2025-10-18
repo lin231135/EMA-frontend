@@ -79,7 +79,7 @@ export const childrenService = {
    * // [{id: 456, name: "María Pérez", avatarUrl: null, type: "student"}, ...]
    */
   async getChildren(token, authFetch = null) {
-    const url = `${API_BASE}/parents/profiles`;
+    const url = `${API_BASE}/parents/children`;
     const fetchFn = authFetch || fetch;
     
     const response = await fetchFn(url, {
@@ -89,19 +89,8 @@ export const childrenService = {
     
     const data = await handleResponse(response);
     
-    // El endpoint retorna { parent: {...}, children: [...] }
-    // Mapeamos los hijos para incluir información adicional si es necesario
-    const children = (data.children || []).map(child => ({
-      id: child.id,
-      name: child.name,
-      avatarUrl: child.avatarUrl,
-      type: child.type || "student",
-      // Campos que podrían venir del backend (preparados para futuro)
-      birthDate: child.birthDate,
-      isSolvent: child.isSolvent !== undefined ? child.isSolvent : true,
-      isActive: child.isActive !== undefined ? child.isActive : true,
-      createdAt: child.createdAt,
-    }));
+    // El endpoint retorna [{...}, {...}] (array de hijos)
+    const children = data;
     
     return children;
   },
@@ -161,5 +150,51 @@ export const childrenService = {
     return handleResponse(response);
   },
 
-  // TODO: Implementar archiveChild y restoreChild cuando los endpoints estén disponibles
+  /**
+   * Archiva un perfil de hijo (cambia isActive a false).
+   * 
+   * @param {number} childId - ID del hijo a archivar
+   * @param {string} token - Token de autenticación
+   * @param {Function} authFetch - Función de fetch autenticada (opcional)
+   * @returns {Promise<Object>} Perfil archivado
+   * 
+   * @example
+   * const archived = await childrenService.archiveChild(1, token);
+   */
+  async archiveChild(childId, token, authFetch = null) {
+    const url = `${API_BASE}/parents/children/${childId}/archive`;
+    const fetchFn = authFetch || fetch;
+    
+    const response = await fetchFn(url, {
+      method: "PATCH",
+      headers: buildHeaders(token, false),
+    });
+    
+    const data = await handleResponse(response);
+    return data.archived;
+  },
+
+  /**
+   * Restaura/Desarchiva un perfil de hijo archivado (cambia isActive a true).
+   * 
+   * @param {number} childId - ID del hijo a restaurar
+   * @param {string} token - Token de autenticación
+   * @param {Function} authFetch - Función de fetch autenticada (opcional)
+   * @returns {Promise<Object>} Perfil restaurado
+   * 
+   * @example
+   * const unarchived = await childrenService.restoreChild(1, token);
+   */
+  async restoreChild(childId, token, authFetch = null) {
+    const url = `${API_BASE}/parents/children/${childId}/unarchive`;
+    const fetchFn = authFetch || fetch;
+    
+    const response = await fetchFn(url, {
+      method: "PATCH",
+      headers: buildHeaders(token, false),
+    });
+    
+    const data = await handleResponse(response);
+    return data.unarchived;
+  },
 };

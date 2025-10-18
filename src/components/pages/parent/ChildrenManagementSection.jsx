@@ -30,7 +30,7 @@ function CircleInitials({ name }) {
 
   return (
     <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center">
-      <span className="text-xl font-semibold">{initials}</span>
+      <span className="text-xl font-semibold cursor-default">{initials}</span>
     </div>
   );
 }
@@ -56,11 +56,11 @@ function ChildCard({ child, onArchive, onRestore, onDelete, disabled }) {
 
         {/* Información del hijo */}
         <div className="space-y-1">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white cursor-default">
             {child.name}
           </h4>
           {age !== null && (
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600 dark:text-gray-400 cursor-default">
               {age} años
             </p>
           )}
@@ -73,14 +73,14 @@ function ChildCard({ child, onArchive, onRestore, onDelete, disabled }) {
 
         {/* Badge de estado */}
         {!isArchived && (
-          <Badge color={child.isSolvent ? "success" : "warning"} className="w-fit">
+          <Badge color={child.isSolvent ? "success" : "warning"} className="w-fit cursor-default">
             {child.isSolvent ? "Solvente" : "No Solvente"}
           </Badge>
         )}
         
         {isArchived && (
-          <Badge color="gray" className="w-fit">
-            Archivado
+          <Badge color="gray" className="w-fit cursor-default">
+            ARCHIVADO
           </Badge>
         )}
 
@@ -91,25 +91,44 @@ function ChildCard({ child, onArchive, onRestore, onDelete, disabled }) {
               {/* TODO: Agregar funcionalidad de edición */}
               <Button
                 size="xs"
-                color="failure"
-                onClick={() => onDelete(child)}
+                color="warning"
+                onClick={() => onArchive(child)}
                 disabled={disabled}
-                className="flex-1"
+                className="flex-1 text-gray-900 dark:text-white cursor-pointer"
               >
-                <HiTrash className="w-4 h-4" />
+                <HiArchive className="w-4 h-4 mr-1" />
+                Archivar
               </Button>
-            </>
-          ) : (
-            <>
-              {/* TODO: Agregar funcionalidad de edición */}
               <Button
                 size="xs"
                 color="failure"
                 onClick={() => onDelete(child)}
                 disabled={disabled}
-                className="flex-1"
+                className="flex-1 text-gray-900 dark:text-white cursor-pointer"
               >
-                <HiTrash className="w-4 h-4" />
+                <HiTrash className="w-4 h-4 mr-1"/>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="xs"
+                color="success"
+                onClick={() => onRestore(child)}
+                disabled={disabled}
+                className="flex-1  text-gray-900 dark:text-white cursor-pointer"
+              >
+                <HiRefresh className="w-4 h-4 mr-1" />
+                Restaurar
+              </Button>
+              <Button
+                size="xs"
+                color="failure"
+                onClick={() => onDelete(child)}
+                disabled={disabled}
+                className="flex-1 text-gray-900 dark:text-white cursor-pointer"
+              >
+                <HiTrash className="w-4 h-4 mr-1"/>
               </Button>
             </>
           )}
@@ -305,12 +324,6 @@ export default function ChildrenManagementSection({ addToast }) {
   };
 
   /* ==================
-     FILTRADO
-     ================== */
-  const activeChildren = children.filter((c) => c.isActive !== false);
-  const archivedChildren = children.filter((c) => c.isActive === false);
-
-  /* ==================
      RENDER
      ================== */
   return (
@@ -352,35 +365,14 @@ export default function ChildrenManagementSection({ addToast }) {
         </div>
       )}
 
-      {/* Grid de hijos activos */}
-      {!loading && activeChildren.length > 0 && (
+      {/* Grid de hijos */}
+      {!loading && children.length > 0 && (
         <div className="mb-8">
           <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
             {t.sections?.active || "Perfiles Activos"}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {activeChildren.map((child) => (
-              <ChildCard
-                key={child.id}
-                child={child}
-                onArchive={openArchiveConfirm}
-                onRestore={openRestoreConfirm}
-                onDelete={openDeleteConfirm}
-                disabled={operationLoading}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Grid de hijos archivados */}
-      {!loading && archivedChildren.length > 0 && (
-        <div className="mb-8">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-            {t.sections?.archived || "Perfiles Archivados"}
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {archivedChildren.map((child) => (
+            {children.map((child) => (
               <ChildCard
                 key={child.id}
                 child={child}

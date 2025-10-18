@@ -147,7 +147,73 @@ export function useChildren() {
     }
   }, [token, authFetch]);
 
-  // TODO: Implementar archiveChild y restoreChild
+  /**
+   * Archiva un perfil de hijo (establece isActive = false).
+   * 
+   * @param {number} childId - ID del hijo a archivar
+   * @returns {Promise<Object>} Perfil archivado
+   * @throws {Error} Si el archivado falla
+   * 
+   * @example
+   * await archiveChild(1);
+   */
+  const archiveChild = useCallback(async (childId) => {
+    if (!token) throw new Error("No autenticado");
+
+    try {
+      setOperationLoading(true);
+      setError(null);
+
+      const archived = await childrenService.archiveChild(childId, token, authFetch);
+      
+      // Actualizar lista local
+      setChildren(prev => 
+        prev.map(child => child.id === childId ? archived : child)
+      );
+      
+      return archived;
+    } catch (err) {
+      console.error("Error archivando hijo:", err);
+      setError(err.message || "Error al archivar el perfil");
+      throw err;
+    } finally {
+      setOperationLoading(false);
+    }
+  }, [token, authFetch]);
+
+  /**
+   * Restaura un perfil de hijo archivado (establece isActive = true).
+   * 
+   * @param {number} childId - ID del hijo a restaurar
+   * @returns {Promise<Object>} Perfil restaurado
+   * @throws {Error} Si la restauración falla
+   * 
+   * @example
+   * await restoreChild(1);
+   */
+  const restoreChild = useCallback(async (childId) => {
+    if (!token) throw new Error("No autenticado");
+
+    try {
+      setOperationLoading(true);
+      setError(null);
+
+      const restored = await childrenService.restoreChild(childId, token, authFetch);
+      
+      // Actualizar lista local
+      setChildren(prev => 
+        prev.map(child => child.id === childId ? restored : child)
+      );
+      
+      return restored;
+    } catch (err) {
+      console.error("Error restaurando hijo:", err);
+      setError(err.message || "Error al restaurar el perfil");
+      throw err;
+    } finally {
+      setOperationLoading(false);
+    }
+  }, [token, authFetch]);
 
   /**
    * Recarga la lista de hijos desde el servidor.
@@ -170,7 +236,8 @@ export function useChildren() {
     addChild,
     // TODO: añadir updateChild cuando esté implementada
     deleteChild,
-    // TODO: añadir las funciones archiveChild y restoreChild cuando estén implementadas
+    archiveChild,
+    restoreChild,
     refresh,
   };
 }
