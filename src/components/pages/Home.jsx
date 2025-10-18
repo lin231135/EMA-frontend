@@ -82,13 +82,13 @@ export default function Home() {
       if (response.ok) {
         setAlert({
           type: "success",
-          message: "Formulario enviado con éxito. Nos pondremos en contacto contigo pronto.",
+          message: " Nos pondremos en contacto contigo pronto.",
         });
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
         setAlert({
           type: "error",
-          message: "Error al enviar el formulario, intente más tarde.",
+          message: " Intente más tarde.",
         });
       }
     } catch (err) {
@@ -326,7 +326,7 @@ export default function Home() {
                   className="mb-4 w-full"
                 >
                   <span className="font-medium">
-                    {alert.type === "success" ? "Éxito! " : "Error! "}
+                    {alert.type === "success" ? "Formulario enviado con éxito." : "Error al enviar el formulario."}
                   </span>
                   {alert.message}
                 </Alert>

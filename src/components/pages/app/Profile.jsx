@@ -279,21 +279,6 @@ export default function Profile() {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t.title}</h1>
 
-                    {/* Inline alert fallback (opcional) */}
-                    {alert && (
-                        <div
-                            className={`p-4 mb-4 text-sm rounded-lg ${
-                                alert.type === "danger"
-                                    ? "text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                                    : "text-green-800 bg-green-50 dark:bg-gray-800 dark:text-green-400"
-                            }`}
-                            role="alert"
-                        >
-                            <span className="font-medium">{alert.type === "danger" ? "Error: " : "Éxito: "}</span>{" "}
-                            {alert.message}
-                        </div>
-                    )}
-
                     {/* Tarjeta superior */}
                     <Card className="mb-6 shadow-sm border border-gray-200/80 dark:border-gray-700">
                         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
