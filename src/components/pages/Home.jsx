@@ -82,13 +82,13 @@ export default function Home() {
       if (response.ok) {
         setAlert({
           type: "success",
-          message: "Nos pondremos en contacto contigo pronto.",
+          message: " Nos pondremos en contacto contigo pronto.",
         });
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
         setAlert({
           type: "error",
-          message: "Intente más tarde.",
+          message: " Intente más tarde.",
         });
       }
     } catch (err) {

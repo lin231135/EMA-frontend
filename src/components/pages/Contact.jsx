@@ -67,7 +67,7 @@ export default function Contact() {
       if (res.ok) {
         setAlert({
           type: "success",
-          message: "Nos pondremos en contacto contigo.",
+          message: " Nos pondremos en contacto contigo.",
         });
         setFormData({
           name: "",
