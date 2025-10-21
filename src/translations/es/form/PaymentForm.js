@@ -19,10 +19,18 @@ export default {
     notes_ph: "Agregar una nota (opcional)",
   },
   methodOptions: {
-    transfer: "Transferencia",
     cash: "Efectivo",
+    transfer: "Transferencia",
     deposit: "Depósito",
   },
-  actions: { cancel: "Cancelar", submit: "Enviar" },
-  alerts: { required: "Por favor completa los campos obligatorios." },
+  actions: { 
+    cancel: "Cancelar", 
+    submit: "Enviar Pago",
+    submitting: "Procesando..."
+  },
+  alerts: { 
+    required: "Por favor completa el nombre del estudiante.",
+    dateRequired: "Por favor selecciona una fecha.",
+    invalidAmount: "Por favor ingresa un monto válido mayor a 0."
+  },
 };

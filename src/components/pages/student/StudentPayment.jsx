@@ -1,7 +1,18 @@
 // src/components/pages/student/StudentPayment.jsx
 /**
- * Página de registro de pagos para estudiantes
- * Permite al estudiante registrar pagos, cargar comprobantes y ver su deuda
+ * @file StudentPayment.jsx
+ * @description Página de registro de pagos para el rol estudiante (adulto).
+ * 
+ * Funcionalidades principales:
+ * - Carga la deuda pendiente del estudiante actual
+ * - Prellenado automático del nombre del estudiante (usuario logueado)
+ * - Permite registrar pagos con comprobante
+ * - Sube comprobantes de pago a ImageKit CDN
+ * - Muestra modal de confirmación al completar el registro exitosamente
+ * 
+ * Nota: Este componente es para estudiantes adultos que pagan por sí mismos.
+ * Para pagos de padres a nombre de sus hijos, ver ParentPayment.jsx
+
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -9,17 +20,17 @@ import PaymentForm from "../../forms/PaymentForm";
 import StudentLayout from "../../layout/student/StudentLayout";
 import { useAuth } from "../../../contexts/AuthContext";
 import { toast } from "react-toastify";
+import AlertModal from "../../forms/AlertModal";
+
+// Configuración de URLs de API
+const API_URL = import.meta.env.VITE_API_URL; // Backend API base URL
+const IMAGEKIT_UPLOAD_URL = "https://upload.imagekit.io/api/v1/files/upload"; // ImageKit CDN
 
 /**
- * Configuración de URLs de la API
- */
-const API_URL = import.meta.env.VITE_API_URL; // URL base del backend
-const IMAGEKIT_UPLOAD_URL = "https://upload.imagekit.io/api/v1/files/upload"; // URL de ImageKit para subir archivos
-
-/**
- * Mapea los métodos de pago del frontend al ENUM de la base de datos
- * @param {string} m - Método de pago del formulario ('cash', 'deposit', 'transfer', etc.)
- * @returns {string} Método mapeado al ENUM de BD ('efectivo', 'deposito', 'transferencia')
+ * Mapea los métodos de pago del frontend a los valores ENUM de la base de datos
+ * 
+ * @param {string} m - Método de pago del frontend ('cash', 'deposit', 'transfer')
+ * @returns {string} Valor ENUM para la base de datos ('efectivo', 'deposito', 'transferencia')
  */
 const mapMethodToEnum = (m) => {
   switch (m) {
@@ -34,14 +45,17 @@ const mapMethodToEnum = (m) => {
 };
 
 /**
- * Banner informativo que muestra el monto de deuda del estudiante
+ * Componente Banner que muestra la deuda pendiente del estudiante
+ * 
  * @param {Object} props - Propiedades del componente
- * @param {number} props.amount - Monto de la deuda
- * @param {string} props.currency - Símbolo de la moneda (default: "Q")
- * @returns {JSX.Element|null} Banner con información de deuda o null si no hay monto
+ * @param {number|null} props.amount - Monto total de la deuda pendiente
+ * @param {string} [props.currency="Q"] - Símbolo de moneda (por defecto Quetzales)
+ * @returns {JSX.Element|null} Banner de deuda o null si no hay monto
  */
 function DebtBanner({ amount, currency = "Q" }) {
+  // No mostrar banner si no hay deuda
   if (amount == null) return null;
+  
   return (
     <div className="mb-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 p-4">
       <p className="text-yellow-900 dark:text-yellow-200 font-medium">
@@ -55,277 +69,258 @@ function DebtBanner({ amount, currency = "Q" }) {
 }
 
 /**
- * Gestiona el flujo completo de registro de pagos para estudiantes:
- * - Carga y muestra la deuda pendiente
- * - Permite seleccionar estudiantes asociados
- * - Sube comprobantes a ImageKit
- * - Registra el pago en el backend
+ * Componente principal de la página de registro de pagos para estudiantes
+ * 
+ * @returns {JSX.Element} Página completa de registro de pagos para estudiante
  */
 export default function StudentPayment() {
-  // Contexto de autenticación para obtener token, usuario y idioma
-  const { token, user, lang } = useAuth();
+  // Hooks de autenticación y estado
+  const { token, user, lang } = useAuth(); // Token JWT, datos del usuario y lenguaje activo
   
-  // Estado de carga durante el procesamiento del pago
-  const [loading, setLoading] = useState(false);
-  
-  // Estado de la deuda del estudiante
-  const [debt, setDebt] = useState({ amount: null, currency: "Q" });
-  
-  // Lista de estudiantes asociados al usuario (para selección)
-  const [students, setStudents] = useState([]);
+  // Estados del componente
+  const [loading, setLoading] = useState(false); // Indicador de carga durante el submit
+  const [debt, setDebt] = useState({ amount: null, currency: "Q" }); // Deuda pendiente del estudiante
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // Control del modal de éxito
 
   /**
-   * Effect 1: Cargar el balance/deuda del estudiante desde el backend
+   * Effect: Cargar deuda pendiente del estudiante al montar el componente
+   * 
+   * Realiza un fetch a /students/payments/pending para obtener:
+   * - total_due: Monto total de deuda del estudiante logueado
    */
   useEffect(() => {
-    let mounted = true; // Flag para evitar actualizaciones de estado en componentes desmontados
+    let mounted = true; // Flag para evitar actualizaciones de estado en componente desmontado
     
     (async () => {
       try {
-        // Solicitud al backend para obtener el balance del estudiante
-        const res = await fetch(`${API_URL}/payments/my-balance`, {
+        // Solicitar deuda pendiente del estudiante actual
+        const res = await fetch(`${API_URL}/students/payments/pending`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         
         if (res.ok) {
-          const data = await res.json(); // Espera: { amountDue, currency }
+          const data = await res.json();
           
+          // Solo actualizar estado si el componente sigue montado
           if (mounted) {
-            // Actualiza el estado con la deuda obtenida
-            setDebt({
-              amount: data?.amountDue ?? null,
-              currency: data?.currency ?? "Q",
+            setDebt({ 
+              amount: Number(data?.total_due) || 0, 
+              currency: "Q" 
             });
           }
+        } else {
+          console.warn("No se pudo obtener deuda del estudiante");
         }
       } catch (err) {
-        console.error("[StudentPayment] balance error:", err);
+        console.error("[StudentPayment] Error al cargar deuda:", err);
       }
     })();
     
-    // Cleanup: evita memory leaks
+    // Cleanup: marcar componente como desmontado
     return () => (mounted = false);
   }, [token]);
 
   /**
-   * Effect 2: Cargar la lista de estudiantes asociados al usuario actual
-   * Útil si un padre/encargado tiene múltiples hijos registrados
-   */
-  useEffect(() => {
-    let mounted = true; // Flag de montaje del componente
-    
-    (async () => {
-      try {
-        // Solicita la lista de estudiantes asociados al usuario
-        // Endpoint esperado: devuelve [{id, name}] o estructura similar
-        const res = await fetch(`${API_URL}/students/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
-        if (res.ok) {
-          const items = await res.json();
-          
-          if (mounted) {
-            // Normaliza la respuesta a formato {id, name}
-            const mapped =
-              Array.isArray(items)
-                ? items.map((s) => ({
-                    id: s.id ?? s.student_id ?? s.uuid,
-                    name:
-                      s.name ??
-                      s.fullName ??
-                      [s.first_name, s.last_name].filter(Boolean).join(" ") ??
-                      "Sin nombre",
-                  }))
-                : [];
-            setStudents(mapped);
-          }
-        } else {
-          // Fallback: Si el endpoint no existe, usa el usuario actual como estudiante único
-          if (mounted && user) {
-            setStudents([
-              { id: user.id, name: `${user.name ?? ""} ${user.last_name ?? ""}`.trim() || "Yo" },
-            ]);
-          }
-        }
-      } catch (err) {
-        console.error("[StudentPayment] students error:", err);
-        // En caso de error, también usa el usuario actual como fallback
-        if (user) {
-          setStudents([{ id: user.id, name: `${user.name ?? ""} ${user.last_name ?? ""}`.trim() || "Yo" }]);
-        }
-      }
-    })();
-    
-    return () => (mounted = false);
-  }, [token, user]);
-
-  /**
-   * Valores iniciales para el formulario de pagos
-   * Se recalculan cuando cambia la deuda
-   */
-  const initialValues = useMemo(() => {
-    return {
-      total: debt.amount != null ? String(debt.amount) : "", // Precarga el monto de la deuda
-      currency: debt.currency || "Q", // Moneda por defecto
-      date: new Date().toISOString().slice(0, 10), // Fecha actual en formato YYYY-MM-DD
-      method: "transfer", // Método de pago por defecto: transferencia
-      notes: "", // Notas vacías inicialmente
-      // parentName se autollenará en PaymentForm desde guardianName o AuthContext
-    };
-  }, [debt.amount, debt.currency]);
-
-  /**
-   * Define qué campos del formulario serán de solo lectura
-   * Si hay deuda precargada, el campo total no es editable
-   */
-  const readOnlyFields = {
-    total: debt.amount != null, // Solo lectura si hay monto de deuda
-  };
-
-  /**
-   * Sube el comprobante de pago a ImageKit
-   * @param {File} file - Archivo a subir (imagen o PDF)
-   * @returns {Promise<string|null>} URL del archivo subido o null
+   * Sube el comprobante de pago a ImageKit CDN
+   * 
+   * Proceso:
+   * 1. Solicita firma de autenticación al backend
+   * 2. Crea FormData con el archivo y credenciales
+   * 3. Sube el archivo a ImageKit
+   * 4. Retorna la URL pública del archivo subido
+   * 
+   * @param {File} file - Archivo del comprobante (imagen o PDF)
+   * @returns {Promise<string|null>} URL del archivo en ImageKit o null si falla
+   * @throws {Error} Si no se puede obtener la firma o subir el archivo
    */
   const uploadProofToImageKit = async (file) => {
-    if (!file) return null; // Si no hay archivo, retorna null
+    if (!file) return null;
     
     // Paso 1: Obtener firma de autenticación desde el backend
     const sigRes = await fetch(`${API_URL}/storage/imagekit/signature`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!sigRes.ok) throw new Error("No se pudo obtener firma de ImageKit");
-    
-    // Extrae los datos de autenticación para ImageKit
+
+    // Paso 2: Extraer credenciales de la respuesta
     const { token: ikToken, signature, expire, publicKey, folder } = await sigRes.json();
 
-    // Paso 2: Construir FormData con el archivo y credenciales
+    // Paso 3: Preparar FormData con el archivo y credenciales
     const form = new FormData();
     form.append("file", file);
     form.append("fileName", file.name);
-    if (folder) form.append("folder", folder); // Carpeta de destino en ImageKit
+    if (folder) form.append("folder", folder);
     form.append("publicKey", publicKey);
     form.append("signature", signature);
     form.append("expire", expire);
     form.append("token", ikToken);
 
-    // Paso 3: Subir el archivo a ImageKit
+    // Paso 4: Subir archivo a ImageKit
     const uploadRes = await fetch(IMAGEKIT_UPLOAD_URL, { method: "POST", body: form });
     if (!uploadRes.ok) {
       const errText = await uploadRes.text();
       throw new Error(`Error al subir a ImageKit: ${errText}`);
     }
     
-    // Paso 4: Retornar la URL del archivo subido
+    // Paso 5: Extraer y retornar URL del archivo subido
     const uploadData = await uploadRes.json();
     return uploadData?.url || null;
   };
 
   /**
-   * Crea un registro de pago en el backend
+   * Envía el registro de pago al backend
+   * 
    * @param {Object} params - Parámetros del pago
-   * @param {number} params.studentId - ID del estudiante
-   * @param {string} params.method - Método de pago
-   * @param {number} params.total - Monto total
-   * @param {string} params.date - Fecha del pago
-   * @param {string} params.notes - Notas adicionales
-   * @param {string} params.proofUrl - URL del comprobante en ImageKit
-   * @returns {Promise<Object>} Respuesta del backend
+   * @param {string} params.method - Método de pago (efectivo, transferencia, deposito)
+   * @param {string} params.notes - Notas adicionales del pago
+   * @param {string|null} params.proofUrl - URL del comprobante en ImageKit
+   * @param {string} [params.month] - Mes del pago en formato "YYYY-MM" (opcional)
+   * @param {number[]} [params.bookingIds] - IDs de bookings a pagar (opcional)
+   * @returns {Promise<Object>} Respuesta del servidor con los datos del pago creado
+   * @throws {Error} Error estructurado con status y data si falla la petición
    */
-  const createPayment = async ({ studentId, method, total, date, notes, proofUrl }) => {
-    // Construye el payload según el formato esperado por el backend
-    const body = {
-      student_id: studentId, // ID del estudiante que realiza el pago
-      payment_method: mapMethodToEnum(method), // Mapea al ENUM de la BD
-      total: Number(total), // Convierte a número
-      payment_date: date, // Fecha en formato ISO (YYYY-MM-DD)
-      state: "en revision", // Estado inicial del pago
-      reference_pic: proofUrl || null, // URL del comprobante o null
-      note: notes || "", // Notas adicionales
-    };
-
-    // Envía la solicitud POST al backend
-    const res = await fetch(`${API_URL}/payments`, {
+  const createPayment = async ({ method, notes, proofUrl, month, bookingIds }) => {
+    // Enviar petición POST al endpoint de pagos
+    const res = await fetch(`${API_URL}/students/payments`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        paymentMethod: method,     // "efectivo" | "transferencia" | "deposito"
+        referencePic: proofUrl,    // URL del comprobante subido
+        note: notes,               // Notas adicionales
+        month,                     // Mes opcional en formato "YYYY-MM"
+        bookingIds,                // Array opcional de IDs de bookings
+      }),
     });
 
-    // Manejo de errores
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Error al crear el pago: ${errText}`);
+    // Parsear respuesta (puede ser JSON o texto)
+    const text = await res.text();
+    let data = null;
+    try { 
+      data = text ? JSON.parse(text) : null; 
+    } catch (parseError) {
+      console.warn("[StudentPayment] No se pudo parsear la respuesta como JSON");
     }
-    
-    return await res.json(); // Retorna la respuesta del backend
+
+    // Lanzar error estructurado si la petición falló
+    if (!res.ok) {
+      const err = new Error(data?.message || `HTTP ${res.status}`);
+      err.status = res.status;  // Código de estado HTTP
+      err.data = data;          // Datos adicionales del error
+      throw err;
+    }
+
+    return data;
   };
 
+
   /**
-   * Maneja el envío del formulario de pagos
+   * Maneja el envío del formulario de pago
+   * 
+   * Flujo:
+   * 1. Activa el estado de loading
+   * 2. Sube el comprobante a ImageKit (si hay archivo)
+   * 3. Envía el pago al backend
+   * 4. Muestra modal de éxito y actualiza la deuda
+   * 5. Maneja errores y muestra notificaciones apropiadas
+   * 
    * @param {Object} payload - Datos del formulario
+   * @param {string} payload.method - Método de pago seleccionado
+   * @param {string} payload.notes - Notas adicionales
+   * @param {File} payload.proof - Archivo del comprobante
    */
   const handleSubmit = async (payload) => {
     try {
-      setLoading(true); // Activa el estado de carga
-
-      // Validación: debe haber un estudiante seleccionado
-      if (!payload.studentId) {
-        toast.error(lang === "es" ? "Selecciona un estudiante." : "Select a student.");
-        return;
-      }
-
-      // Paso 1: Subir el comprobante a ImageKit si existe
+      setLoading(true);
+      
+      // Paso 1: Subir comprobante si se proporcionó
       let proofUrl = null;
       if (payload.proof) {
         proofUrl = await uploadProofToImageKit(payload.proof);
       }
-
-      // Paso 2: Registrar el pago en el backend
-      await createPayment({
-        studentId: payload.studentId,
-        method: payload.method,
-        total: payload.total,
-        date: payload.date,
-        notes: payload.notes,
-        proofUrl,
-      });
-
-      // Paso 3: Mostrar mensaje de éxito
-      toast.success(lang === "es" ? "Pago enviado para revisión." : "Payment submitted for review.");
       
-      // Actualiza la deuda a 0 (opcional: podrías recargar desde el backend)
+      // Paso 2: Registrar el pago en el backend
+      await createPayment({ 
+        method: payload.method, 
+        notes: payload.notes, 
+        proofUrl 
+      });
+      
+      // Paso 3: Mostrar confirmación de éxito
+      setShowSuccessModal(true);
+      
+      toast.success(
+        lang === "es" 
+          ? "Pago enviado para revisión." 
+          : "Payment submitted for review."
+      );
+      
+      // Paso 4: Resetear la deuda mostrada
       setDebt((d) => ({ ...d, amount: 0 }));
+      
     } catch (err) {
-      // Manejo de errores
-      console.error(err);
-      toast.error(lang === "es" ? "No se pudo enviar el pago." : "Failed to submit payment.");
+      // Manejo de errores: mostrar mensaje al usuario
+      console.error("[StudentPayment] Error en handleSubmit:", err);
+      toast.error(
+        lang === "es" 
+          ? "No se pudo enviar el pago." 
+          : "Failed to submit payment."
+      );
     } finally {
-      setLoading(false); // Desactiva el estado de carga
+      // Siempre desactivar el loading, sin importar si hubo éxito o error
+      setLoading(false);
     }
   };
 
+  // Construir nombre completo del estudiante desde la información del usuario
+  const studentFullName = `${user?.name ?? ""} ${user?.last_name ?? ""}`.trim();
+
+  /**
+   * Valores iniciales del formulario de pago
+   * Se recalculan cuando cambia la deuda o el nombre del estudiante
+   * 
+   * Nota: Para estudiantes, tanto studentName como parentName se prellenan
+   * con el nombre del estudiante, ya que es un estudiante adulto pagando por sí mismo
+   */
+  const initialValues = useMemo(() => {
+    return {
+      total: debt.amount ? String(debt.amount) : "",      // Monto de la deuda
+      currency: debt.currency || "Q",                     // Moneda (Quetzales)
+      date: new Date().toISOString().slice(0, 10),        // Fecha actual en formato YYYY-MM-DD
+      method: "transfer",                                 // Método por defecto: transferencia
+      notes: "",                                          // Notas vacías inicialmente
+      parentName: studentFullName,                        // Para estudiantes adultos
+      studentName: studentFullName,                       // Nombre prellenado del estudiante
+    };
+  }, [debt.amount, debt.currency, studentFullName, user?.id]);
+
+  /**
+   * Configuración de campos de solo lectura en el formulario
+   * Para estudiantes, todos los campos de identificación están bloqueados
+   */
+  const readOnlyFields = {
+    total: debt.amount != null,  // Total readonly si hay deuda cargada
+    studentName: true,           // Nombre del estudiante bloqueado (es el usuario actual)
+    parentName: true,            // Nombre del padre bloqueado (mismo que estudiante)
+  };
+
+  // ========== Renderizado del componente ==========
   return (
     <StudentLayout>
-      {/* Banner que muestra la deuda pendiente del estudiante */}
+      {/* Banner informativo con el monto de la deuda */}
       <div className="px-6 pt-4">
         <DebtBanner amount={debt.amount} currency={debt.currency} />
       </div>
 
-      {/* Formulario de pagos con configuración específica para estudiantes */}
+      {/* Formulario de registro de pago */}
       <PaymentForm
-        contextRole="student" // Define el contexto como estudiante
-        onSubmit={handleSubmit} // Callback al enviar el formulario
-        initialValues={initialValues} // Valores iniciales (deuda, fecha, etc.)
-        readOnlyFields={readOnlyFields} // Campos bloqueados (ej: total si hay deuda)
-        studentOptions={students} // Lista de estudiantes para seleccionar
-        guardianName={user?.guardianName ?? user?.parentName ?? ""} // Nombre del encargado
+        contextRole="student"                   // Indica que el formulario es para estudiante
+        onSubmit={handleSubmit}                 // Handler cuando se envía el formulario
+        initialValues={initialValues}           // Valores iniciales del formulario
+        readOnlyFields={readOnlyFields}         // Campos que deben ser readonly
       />
 
-      {/* Indicador de carga mientras se procesa el pago */}
+      {/* Indicador de carga durante el proceso */}
       {loading && (
         <div className="px-6 pb-8">
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -333,6 +328,22 @@ export default function StudentPayment() {
           </p>
         </div>
       )}
+
+      {/* Modal de confirmación de éxito */}
+      <AlertModal
+        isOpen={showSuccessModal}
+        title={
+          lang === "es" 
+            ? "¡Pago Registrado Exitosamente!" 
+            : "Payment Registered Successfully!"
+        }
+        message={
+          lang === "es"
+            ? "Tu pago ha sido enviado para revisión. El administrador verificará el comprobante y confirmará tu pago pronto."
+            : "Your payment has been submitted for review. The administrator will verify the receipt and confirm your payment soon."
+        }
+        onClose={() => setShowSuccessModal(false)}
+      />
     </StudentLayout>
   );
 }

@@ -3,31 +3,20 @@ import { useRef, useState, useEffect } from "react";
 import { Button, Label, Textarea } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 
-// i18n directo por archivos
 import en from "../../translations/en/form/PaymentForm";
 import es from "../../translations/es/form/PaymentForm";
 
 import { useAuth } from "../../contexts/AuthContext";
 
 const fmtDate = (iso) => {
-  if (!iso) return "mm / dd / yyyy";
+  if (!iso) return "dd / mm / yyyy";
   const d = new Date(iso);
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
   const yyyy = d.getFullYear();
-  return `${mm} / ${dd} / ${yyyy}`;
+  return `${dd} / ${mm} / ${yyyy}`; 
 };
 
-/**
- * PaymentForm (reutilizable)
- * Props:
- * - onSubmit: (payload) => void
- * - onCancel: () => void
- * - contextRole: "admin" | "parent" | "student"
- * - showHeader: boolean
- * - initialValues: objeto parcial para precargar el form
- * - readOnlyFields: { studentName?: boolean, parentName?: boolean, total?: boolean }
- */
 export default function PaymentForm({
   onSubmit,
   onCancel,
@@ -35,6 +24,8 @@ export default function PaymentForm({
   showHeader = true,
   initialValues = {},
   readOnlyFields = {},
+  studentOptions = [],
+  isLoading = false,
 }) {
   const navigate = useNavigate();
   const { lang, user } = useAuth();
@@ -46,7 +37,7 @@ export default function PaymentForm({
   const defaults = {
     studentName: "",
     parentName: "",
-    method: "cash",
+    method: "transfer", // Valor por defecto: transferencia
     date: "",
     status: "completed",
     currency: t.form.currencySymbol ?? "Q",
@@ -58,10 +49,27 @@ export default function PaymentForm({
   const [form, setForm] = useState({ ...defaults, ...initialValues });
 
   useEffect(() => {
-    // si cambian initialValues por props (p.ej. al cargar deuda)
-    setForm((s) => ({ ...s, ...initialValues }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.total, initialValues.studentName, initialValues.parentName, initialValues.date]);
+      // Actualizar formulario cuando cambien los valores iniciales
+      if (Object.keys(initialValues).length > 0) {
+        setForm((prev) => ({ ...prev, ...initialValues }));
+      }
+    }, [initialValues]);
+
+    useEffect(() => {
+    if (studentOptions.length === 0 || readOnlyFields.studentName) return;
+
+    // Si el form trae label y no value, intenta mapearlo al value correcto.
+    const current = form.studentName;
+    const hit = studentOptions.find(
+      (opt) => opt.value === current || opt.label === current
+    );
+
+    if (hit && current !== hit.value) {
+      setForm((s) => ({ ...s, studentName: hit.value }));
+    }
+    // Si no hay match, deja "" para que el usuario elija.
+  }, [studentOptions, readOnlyFields.studentName, form.studentName]);
+
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -73,10 +81,24 @@ export default function PaymentForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.studentName || !form.date || !form.total) {
-      alert(t.alerts.required);
+    
+    // Validaciones
+    if (!form.studentName?.trim()) {
+      alert(t.alerts?.required || "Por favor completa el nombre del estudiante");
       return;
     }
+    
+    if (!form.date) {
+      alert(t.alerts?.dateRequired || "Por favor selecciona una fecha");
+      return;
+    }
+    
+    const amount = parseFloat(form.total);
+    if (!form.total || isNaN(amount) || amount <= 0) {
+      alert(t.alerts?.invalidAmount || "Por favor ingresa un monto válido mayor a 0");
+      return;
+    }
+    
     const payload = { ...form, contextRole, userId: user?.id };
     onSubmit ? onSubmit(payload) : console.log("[PaymentForm] payload:", payload);
   };
@@ -135,20 +157,46 @@ export default function PaymentForm({
               >
                 {t.form.studentName}
               </label>
-              <input
-                id="studentName"
-                name="studentName"
-                type="text"
-                placeholder={t.form.studentName_ph}
-                value={form.studentName}
-                onChange={handleChange}
-                required
-                readOnly={!!readOnlyFields.studentName}
-                className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-2.5 
-                  text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
-                  dark:border-gray-600 dark:bg-gray-700 dark:text-white 
-                  dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500"
-              />
+              
+              {studentOptions.length > 0 && !readOnlyFields.studentName ? (
+                // Select cuando hay opciones disponibles
+                <select
+                  id="studentName"
+                  name="studentName"
+                  value={form.studentName}
+                  onChange={handleChange}
+                  required
+                  className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-2.5 
+                    text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
+                    dark:border-gray-600 dark:bg-gray-700 dark:text-white 
+                    dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500"
+                >
+                  <option value="">{t.form.studentName_ph || "Selecciona un estudiante"}</option>
+                  {studentOptions.map((opt, idx) => (
+                    <option key={idx} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                // Input texto cuando no hay opciones o es readonly
+                <input
+                  id="studentName"
+                  name="studentName"
+                  type="text"
+                  placeholder={t.form.studentName_ph}
+                  value={form.studentName}
+                  onChange={handleChange}
+                  required
+                  readOnly={!!readOnlyFields.studentName}
+                  className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-2.5 
+                    text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
+                    dark:border-gray-600 dark:bg-gray-700 dark:text-white 
+                    dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500
+                    disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
+                  disabled={readOnlyFields.studentName}
+                />
+              )}
             </div>
 
             {/* Parent name */}
@@ -168,10 +216,12 @@ export default function PaymentForm({
                 onChange={handleChange}
                 required
                 readOnly={!!readOnlyFields.parentName}
+                disabled={readOnlyFields.parentName}
                 className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 p-2.5 
                   text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
                   dark:border-gray-600 dark:bg-gray-700 dark:text-white 
-                  dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500"
+                  dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500
+                  disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -183,22 +233,18 @@ export default function PaymentForm({
               >
                 {t.form.method}
               </label>
-              <Label
-                value={t.form.method}
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              />
               <div className="relative w-full max-w-xs">
                 <select
                   id="paymentMethod"
                   name="method"
                   value={form.method}
                   onChange={handleChange}
-                  className="w-full max-w-xs appearance-none rounded-lg bg-cyan-500 px-4 py-3 pr-10 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:bg-cyan-600"
+                  disabled={isLoading}
+                  className="w-full max-w-xs appearance-none rounded-lg bg-cyan-500 px-4 py-3 pr-10 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <option value="cash">{t.methodOptions.cash}</option>
-                  <option value="card">{t.methodOptions.card}</option>
-                  <option value="transfer">{t.methodOptions.transfer}</option>
-                  <option value="check">{t.methodOptions.check}</option>
+                  <option value="cash">{t.methodOptions?.cash || "Efectivo"}</option>
+                  <option value="transfer">{t.methodOptions?.transfer || "Transferencia"}</option>
+                  <option value="deposit">{t.methodOptions?.deposit || "Depósito"}</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
                   <svg
@@ -221,29 +267,31 @@ export default function PaymentForm({
             {/* Payment Date */}
             <div>
               <label
-                htmlFor="paymentDate"
+                htmlFor="date"
                 className="mb-2 block text-xl font-medium text-gray-900 dark:text-white"
               >
                 {t.form.date}
               </label>
-              <Label
-                value={t.form.date}
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 "
-              />
               <input
+                id="date"
                 ref={dateRef}
                 type="date"
                 name="date"
                 value={form.date}
                 onChange={handleChange}
+                required
+                disabled={isLoading}
                 className="hidden"
               />
+              
               <button
                 type="button"
+                aria-label="Seleccionar fecha de pago"
                 onClick={() =>
                   dateRef.current?.showPicker?.() || dateRef.current?.click()
                 }
-                className="flex w-full max-w-xs items-center justify-between rounded-lg bg-cyan-500 px-4 py-3 text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                disabled={isLoading}
+                className="flex w-full max-w-xs items-center justify-between rounded-lg bg-cyan-500 px-4 py-3 text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>{fmtDate(form.date)}</span>
                 <svg
@@ -265,15 +313,11 @@ export default function PaymentForm({
             {/* Total Payment */}
             <div>
               <label
-                htmlFor="totalPayment"
+                htmlFor="total"
                 className="mb-2 block text-xl font-medium text-gray-900 dark:text-white"
               >
                 {t.form.total}
               </label>
-              <Label
-                value={t.form.total}
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              />
               <div className="flex items-stretch max-w-xs">
                 <div className="flex h-12 w-12 items-center justify-center rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700">
                   <svg
@@ -299,11 +343,13 @@ export default function PaymentForm({
                   name="total"
                   type="number"
                   step="0.01"
-                  placeholder={t.form.total_ph}
+                  min="0.01"
+                  placeholder={t.form.total_ph || "0.00"}
                   value={form.total}
                   onChange={handleChange}
                   readOnly={!!readOnlyFields.total}
-                  className="h-12 flex-1 rounded-r-lg border border-gray-300 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
+                  disabled={readOnlyFields.total || isLoading}
+                  className="h-12 flex-1 rounded-r-lg border border-gray-300 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
                   required
                 />
               </div>
@@ -311,34 +357,33 @@ export default function PaymentForm({
 
             {/* Proof of Payment */}
             <div>
-              <label
-                htmlFor="proofOfPayment"
+              <label 
+              htmlFor="proof"
                 className="mb-2 block text-xl font-medium text-gray-900 dark:text-white"
               >
                 {t.form.proof}
               </label>
-              <Label
-                value={t.form.proof}
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              />
               <input
+                id="proof"
                 ref={fileRef}
                 type="file"
                 name="proof"
                 accept=".jpg,.jpeg,.png,.pdf"
                 onChange={handleChange}
+                disabled={isLoading}
                 className="hidden"
               />
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="w-full max-w-xs rounded-lg bg-cyan-500 px-4 py-3 text-sm font-medium text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                disabled={isLoading}
+                className="w-full max-w-xs rounded-lg bg-cyan-500 px-4 py-3 text-sm font-medium text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {t.form.proof_btn}
+                {t.form.proof_btn || "Subir comprobante"}
               </button>
               {form.proof && (
                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  {t.form.selected}{" "}
+                  {t.form.selected || "Archivo seleccionado:"}{" "}
                   <span className="font-medium">{form.proof.name}</span>
                 </p>
               )}
@@ -352,19 +397,15 @@ export default function PaymentForm({
               >
                 {t.form.notes}
               </label>
-              <Label
-                htmlFor="notes"
-                value={t.form.notes}
-                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              />
               <Textarea
                 id="notes"
                 name="notes"
-                placeholder={t.form.notes_ph}
+                placeholder={t.form.notes_ph || "Notas adicionales (opcional)"}
                 rows={4}
                 value={form.notes}
                 onChange={handleChange}
-                className="w-full max-w-md rounded-lg border-gray-300 focus:border-gray-500 dark:border-gray-600"
+                disabled={isLoading}
+                className="w-full max-w-md rounded-lg border-gray-300 focus:border-gray-500 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -374,16 +415,43 @@ export default function PaymentForm({
             <Button
               color="failure"
               onClick={handleCancel}
-              className="w-full sm:w-auto min-w-[200px] bg-red-600 hover:bg-red-700 text-white"
+              disabled={isLoading}
+              className="w-full sm:w-auto min-w-[200px] bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
               type="button"
             >
-              {t.actions.cancel}
+              {t.actions?.cancel || "Cancelar"}
             </Button>
             <Button
               type="submit"
-              className="w-full sm:w-auto min-w-[200px] bg-cyan-500 hover:bg-cyan-600 text-white"
+              disabled={isLoading}
+              className="w-full sm:w-auto min-w-[200px] bg-cyan-500 hover:bg-cyan-600 text-white disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {t.actions.submit}
+              {isLoading && (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              )}
+              {isLoading 
+                ? (t.actions?.submitting || "Procesando...") 
+                : (t.actions?.submit || "Enviar Pago")
+              }
             </Button>
           </div>
         </form>

@@ -19,10 +19,18 @@ export default {
     notes_ph: "Add a note (optional)",
   },
   methodOptions: {
-    transfer: "Bank transfer",
     cash: "Cash",
+    transfer: "Bank Transfer",
     deposit: "Deposit",
   },
-  actions: { cancel: "Cancel", submit: "Submit" },
-  alerts: { required: "Please fill in the required fields." },
+  actions: { 
+    cancel: "Cancel", 
+    submit: "Submit Payment",
+    submitting: "Processing..."
+  },
+  alerts: { 
+    required: "Please enter the student's name.",
+    dateRequired: "Please select a date.",
+    invalidAmount: "Please enter a valid amount greater than 0."
+  },
 };
