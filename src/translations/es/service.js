@@ -15,20 +15,31 @@ export default {
     stimulationB2: "Enfoque por etapas según edad y ritmo de aprendizaje.",
     stimulationB3: "Guía de práctica para casa y seguimiento con padres.",
 
-    // Piano
-    pianoTitle: "Piano",
+    // Introducción al Piano
+    pianoTitle: "Introducción al Piano",
     pianoDesc:
       "Clases personalizadas desde nivel básico hasta avanzado, con repertorio moderno y clásico para fortalecer técnica, lectura y musicalidad.",
     pianoB1: "Plan de estudio individual y metas por módulo.",
     pianoB2: "Preparación para recitales y evaluaciones internas.",
     pianoB3: "Opciones presenciales y en línea.",
 
-    // Canto
-    singTitle: "Entrenamiento Vocal",
+    // Entrenamiento Vocal y Canto
+    singTitle: "Entrenamiento Vocal y Canto",
     singDesc:
-      "Entrena tu voz con enfoque saludable: respiración, colocación, afinación y proyección. Trabajamos tu estilo para que te sientas cómodo en el escenario.",
-    singB1: "Ejercicios técnicos y de expresión.",
-    singB2: "Repertorio guiado según tus objetivos.",
-    singB3: "Grabaciones periódicas para medir tu progreso.",
+      "Desarrolla tu voz con técnicas de respiración, colocación y proyección. Aprende a cuidar tu instrumento vocal y a interpretar con confianza.",
+    singB1: "Clases grupales e individuales con acompañamiento personalizado.",
+    singB2: "Vocalizaciones, ejercicios de agilidad y control del diafragma.",
+    singB3: "Exploración del repertorio y grabaciones para evaluar tu progreso.",
+    singContentTitle: "Contenido del curso",
+    singContent: [
+      "Cuidado y salud de la voz.",
+      "Sistema respiratorio y función del diafragma.",
+      "Ejercicios de respiración: inhalar, exhalar y postura correcta.",
+      "Calentamiento corporal y vocal.",
+      "Vocalización: garganta abierta y cerrada.",
+      "Colocación y proyección de la voz.",
+      "Entrenamiento y acompañamiento durante el canto."
+    ],
+
   },
 };

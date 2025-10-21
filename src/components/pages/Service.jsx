@@ -39,13 +39,15 @@ function ServiceBlock({
   img,           // imagen única (fallback si no hay carrusel)
   images = [],   // varias imágenes para carrusel (tiene prioridad sobre img)
   reverse = false,
-  ctaLabel = "", // reservado para futura implementación de botón CTA
+  subTitle = "",
+  bulletSub = [],
 }) {
   // Determina si debe mostrar carrusel o imagen estática
   const hasCarousel = Array.isArray(images) && images.length > 0;
   
   // Filtra bullets vacíos o undefined para evitar <li> vacíos
   const safeBullets = Array.isArray(bullets) ? bullets.filter(Boolean) : [];
+  const safeBulletSub = Array.isArray(bulletSub) ? bulletSub.filter(Boolean) : [];
 
   return (
     <Card className="border border-gray-200/60 shadow-md overflow-hidden">
@@ -66,6 +68,14 @@ function ServiceBlock({
           {safeBullets.length > 0 && (
             <ul className="list-disc list-inside text-gray-600 space-y-1">
               {safeBullets.map((b, i) => (
+                <li key={i}>{b}</li>
+              ))}
+            </ul>
+          )}
+          <h4 className="text-2xl text-gray-600 leading-relaxed">{subTitle}</h4>
+          {safeBulletSub.length > 0 && (
+            <ul className="list-disc list-inside text-gray-600 space-y-1">
+              {safeBulletSub.map((b, i) => (
                 <li key={i}>{b}</li>
               ))}
             </ul>
@@ -150,7 +160,10 @@ export default function Service() {
 
   // Imágenes para Entrenamiento Vocal (Canto)
   const cantoImgs = [
-    "/Service/Canto/canto.png",
+    "/Service/Canto/Canto1.jpg",
+    "/Service/Canto/Canto2.jpg",
+    "/Service/Canto/Canto3.jpg",
+    "/Service/Canto/Canto4.jpg",
   ];
 
   return (
@@ -193,7 +206,6 @@ export default function Service() {
             bullets={[ts.stimulationB1, ts.stimulationB2, ts.stimulationB3]} // Puntos destacados
             images={stimulationImgs}                 // Array de imágenes para carrusel
             reverse={false}                          // false = texto izq, imagen der
-            ctaLabel={tc.moreInfo}                   // Etiqueta para botón (reservado)
           />
 
           {/* === BLOQUE 2: PIANO === */}
@@ -205,7 +217,6 @@ export default function Service() {
               bullets={[ts.pianoB1, ts.pianoB2, ts.pianoB3]} // Puntos destacados
               images={pianoImgs}                     // Array de 11 imágenes para carrusel
               reverse={true}                         // true = imagen izq, texto der (alternado)
-              ctaLabel={tc.moreInfo}                 // Etiqueta para botón (reservado)
             />
           </div>
 
@@ -216,9 +227,10 @@ export default function Service() {
               title={ts.singTitle}                   // Título del servicio
               description={ts.singDesc}              // Descripción completa
               bullets={[ts.singB1, ts.singB2, ts.singB3]} // Puntos destacados
+              subTitle={ts.singContentTitle}      // Título del contenido del curso
+              bulletSub={ts.singContent}                 // Contenido del curso
               images={cantoImgs}                     // Array de imágenes (actualmente solo 1)
               reverse={false}                        // false = texto izq, imagen der
-              ctaLabel={tc.moreInfo}                 // Etiqueta para botón (reservado)
             />
           </div>
         </div>

@@ -15,20 +15,31 @@ export default {
     stimulationB2: "Stage-based approach by age and learning pace.",
     stimulationB3: "At-home practice guide and follow-up with parents.",
 
-    // Piano
-    pianoTitle: "Piano",
+    // Introduction to piano
+    pianoTitle: "Introduction to Piano",
     pianoDesc:
       "Personalized lessons from beginner to advanced, with modern and classical repertoire to strengthen technique, sight-reading, and musicality.",
     pianoB1: "Individual study plan and module-based goals.",
     pianoB2: "Preparation for recitals and internal assessments.",
     pianoB3: "In-person and online options.",
 
-    // Vocal Training
-    singTitle: "Vocal Training",
+    // Vocal Training and Singing
+    singTitle: "Vocal Training and Singing",
     singDesc:
-      "Train your voice with a healthy approach: breathing, placement, tuning, and projection. We shape your style so you feel confident on stage.",
-    singB1: "Technical and expression exercises.",
-    singB2: "Guided repertoire based on your goals.",
-    singB3: "Periodic recordings to track your progress.",
+      "Develop your voice with techniques for breathing, placement, and projection. Learn to care for your vocal instrument and perform with confidence.",
+    singB1: "Group and individual lessons with personalized guidance.",
+    singB2: "Vocal warm-ups, agility exercises, and diaphragm control.",
+    singB3: "Repertoire exploration and recordings to track your progress.",
+    singContentTitle: "Course Content",
+    singContent: [
+      "Vocal care and health.",
+      "Respiratory system and diaphragm function.",
+      "Breathing exercises: inhale, exhale, and correct posture.",
+      "Body and vocal warm-ups.",
+      "Vocalization: open and closed throat techniques.",
+      "Voice placement and projection.",
+      "Ongoing training and performance support."
+    ],
+
   },
 };
