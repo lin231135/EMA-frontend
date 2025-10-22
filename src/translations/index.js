@@ -8,7 +8,7 @@ import { register as esRegister } from "./es/register";
 import { passwordModal as esPasswordModal } from "./es/passwordModal";
 import { login as esLogin } from "./es/login";
 import esStudentCalendar from "./es/student/StudentCalendar";
-import esStudentHistoryPayment from "./es/student/StudentHistoryPayment";
+import esHistoryPayment from "./es/app/HistoryPayment";
 import esAddClassModal from "./es/AddClassModal";
 import esStudentDashboard from "./es/student/StudentDashboard";
 import esAdminDashboard from "./es/admin/AdminDashboard";
@@ -36,7 +36,7 @@ import { register as enRegister } from "./en/register";
 import { passwordModal as enPasswordModal } from "./en/passwordModal";
 import { login as enLogin } from "./en/login";
 import enStudentCalendar from "./en/student/StudentCalendar";
-import enStudentHistoryPayment from "./en/student/StudentHistoryPayment";
+import enHistoryPayment from "./en/app/HistoryPayment";
 import enAddClassModal from "./en/AddClassModal";
 import enStudentDashboard from "./en/student/StudentDashboard";
 import enAdminDashboard from "./en/admin/AdminDashboard";
@@ -67,7 +67,7 @@ const translations = {
     passwordModal: esPasswordModal,
     login: esLogin,
     studentCalendar: esStudentCalendar,
-    studentHistoryPayment: esStudentHistoryPayment,
+    historyPayments: esHistoryPayment,
     addClassModal: esAddClassModal,
     studentDashboard: esStudentDashboard,
     adminDashboard: esAdminDashboard,
@@ -96,7 +96,7 @@ const translations = {
     passwordModal: enPasswordModal,
     login: enLogin,
     studentCalendar: enStudentCalendar,
-    studentHistoryPayment: enStudentHistoryPayment,
+    historyPayments: enHistoryPayment,
     addClassModal: enAddClassModal,
     studentDashboard: enStudentDashboard,
     adminDashboard: enAdminDashboard,

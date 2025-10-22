@@ -21,6 +21,8 @@ import ScrollToTop from "./components/ui/ScrollToTop";
 import PaymentForm from "./components/forms/PaymentForm";
 import StudentPayment from "./components/pages/student/StudentPayment";
 import ParentPayment from "./components/pages/parent/ParentPayment";
+import ParentHistoryPayments from "./components/pages/parent/ParentHistoryPayments";
+import HistoryPayments from "./components/pages/app/HistoryPayments";
 
 export function AppRoutes() {
   return (
@@ -33,6 +35,7 @@ export function AppRoutes() {
       <Route path="/parent/payment" element={<ParentPayment />} />
       <Route path="/parent/calendar" element={<ParentCalendar />} />
       <Route path="/parent/profile" element={<Profile />} />
+      <Route path="/parent/historyPayments" element={<ParentHistoryPayments />} />
 
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -45,7 +48,7 @@ export function AppRoutes() {
       <Route path="/student/dashboard/:studentId" element={<StudentDashboard />} />
       <Route path="/student/calendar" element={<StudentCalendar />} />
       {/* <Route path="/student/payments" element={<StudentHistoryPayments />} /> */}
-      <Route path="/student/history-payments" element={<StudentHistoryPayments />} />
+      <Route path="/student/historyPayments" element={<StudentHistoryPayments />} />
       <Route path="/student/payment" element={<StudentPayment />} />
       <Route path="/student/profile" element={<Profile />} />
 
@@ -59,6 +62,7 @@ export function AppRoutes() {
       <Route path="/preregister" element={<PreRegisterForm />} />
       <Route path="/service" element={<Service />} />
       <Route path="/paymentForm" element={<PaymentForm />} />
+      <Route path="/historyPayments" element={<HistoryPayments />} />
 
       {/* 404 → home */}
       <Route path="*" element={<Navigate to="/" replace />} />

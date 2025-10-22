@@ -1,19 +1,17 @@
-// src/translations/es/Student/StudentHistoryPayment.js
-
+// src/translations/es/app/historyPayments.js
 export default {
   title: "Historial de Pagos",
   tableHeaders: {
-    serialNumber: "No. Serial",
+    serialNumber: "No. de Serie",
     description: "Descripción",
     monthPaid: "Mes Pagado",
     year: "Año",
     totalCost: "Costo Total"
   },
   noPayments: "No hay pagos registrados",
-  loadingPayments: "Cargando historial de pagos...",
+  loadingPayments: "Cargando historial de pagos...", 
   search: {
     placeholder: "Buscar pagos...",
-    button: "Buscar",
     noResults: "No se encontraron pagos que coincidan con tu búsqueda"
   },
   print: {
@@ -30,8 +28,8 @@ export default {
       address: "19 Avenida \"A\" 4-39, Vista Hermosa 1,\nZona 15, Guatemala"
     },
     client: {
-      name: "Daniel Chet",
-      address: "Dirección del Cliente"
+      name: "Cliente",
+      address: "Ciudad de Guatemala"
     }
   }
-}
+};

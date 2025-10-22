@@ -1,4 +1,4 @@
-// src/translations/en/Student/StudentHistoryPayment.js
+// src/translations/en/app/tHistoryPayment.js
 
 export default {
   title: "Payment History",

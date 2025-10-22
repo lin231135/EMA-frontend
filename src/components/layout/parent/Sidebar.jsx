@@ -1,10 +1,29 @@
 // src/components/layout/parent/Sidebar.jsx
+/**
+ * @file Sidebar.jsx (Parent)
+ * @description Barra lateral de navegación para el rol padre con funcionalidades especiales
+ * 
+ * Características principales:
+ * - Navegación colapsable/expandible
+ * - Filtros dinámicos de hijos con colores personalizados
+ * - Iconos SVG inline para cada sección
+ * - Soporte para dark mode
+ * - Sistema de traducción integrado (i18n)
+ * - Estilos adaptados al tema cyan de la aplicación
+ */
+
 import { NavLink, Link } from "react-router-dom";
 import { Logo } from "../Logo";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
 
-/* Helpers */
+/**
+ * Genera las clases CSS para los enlaces de navegación
+ * 
+ * @param {boolean} isActive - Indica si el enlace está activo
+ * @param {boolean} collapsed - Indica si el sidebar está colapsado
+ * @returns {string} Clases CSS concatenadas
+ */
 const linkCls = (isActive, collapsed) =>
   [
     "flex items-center rounded-lg text-sm font-medium transition",
@@ -15,16 +34,33 @@ const linkCls = (isActive, collapsed) =>
     collapsed ? "justify-center" : "justify-start",
   ].join(" ");
 
+/**
+ * Obtiene los elementos del menú de navegación con traducciones
+ * 
+ * @param {Object} t - Objeto de traducciones para el idioma actual
+ * @returns {Array} Array de objetos con to, label e icon para cada elemento del menú
+ */
 const getItems = (t) => [
   { to: "/parent/dashboard", label: t.dashboard, icon: "grid" },
   { to: "/parent/calendar", label: t.calendar, icon: "calendar" },
-  { to: "/parent/payment",    label: t.payments,        icon: "card" },
-  //{ to: "/parent/PaymentHistory", label: t.paymentHistory, icon: "card" },
- // { to: "/parent/books",          label: t.books,           icon: "book" },
-  { to: "/parent/profile",        label: t.profile,         icon: "user" },
+  { to: "/parent/payment", label: t.payments, icon: "card" },
+  { to: "/parent/historyPayments", label: t.paymentHistory, icon: "card" },
+  // { to: "/parent/books", label: t.books, icon: "book" },  // Deshabilitado temporalmente
+  { to: "/parent/profile", label: t.profile, icon: "user" },
 ];
 
+/**
+ * Componente de icono SVG inline
+ * 
+ * Renderiza iconos SVG predefinidos basados en el nombre proporcionado
+ * Iconos disponibles: grid, calendar, card, user
+ * 
+ * @param {Object} props - Propiedades del componente
+ * @param {string} props.name - Nombre del icono a renderizar
+ * @returns {JSX.Element} Elemento SVG del icono
+ */
 function Icon({ name }) {
+  // Mapa de paths SVG para cada icono
   const pathMap = {
     grid: "M4.857 3A1.857 1.857 0 0 0 3 4.857v4.286C3 10.169 3.831 11 4.857 11h4.286A1.857 1.857 0 0 0 11 9.143V4.857A1.857 1.857 0 0 0 9.143 3H4.857Zm10 0A1.857 1.857 0 0 0 13 4.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 9.143V4.857A1.857 1.857 0 0 0 19.143 3h-4.286Zm-10 10A1.857 1.857 0 0 0 3 14.857v4.286C3 20.169 3.831 21 4.857 21h4.286A1.857 1.857 0 0 0 11 19.143v-4.286A1.857 1.857 0 0 0 9.143 13H4.857Zm10 0A1.857 1.857 0 0 0 13 14.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 19.143v-4.286A1.857 1.857 0 0 0 19.143 13h-4.286Z",
     calendar:
@@ -40,12 +76,38 @@ function Icon({ name }) {
   );
 }
 
-/* Convierte 'bg-violet-500' -> 'accent-violet-500' para el checkbox */
+/**
+ * Convierte una clase de color de background a clase de accent para checkboxes
+ * 
+ * Ejemplo: 'bg-violet-500' -> 'accent-violet-500'
+ * Necesario porque los checkboxes usan accent-* en lugar de bg-*
+ * 
+ * @param {string} barClass - Clase de background (ej: 'bg-cyan-500')
+ * @returns {string} Clase de accent equivalente o 'accent-cyan-500' por defecto
+ */
 const barToAccent = (barClass) =>
   typeof barClass === "string" && barClass.startsWith("bg-")
     ? barClass.replace(/^bg-/, "accent-")
     : "accent-cyan-500";
 
+/**
+ * Componente Sidebar para el rol padre
+ * 
+ * Características especiales:
+ * - Colapsable/expandible con botón toggle
+ * - Filtros por hijo con colores personalizados
+ * - Navegación con enlaces activos resaltados
+ * - Footer con Settings y Logout
+ * 
+ * @param {Object} props - Propiedades del componente
+ * @param {boolean} props.collapsed - Estado del sidebar (colapsado/expandido)
+ * @param {Function} props.onToggleCollapse - Callback para toggle del sidebar
+ * @param {Object} props.kidsFilter - Estado de filtros de hijos { 'all': true, 'kid-1': false, ... }
+ * @param {Function} props.onToggleKid - Callback para toggle de filtro de hijo
+ * @param {Object} [props.kidsLabels={}] - Nombres de hijos { 'kid-<id>': 'Nombre' }
+ * @param {Object} [props.kidStyles={}] - Estilos por hijo { 'kid-<id>': { bar, ring, text } }
+ * @returns {JSX.Element} Sidebar completo del padre
+ */
 export default function Sidebar({
   collapsed,
   onToggleCollapse,
@@ -54,6 +116,7 @@ export default function Sidebar({
   kidsLabels = {},   // { 'kid-<id>': 'Nombre' }
   kidStyles = {},    // { 'kid-<id>': { bar, ring, text } }
 }) {
+  // Obtener idioma actual y traducciones
   const { lang } = useAuth();
   const t = translations[lang]?.parentSidebar || translations.es.parentSidebar;
   const items = getItems(t);
@@ -61,14 +124,14 @@ export default function Sidebar({
   return (
     <aside
       className={[
-        "hidden md:flex md:flex-col md:h-screen",
-        "fixed top-0 left-0",
+        "hidden md:flex md:flex-col md:h-screen",  // Oculto en móvil, visible en desktop
+        "fixed top-0 left-0",                      // Posición fija en la esquina superior izquierda
         "bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800",
-        "transition-all duration-300 ease-in-out z-50",
-        collapsed ? "w-20" : "w-64",
+        "transition-all duration-300 ease-in-out z-50",  // Transiciones suaves
+        collapsed ? "w-20" : "w-64",               // Ancho dinámico según estado colapsado
       ].join(" ")}
     >
-      {/* Header */}
+      {/* ========== Header: Logo y botón de colapsar ========== */}
       <div className={`flex items-center px-0 py-3 ${collapsed ? "flex-col justify-center" : "flex-row justify-between"}`}>
         <Link to="/parent/ParentDashboard" className="flex items-center justify-start gap-3">
           <Logo size="h-10" variant="color" />
@@ -94,7 +157,7 @@ export default function Sidebar({
         </button>
       </div>
 
-      {/* Menu */}
+      {/* ========== Menú de navegación principal ========== */}
       <nav className="px-3">
         <ul className="space-y-1 font-medium">
           {items.map((it) => (
@@ -104,7 +167,9 @@ export default function Sidebar({
                 className={({ isActive }) => linkCls(isActive, collapsed)}
                 title={collapsed ? it.label : undefined}
               >
+                {/* Icono del elemento de menú */}
                 <span className="me-2 flex-shrink-0"><Icon name={it.icon} /></span>
+                {/* Label del elemento (oculto si está colapsado) */}
                 <span className={collapsed ? "hidden" : "ms-1 truncate"}>{it.label}</span>
               </NavLink>
             </li>
@@ -112,14 +177,17 @@ export default function Sidebar({
         </ul>
       </nav>
 
-      {/* Filtros de hijos (dinámicos y por color) */}
+      {/* ========== Filtros de hijos (dinámicos con colores) ========== */}
+      {/* Solo se muestra cuando el sidebar NO está colapsado y existen filtros */}
       {!collapsed && kidsFilter && onToggleKid && (
         <div className="mt-4 mx-3 p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+          {/* Título de la sección de filtros */}
           <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">
             {t.students || "Students"}
           </p>
 
           <div className="space-y-2">
+            {/* Checkbox para "Todos" */}
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -133,10 +201,11 @@ export default function Sidebar({
               </span>
             </label>
 
+            {/* Checkboxes individuales por cada hijo con su color */}
             {Object.entries(kidsLabels).map(([kidKey, label]) => {
               const style = kidStyles[kidKey] || {};
-              const dot = style.bar || "bg-cyan-500";
-              const accent = barToAccent(dot);
+              const dot = style.bar || "bg-cyan-500";  // Color del dot
+              const accent = barToAccent(dot);          // Convertir a accent-* para checkbox
               return (
                 <label key={kidKey} className="flex items-center gap-2 text-sm">
                   <input
@@ -146,6 +215,7 @@ export default function Sidebar({
                     onChange={() => onToggleKid(kidKey)}
                   />
                   <span className="inline-flex items-center gap-2">
+                    {/* Dot de color identificador del hijo */}
                     <span className={`inline-block w-2.5 h-2.5 rounded-full ${dot}`} />
                     {label}
                   </span>
@@ -156,8 +226,10 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* Footer */}
+      {/* ========== Footer: Settings y Logout ========== */}
+      {/* mt-auto empuja el footer hacia abajo del sidebar */}
       <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800">
+        {/* Enlace a Settings */}
         <NavLink to="/settings" className={({ isActive }) => linkCls(isActive, collapsed)} title={collapsed ? "Settings" : undefined}>
           <span className="me-2 flex-shrink-0">
             <svg className="w-5 h-5 text-gray-400 dark:text-gray-400" viewBox="0 0 24 24" fill="currentColor">
@@ -167,6 +239,7 @@ export default function Sidebar({
           <span className={collapsed ? "hidden" : "ms-1 truncate"}>Settings</span>
         </NavLink>
 
+        {/* Enlace a Logout */}
         <NavLink to="/logout" className={linkCls(false, collapsed)} title={collapsed ? "Logout" : undefined}>
           <span className="me-2 flex-shrink-0">
             <svg className="w-5 h-5 text-gray-400 dark:text-gray-400" viewBox="0 0 24 24" fill="none">

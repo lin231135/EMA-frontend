@@ -1,8 +1,31 @@
 // src/components/layout/student/Sidebar.jsx
+/**
+ * @file Sidebar.jsx (Student)
+ * @description Barra lateral de navegación para el rol estudiante
+ * 
+ * Características principales:
+ * - Navegación colapsable/expandible
+ * - Iconos SVG inline para cada sección
+ * - Soporte para dark mode
+ * - Logout con limpieza de autenticación
+ * - Estilos adaptados al tema cyan de la aplicación
+ * - Menú simplificado sin filtros (a diferencia del sidebar de padre)
+ * 
+ * @author EMA Frontend Team
+ * @version 2.0.0
+ */
+
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Logo } from "../Logo";
 
+/**
+ * Genera las clases CSS para los enlaces de navegación
+ * 
+ * @param {boolean} isActive - Indica si el enlace está activo
+ * @param {boolean} collapsed - Indica si el sidebar está colapsado
+ * @returns {string} Clases CSS concatenadas
+ */
 const linkCls = (isActive, collapsed) =>
   [
     "flex items-center rounded-lg text-sm font-medium transition",
@@ -13,16 +36,33 @@ const linkCls = (isActive, collapsed) =>
     collapsed ? "justify-center" : "justify-start",
   ].join(" ");
 
+/**
+ * Elementos del menú de navegación para estudiantes
+ * Array estático con rutas, labels e iconos
+ * 
+ * Nota: A diferencia del sidebar de padre, este no usa traducciones dinámicas
+ */
 const items = [
   { to: "/student/dashboard", label: "Dashboard", icon: "grid" },
   { to: "/student/calendar", label: "Calendar", icon: "calendar" },
   { to: "/student/payment", label: "Payments", icon: "card" },
-  { to: "/student/history-payments", label: "Payment History", icon: "card" },
+  { to: "/student/historyPayments", label: "Payment History", icon: "card" },
   { to: "/student/books", label: "Books", icon: "book" },
   { to: "/student/profile", label: "Profile", icon: "user" },
 ];
 
+/**
+ * Componente de icono SVG inline
+ * 
+ * Renderiza iconos SVG predefinidos basados en el nombre proporcionado
+ * Iconos disponibles: grid, calendar, books, card, book, user
+ * 
+ * @param {Object} props - Propiedades del componente
+ * @param {string} props.name - Nombre del icono a renderizar
+ * @returns {JSX.Element} Elemento SVG del icono
+ */
 function Icon({ name }) {
+  // Mapa de paths SVG para cada icono
   const pathMap = {
     grid: "M4.857 3A1.857 1.857 0 0 0 3 4.857v4.286C3 10.169 3.831 11 4.857 11h4.286A1.857 1.857 0 0 0 11 9.143V4.857A1.857 1.857 0 0 0 9.143 3H4.857Zm10 0A1.857 1.857 0 0 0 13 4.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 9.143V4.857A1.857 1.857 0 0 0 19.143 3h-4.286Zm-10 10A1.857 1.857 0 0 0 3 14.857v4.286C3 20.169 3.831 21 4.857 21h4.286A1.857 1.857 0 0 0 11 19.143v-4.286A1.857 1.857 0 0 0 9.143 13H4.857Zm10 0A1.857 1.857 0 0 0 13 14.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 19.143v-4.286A1.857 1.857 0 0 0 19.143 13h-4.286Z",
     calendar:
@@ -44,7 +84,24 @@ function Icon({ name }) {
   );
 }
 
+/**
+ * Componente principal del Sidebar del estudiante
+ * 
+ * Muestra navegación lateral con menú de opciones para estudiantes adultos.
+ * Incluye:
+ * - Logo y avatar del usuario
+ * - Menú de navegación con iconos
+ * - Indicador visual de página activa
+ * - Botón de cerrar sesión
+ * - Enlace a configuración
+ * 
+ * @param {Object} props - Propiedades del componente
+ * @param {boolean} props.collapsed - Estado de colapso del sidebar
+ * @param {Function} props.onToggleCollapse - Callback para alternar colapso
+ * @returns {JSX.Element} Componente Sidebar renderizado
+ */
 export default function Sidebar({ collapsed, onToggleCollapse }) {
+  // Hooks de navegación y autenticación
   const navigate = useNavigate();
   const auth = useAuth?.();
 
@@ -58,17 +115,20 @@ export default function Sidebar({ collapsed, onToggleCollapse }) {
         collapsed ? "w-20" : "w-64",
       ].join(" ")}
     >
-      {/* Header */}
+      {/* ===== Header Section ===== */}
+      {/* Logo y botón de toggle para colapsar el sidebar */}
       <div className={`flex items-center px-0 py-3 ${collapsed ? "flex-col justify-center" : "flex-row justify-between"}`}>
+        {/* Logo con enlace al dashboard del estudiante */}
         <Link to="/student/dashboard" className="flex items-center justify-start gap-3">
           <Logo size="h-10" variant="color" />
           {!collapsed && (
             <div className="leading-tight">
-              <div className="text-sm font-semibold text-cyan-600">Ellie’s Music</div>
+              <div className="text-sm font-semibold text-cyan-600">Ellie's Music</div>
               <div className="text-xs text-gray-700 dark:text-gray-300 -mt-0.5">Academy</div>
             </div>
           )}
         </Link>
+        {/* Botón para colapsar/expandir el sidebar */}
         <button
           onClick={onToggleCollapse}
           className="p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 mt-0"
@@ -87,9 +147,11 @@ export default function Sidebar({ collapsed, onToggleCollapse }) {
         </button>
       </div>
 
-      {/* Menú */}
+      {/* ===== Menu Navigation Section ===== */}
+      {/* Lista de opciones de navegación del estudiante */}
       <nav className="px-3">
         <ul className="space-y-1 font-medium">
+          {/* Itera sobre los items del menú definidos arriba */}
           {items.map((it) => (
             <li key={it.to}>
               <NavLink
@@ -105,8 +167,10 @@ export default function Sidebar({ collapsed, onToggleCollapse }) {
         </ul>
       </nav>
 
-      {/* Footer */}
+      {/* ===== Footer Section ===== */}
+      {/* Sección inferior con configuración y cerrar sesión */}
       <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800">
+        {/* Enlace a configuración */}
         <NavLink
           to="/student/settings"
           className={({ isActive }) => linkCls(isActive, collapsed)}
@@ -120,6 +184,8 @@ export default function Sidebar({ collapsed, onToggleCollapse }) {
           <span className={collapsed ? "hidden" : "ms-1 truncate"}>Settings</span>
         </NavLink>
 
+        {/* Botón de cerrar sesión */}
+        {/* Limpia la autenticación y redirige al login */}
         <button
           onClick={() => {
             try { auth?.logout?.(); } catch {}
