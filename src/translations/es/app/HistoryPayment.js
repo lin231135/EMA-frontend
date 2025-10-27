@@ -1,54 +1,113 @@
-// src/translations/es/app/historyPayments.js
+// src/translations/es/app/HistoryPayment.js
 export default {
   title: "Historial de Pagos",
-  tableHeaders: {
-    serialNumber: "No. de Serie",
-    description: "Descripción",
-    monthPaid: "Mes Pagado",
-    year: "Año",
-    totalCost: "Costo Total",
-    status: "Estado",
-    actions: "Acciones"
+  search: "Buscar...",
+  searchPlaceholder: "Buscar por N° de serie, descripción, mes o año",
+  noResults: "No se encontraron pagos",
+  noPayments: "No hay pagos registrados",
+  loading: "Cargando historial...",
+  error: "Error al cargar el historial de pagos",
+  
+  // Filtros
+  filters: {
+    allChildren: "Todos los hijos",
+    selectChild: "Seleccionar hijo",
+    filterByChild: "Filtrar por hijo:",
+    loadingChildren: "Cargando hijos...",
   },
-  status: {
+  
+  // Búsqueda
+  search: {
+    placeholder: "Buscar por N° de serie, descripción, mes o año",
+    noResults: "No se encontraron resultados",
+  },
+  
+  // Tabla
+  table: {
+    serialNumber: "N° de Serie",
+    description: "Descripción",
+    month: "Mes",
+    year: "Año",
+    total: "Total",
+    status: "Estado",
+    actions: "Acciones",
+  },
+
+  // Fallback para compatibilidad
+  tableHeaders: {
+    serialNumber: "N° de Serie",
+    description: "Descripción",
+    monthPaid: "Mes",
+    year: "Año",
+    totalCost: "Total",
+  },
+  
+  // Estados de pago
+  states: {
     pendiente: "Pendiente",
-    en_revision: "En Revisión",
+    "en revision": "En Revisión",
+    "en_revision": "En Revisión",
     aceptado: "Aceptado",
     rechazado: "Rechazado",
-    cancelado: "Cancelado"
+    cancelado: "Cancelado",
   },
+  
+  // Botones de acción
   viewDetails: "Ver Detalles",
-  noPayments: "No hay pagos registrados",
-  loadingPayments: "Cargando historial de pagos...", 
-  search: {
-    placeholder: "Buscar pagos...",
-    noResults: "No se encontraron pagos que coincidan con tu búsqueda"
+  print: "Imprimir",
+  
+  // Paginación
+  pagination: {
+    showing: "Mostrando",
+    to: "a",
+    of: "de",
+    results: "resultados",
+    previous: "Anterior",
+    next: "Siguiente",
+    page: "Página",
   },
-  print: {
-    button: "Imprimir",
-    title: "Historial de Pagos - Impresión"
+  
+  // Totales
+  totals: {
+    title: "Totales",
+    filtered: "Total filtrado:",
+    all: "Total general:",
   },
+  
+  // Factura/Impresión
   invoice: {
-    from: "Factura De:",
-    to: "Factura Para:",
-    date: "Fecha de Factura:",
-    dueDate: "Fecha de Vencimiento:",
+    title: "FACTURA - ELLIES MUSIC ACADEMY",
+    from: "De",
+    to: "Para",
     company: {
-      name: "Ellie's Music Academy (EMA)",
-      address: "19 Avenida \"A\" 4-39, Vista Hermosa 1,\nZona 15, Guatemala"
+      name: "Ellies Music Academy",
+      address: "Guatemala, Guatemala\nZona 10",
     },
     client: {
       name: "Cliente",
-      address: "Ciudad de Guatemala"
-    }
+      address: "Dirección del cliente",
+    },
+    clientInfo: "Información del Cliente",
+    name: "Nombre",
+    address: "Dirección",
+    date: "Fecha de emisión",
+    paymentHistory: "Historial de Pagos",
+    footer: "Gracias por su confianza",
   },
-  detailsModal: {
-    title: "Detalles del Pago",
-    close: "Cerrar",
-    userNote: "Nota del Usuario",
-    adminNote: "Nota Administrativa",
-    noUserNote: "Sin notas del usuario",
-    noAdminNote: "Sin notas administrativas",
-    noNotes: "No hay notas para este pago"
-  }
+  
+  // Meses traducidos
+  months: {
+    January: "Enero",
+    February: "Febrero",
+    March: "Marzo",
+    April: "Abril",
+    May: "Mayo",
+    June: "Junio",
+    July: "Julio",
+    August: "Agosto",
+    September: "Septiembre",
+    October: "Octubre",
+    November: "Noviembre",
+    December: "Diciembre",
+  },
 };

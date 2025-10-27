@@ -1,37 +1,113 @@
-// src/translations/en/app/tHistoryPayment.js
-
+// src/translations/en/app/HistoryPayment.js
 export default {
   title: "Payment History",
+  search: "Search...",
+  searchPlaceholder: "Search by serial number, description, month or year",
+  noResults: "No payments found",
+  noPayments: "No payments registered",
+  loading: "Loading history...",
+  error: "Error loading payment history",
+  
+  // Filters
+  filters: {
+    allChildren: "All children",
+    selectChild: "Select child",
+    filterByChild: "Filter by child:",
+    loadingChildren: "Loading children...",
+  },
+  
+  // Search
+  search: {
+    placeholder: "Search by serial number, description, month or year",
+    noResults: "No results found",
+  },
+  
+  // Table
+  table: {
+    serialNumber: "Serial No.",
+    description: "Description",
+    month: "Month",
+    year: "Year",
+    total: "Total",
+    status: "Status",
+    actions: "Actions",
+  },
+
+  // Fallback for compatibility
   tableHeaders: {
     serialNumber: "Serial No.",
     description: "Description",
-    monthPaid: "Month Paid",
+    monthPaid: "Month",
     year: "Year",
-    totalCost: "Total Cost"
+    totalCost: "Total",
   },
-  noPayments: "No payments registered",
-  loadingPayments: "Loading payment history...",
-  search: {
-    placeholder: "Search payments...",
-    button: "Search",
-    noResults: "No payments match your search criteria"
+  
+  // Payment states
+  states: {
+    pendiente: "Pending",
+    "en revision": "Under Review",
+    "en_revision": "Under Review",
+    aceptado: "Accepted",
+    rechazado: "Rejected",
+    cancelado: "Cancelled",
   },
-  print: {
-    button: "Print",
-    title: "Payment History - Print"
+  
+  // Action buttons
+  viewDetails: "View Details",
+  print: "Print",
+  
+  // Pagination
+  pagination: {
+    showing: "Showing",
+    to: "to",
+    of: "of",
+    results: "results",
+    previous: "Previous",
+    next: "Next",
+    page: "Page",
   },
+  
+  // Totals
+  totals: {
+    title: "Totals",
+    filtered: "Filtered total:",
+    all: "Grand total:",
+  },
+  
+  // Invoice/Print
   invoice: {
-    from: "Invoice From:",
-    to: "Invoice To:",
-    date: "Invoice Date:",
-    dueDate: "Due Date:",
+    title: "INVOICE - ELLIES MUSIC ACADEMY",
+    from: "From",
+    to: "To",
     company: {
-      name: "Ellie's Music Academy (EMA)",
-      address: "19 Avenida \"A\" 4-39, Vista Hermosa 1,\nZona 15, Guatemala"
+      name: "Ellies Music Academy",
+      address: "Guatemala, Guatemala\nZone 10",
     },
     client: {
-      name: "Daniel Chet",
-      address: "Client Address"
-    }
-  }
-}
+      name: "Client",
+      address: "Client address",
+    },
+    clientInfo: "Client Information",
+    name: "Name",
+    address: "Address",
+    date: "Issue date",
+    paymentHistory: "Payment History",
+    footer: "Thank you for your trust",
+  },
+  
+  // Translated months
+  months: {
+    January: "January",
+    February: "February",
+    March: "March",
+    April: "April",
+    May: "May",
+    June: "June",
+    July: "July",
+    August: "August",
+    September: "September",
+    October: "October",
+    November: "November",
+    December: "December",
+  },
+};

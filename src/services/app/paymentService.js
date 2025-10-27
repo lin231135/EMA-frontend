@@ -93,6 +93,9 @@ function normalizePayments(items = []) {
     // Extrae o genera ID único
     const id = it.id ?? it.payment_id ?? it.pid ?? cryptoRandomId();
     
+    // ID del pago (para modal de detalles)
+    const paymentId = it.paymentId ?? it.payment_id ?? id;
+    
     // Extrae o genera número de serie
     const serial = it.serialNumber ?? it.serial_number ?? it.serial ?? `EMA-${String(id).padStart(4, "0")}`;
     
@@ -129,14 +132,27 @@ function normalizePayments(items = []) {
         ? `$${Number(total).toFixed(2)}`
         : String(total);
 
+    // Extrae información adicional del pago
+    const state = it.state ?? "pendiente";
+    const paymentMethod = it.paymentMethod ?? it.payment_method ?? null;
+    const adminNote = it.adminNote ?? it.admin_note ?? null;
+    const userNote = it.userNote ?? it.user_note ?? null;
+    const referencePic = it.referencePic ?? it.reference_pic ?? null;
+
     // Retorna objeto normalizado
     return {
       id,
+      paymentId,
       serialNumber: String(serial),
       description: String(desc),
       monthPaid: String(month),
       year: String(year),
       totalCost: totalStr,
+      state,
+      paymentMethod,
+      adminNote,
+      userNote,
+      referencePic,
     };
   });
 }

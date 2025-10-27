@@ -28,6 +28,8 @@
  *   - name: nombre del cliente
  *   - address: dirección del cliente
  * @prop {number} [pageSize=10] - Cantidad de registros por página (opcional)
+
+
  * 
  * @author EMA Development Team
  * @version 2.0.0
@@ -36,6 +38,7 @@
 import { useAuth } from "../../../contexts/AuthContext";
 import { useEffect, useMemo, useState } from "react";
 import translations from "../../../translations";
+import PaymentDetailsModal from '../../forms/Parent/PaymentDetailsModal';
 
 /**
  * Componente principal de Historial de Pagos
@@ -49,6 +52,7 @@ import translations from "../../../translations";
  * @param {string|null} props.errorMessage - Mensaje de error
  * @param {Object} props.clientInfoOverride - Información del cliente
  * @param {number} props.pageSize - Tamaño de página para paginación
+ * @param {JSX.Element} props.customFilters - Componente de filtros personalizados
  * @returns {JSX.Element} Componente HistoryPayments renderizado
  */
 export default function HistoryPayments({
@@ -57,6 +61,7 @@ export default function HistoryPayments({
   errorMessage = null,
   clientInfoOverride,
   pageSize: pageSizeProp,
+  customFilters = null,
 }) {
   // Obtener idioma actual del contexto de autenticación
   const { lang } = useAuth();
@@ -67,7 +72,7 @@ export default function HistoryPayments({
   const [searchTerm, setSearchTerm] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // ===== Estado para modal de detalles =====
+  // ===== Estado del modal de detalles =====
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
@@ -143,12 +148,17 @@ export default function HistoryPayments({
     return map[lang]?.[m] || m;
   };
 
-  // ===== Funciones auxiliares para estados =====
-
+  /**
+   * Obtiene las clases CSS para el badge de estado del pago
+   * 
+   * @param {string} state - Estado del pago
+   * @returns {string} Clases CSS para el badge
+   */
   const getStateBadge = (state) => {
     const badges = {
       'pendiente': 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
       'en revision': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+      'en_revision': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
       'aceptado': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
       'rechazado': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
       'cancelado': 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
@@ -156,34 +166,24 @@ export default function HistoryPayments({
     return badges[state] || badges['pendiente'];
   };
 
-  const translateState = (state) => {
-    const states = {
-      es: {
-        'pendiente': 'Pendiente',
-        'en revision': 'En Revisión',
-        'aceptado': 'Aceptado',
-        'rechazado': 'Rechazado',
-        'cancelado': 'Cancelado',
-      },
-      en: {
-        'pendiente': 'Pending',
-        'en revision': 'Under Review',
-        'aceptado': 'Accepted',
-        'rechazado': 'Rejected',
-        'cancelado': 'Cancelled',
-      }
-    };
-    return states[lang]?.[state] || state;
+  /**
+   * Obtiene el texto traducido del estado
+   * 
+   * @param {string} state - Estado del pago
+   * @returns {string} Texto del estado traducido
+   */
+  const getStateText = (state) => {
+    return t.states?.[state] || t.states?.[state.replace(' ', '_')] || state;
   };
 
+  /**
+   * Abre el modal de detalles del pago
+   * 
+   * @param {Object} payment - Datos del pago
+   */
   const handleViewDetails = (payment) => {
     setSelectedPayment(payment);
     setShowDetailsModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowDetailsModal(false);
-    setSelectedPayment(null);
   };
 
   // ===== Procesamiento de datos =====
@@ -568,9 +568,10 @@ export default function HistoryPayments({
         </div>
       </div>
 
-      {/* Búsqueda + Imprimir */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="relative max-w-md flex-1">
+      {/* Búsqueda + Filtros + Imprimir */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
+        {/* Barra de búsqueda */}
+        <div className="relative flex-1 max-w-md">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
               className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -597,6 +598,14 @@ export default function HistoryPayments({
           />
         </div>
 
+        {/* Filtros personalizados (ej: filtro de hijos) */}
+        {customFilters && (
+          <div className="flex-shrink-0">
+            {customFilters}
+          </div>
+        )}
+
+        {/* Botón de imprimir */}
         <button
           onClick={handlePrint}
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 rounded-lg dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800 transition-colors"
@@ -624,13 +633,13 @@ export default function HistoryPayments({
         <table className="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-300">
           <thead className="sticky top-0 z-10 text-xs uppercase text-white bg-cyan-500 border-b-2 border-cyan-500 dark:bg-cyan-900/40 dark:text-cyan-200 dark:border-cyan-400">
             <tr>
-              <th className="px-6 py-3 font-semibold tracking-wide">{t.tableHeaders.serialNumber}</th>
-              <th className="px-6 py-3 font-semibold tracking-wide">{t.tableHeaders.description}</th>
-              <th className="px-6 py-3 font-semibold tracking-wide">{t.tableHeaders.monthPaid}</th>
-              <th className="px-6 py-3 font-semibold tracking-wide">{t.tableHeaders.year}</th>
-              <th className="px-6 py-3 font-semibold tracking-wide">{t.tableHeaders.totalCost}</th>
-              <th className="px-6 py-3 font-semibold tracking-wide">{t.tableHeaders.status}</th>
-              <th className="px-6 py-3 font-semibold tracking-wide">{t.tableHeaders.actions}</th>
+              <th className="px-6 py-3 font-semibold tracking-wide">{t.table?.serialNumber || t.tableHeaders.serialNumber}</th>
+              <th className="px-6 py-3 font-semibold tracking-wide">{t.table?.description || t.tableHeaders.description}</th>
+              <th className="px-6 py-3 font-semibold tracking-wide">{t.table?.month || t.tableHeaders.monthPaid}</th>
+              <th className="px-6 py-3 font-semibold tracking-wide">{t.table?.year || t.tableHeaders.year}</th>
+              <th className="px-6 py-3 font-semibold tracking-wide">{t.table?.total || t.tableHeaders.totalCost}</th>
+              <th className="px-6 py-3 font-semibold tracking-wide text-center">{t.table?.status || "Estado"}</th>
+              <th className="px-6 py-3 font-semibold tracking-wide text-center">{t.table?.actions || "Acciones"}</th>
             </tr>
           </thead>
 
@@ -651,17 +660,17 @@ export default function HistoryPayments({
                 <td className="px-6 py-4 font-semibold text-cyan-700 dark:text-cyan-400">
                   {p.totalCost}
                 </td>
-                <td className="px-6 py-4">
-                  <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${getStateBadge(p.state)}`}>
-                    {translateState(p.state)}
+                <td className="px-6 py-4 text-center">
+                  <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${getStateBadge(p.state)}`}>
+                    {getStateText(p.state)}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   <button
                     onClick={() => handleViewDetails(p)}
-                    className="text-cyan-600 hover:text-cyan-800 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium text-sm underline"
+                    className="text-cyan-600 hover:text-cyan-800 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium"
                   >
-                    {t.viewDetails || "Ver Detalles"}
+                    {t.viewDetails || "Ver"}
                   </button>
                 </td>
               </tr>
@@ -782,131 +791,12 @@ export default function HistoryPayments({
         </div>
       )}
 
-      {/* Modal de Detalles */}
-      {showDetailsModal && selectedPayment && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-            onClick={handleCloseModal}
-          ></div>
-          
-          <div className="flex min-h-screen items-center justify-center p-4">
-            <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
-              {/* Header */}
-              <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {t.detailsModal?.title || "Detalles del Pago"}
-                </h3>
-                <button 
-                  onClick={handleCloseModal} 
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
-                  </svg>
-                </button>
-              </div>
-
-              {/* Content */}
-              <div className="p-6 space-y-4">
-                {/* Información básica */}
-                <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {t.tableHeaders.serialNumber}
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 dark:text-white">
-                      {selectedPayment.serialNumber}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {t.tableHeaders.status}
-                    </p>
-                    <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${getStateBadge(selectedPayment.state)}`}>
-                      {translateState(selectedPayment.state)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {t.tableHeaders.totalCost}
-                    </p>
-                    <p className="text-lg font-bold text-cyan-700 dark:text-cyan-400">
-                      {selectedPayment.totalCost}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {t.tableHeaders.monthPaid} / {t.tableHeaders.year}
-                    </p>
-                    <p className="text-base font-semibold text-gray-900 dark:text-white">
-                      {selectedPayment.monthPaid} {selectedPayment.year}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Descripción */}
-                <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    {t.tableHeaders.description}
-                  </p>
-                  <p className="text-base text-gray-900 dark:text-white">
-                    {selectedPayment.description}
-                  </p>
-                </div>
-
-                {/* Nota del Usuario */}
-                {selectedPayment.note && (
-                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2 flex items-center gap-2">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
-                      </svg>
-                      {t.detailsModal?.userNote || "Nota del Usuario"}
-                    </h4>
-                    <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-wrap">
-                      {selectedPayment.note}
-                    </p>
-                  </div>
-                )}
-
-                {/* Nota Administrativa */}
-                {selectedPayment.adminNote && (
-                  <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                    <h4 className="text-sm font-semibold text-yellow-900 dark:text-yellow-300 mb-2 flex items-center gap-2">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
-                      </svg>
-                      {t.detailsModal?.adminNote || "Nota Administrativa"}
-                    </h4>
-                    <p className="text-sm text-yellow-800 dark:text-yellow-200 whitespace-pre-wrap">
-                      {selectedPayment.adminNote}
-                    </p>
-                  </div>
-                )}
-
-                {/* Sin notas */}
-                {!selectedPayment.note && !selectedPayment.adminNote && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                    {t.detailsModal?.noNotes || "No hay notas para este pago"}
-                  </p>
-                )}
-              </div>
-
-              {/* Footer */}
-              <div className="flex justify-end p-5 border-t border-gray-200 dark:border-gray-700">
-                <button
-                  onClick={handleCloseModal}
-                  className="px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800 transition-colors"
-                >
-                  {t.detailsModal?.close || "Cerrar"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modal de Detalles del Pago */}
+      <PaymentDetailsModal
+        payment={selectedPayment}
+        isOpen={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+      />
     </div>
   );
 }

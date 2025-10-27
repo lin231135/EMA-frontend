@@ -7,21 +7,22 @@
  * - Envuelve el componente genérico HistoryPayments con ParentLayout
  * - Obtiene el historial de pagos desde el backend mediante API
  * - Normaliza y pasa los datos al componente genérico vía props
- * - Soporta filtrado opcional por hijo específico mediante query param ?kid_id=
+ * - Filtro por hijo para mejor planificación de gastos
  * - Inyecta automáticamente la información del padre como cliente en la factura
  * - Maneja estados de carga y errores
  * - Actualiza datos automáticamente al cambiar de hijo seleccionado
  * 
- * Query Parameters:
- * @queryparam {string} kid_id - ID opcional del hijo para filtrar pagos específicos
+ * Historia de Usuario:
+ * "Como Padre, quiero filtrar mi historial de pagos por hijo para tener una mejor planificación de gastos"
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import ParentLayout from "../../layout/parent/ParentLayout";
 import HistoryPayments from "../app/HistoryPayments";
 import { useAuth } from "../../../contexts/AuthContext";
 import { fetchParentPayments } from "../../../services/app/paymentService";
+import { getMyChildren } from "../../../services/parent/parentService";
+import translations from "../../../translations";
 
 /**
  * Componente de Historial de Pagos para Padres
@@ -32,10 +33,11 @@ import { fetchParentPayments } from "../../../services/app/paymentService";
  * 
  * Flujo de datos:
  * 1. Obtiene información del usuario autenticado (padre) desde AuthContext
- * 2. Lee el query parameter kid_id si existe (para filtrar por hijo)
- * 3. Llama a la API fetchParentPayments con los parámetros necesarios
- * 4. Normaliza la información del cliente para la factura
- * 5. Pasa todos los datos al componente genérico HistoryPayments
+ * 2. Carga la lista de hijos del padre
+ * 3. Permite seleccionar un hijo específico para filtrar pagos
+ * 4. Llama a la API fetchParentPayments con los parámetros necesarios
+ * 5. Normaliza la información del cliente para la factura
+ * 6. Pasa todos los datos al componente genérico HistoryPayments
  * 
  * @returns {JSX.Element} Componente ParentHistoryPayments renderizado
  */
@@ -49,18 +51,18 @@ export default function ParentHistoryPayments() {
    * lang: idioma actual ('es' o 'en')
    */
   const { user, token, lang } = useAuth();
-  
-  // Lee parámetros de la URL (ejemplo: ?kid_id=123)
-  const [params] = useSearchParams();
+  const t = translations[lang].historyPayments;
   
   // ===== Estado del componente =====
   
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [loading, setLoading] = useState(true); // Estado de carga de pagos
   const [externalData, setExternalData] = useState([]); // Datos de pagos del backend
   const [error, setError] = useState(null); // Mensaje de error si falla la petición
-
-  // Extrae el ID del hijo desde los query params (opcional)
-  const kidId = params.get("kid_id");
+  
+  // Estados para el filtro de hijos
+  const [children, setChildren] = useState([]); // Lista de hijos del padre
+  const [loadingChildren, setLoadingChildren] = useState(true); // Estado de carga de hijos
+  const [selectedKidId, setSelectedKidId] = useState(null); // ID del hijo seleccionado (null = todos)
 
   // ===== Información del cliente para la factura =====
   
@@ -83,12 +85,44 @@ export default function ParentHistoryPayments() {
     [user, lang]
   );
 
-  // ===== Effect: Carga de datos desde la API =====
+  // ===== Effect: Cargar lista de hijos =====
+  
+  /**
+   * Effect que obtiene la lista de hijos del padre desde el backend
+   * Se ejecuta una sola vez al montar el componente
+   */
+  useEffect(() => {
+    let alive = true;
+    
+    async function loadChildren() {
+      try {
+        setLoadingChildren(true);
+        const kidsData = await getMyChildren(token);
+        
+        if (!alive) return;
+        setChildren(kidsData);
+      } catch (err) {
+        console.error('Error loading children:', err);
+        // No mostramos error crítico, solo no habrá filtro disponible
+      } finally {
+        if (!alive) return;
+        setLoadingChildren(false);
+      }
+    }
+    
+    loadChildren();
+    
+    return () => {
+      alive = false;
+    };
+  }, [token]);
+
+  // ===== Effect: Carga de datos de pagos desde la API =====
   
   /**
    * Effect que obtiene el historial de pagos del padre desde el backend
    * 
-   * Se ejecuta cuando cambian: token, kidId o lang
+   * Se ejecuta cuando cambian: token, selectedKidId o lang
    * 
    * Proceso:
    * 1. Activa el estado de carga
@@ -109,7 +143,11 @@ export default function ParentHistoryPayments() {
       
       try {
         // Llamada a la API con parámetros actuales
-        const data = await fetchParentPayments({ token, kidId, lang });
+        const data = await fetchParentPayments({ 
+          token, 
+          kidId: selectedKidId, // Puede ser null para todos los hijos
+          lang 
+        });
         
         // Solo actualiza si el componente sigue montado
         if (!alive) return;
@@ -131,7 +169,52 @@ export default function ParentHistoryPayments() {
     return () => {
       alive = false;
     };
-  }, [token, kidId, lang]); // Dependencias: recarga al cambiar estos valores
+  }, [token, selectedKidId, lang]); // Dependencias: recarga al cambiar estos valores
+  
+  /**
+   * Handler para cambiar el hijo seleccionado
+   */
+  const handleKidChange = (e) => {
+    const value = e.target.value;
+    setSelectedKidId(value === "" ? null : Number(value));
+  };
+  
+  /**
+   * Componente del filtro de hijos para pasar a HistoryPayments
+   */
+  const childrenFilter = children.length > 0 ? (
+    <div className="flex items-center gap-2">
+      <select
+        value={selectedKidId || ""}
+        onChange={handleKidChange}
+        disabled={loadingChildren}
+        className="px-4 py-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-cyan-500 dark:focus:border-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <option value="">
+          {loadingChildren ? t.filters.loadingChildren : t.filters.allChildren}
+        </option>
+        {children.map((child) => (
+          <option key={child.id} value={child.id}>
+            {child.name}
+          </option>
+        ))}
+      </select>
+      
+      {/* Botón para limpiar filtro */}
+      {selectedKidId && (
+        <button
+          onClick={() => setSelectedKidId(null)}
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-cyan-700 bg-cyan-50 rounded-lg hover:bg-cyan-100 dark:bg-cyan-900/30 dark:text-cyan-300 dark:hover:bg-cyan-900/50 transition-colors"
+          title={lang === "es" ? "Limpiar filtro" : "Clear filter"}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span className="hidden sm:inline">{children.find(c => c.id === selectedKidId)?.name}</span>
+        </button>
+      )}
+    </div>
+  ) : null;
   
   return (
     // Layout específico para padres (incluye sidebar, navbar, etc.)
@@ -143,6 +226,7 @@ export default function ParentHistoryPayments() {
         loading={loading}                     // Estado de carga
         errorMessage={error}                  // Mensaje de error si existe
         clientInfoOverride={clientInfo}       // Info del padre para la factura
+        customFilters={childrenFilter}        // Filtro de hijos personalizado
       />
     </ParentLayout>
   );
