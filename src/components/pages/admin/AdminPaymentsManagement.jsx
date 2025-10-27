@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminLayout from "../../layout/admin/AdminLayout";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
@@ -16,6 +17,7 @@ import { ConfirmPaymentModal, RejectPaymentModal } from "../../forms/Admin/Admin
 export default function AdminPaymentsManagement() {
   const { lang } = useAuth();
   const t = translations[lang].paymentsManagement;
+  const navigate = useNavigate();
 
   // Estados para datos
   const [payments, setPayments] = useState([]);
@@ -270,6 +272,17 @@ export default function AdminPaymentsManagement() {
                     {t.filters.clearFilters}
                   </button>
                 )}
+
+                {/* Botón Registrar Pago */}
+                <button
+                  onClick={() => navigate('/admin/payments/create')}
+                  className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800 transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  {t.registerPayment || 'Registrar Pago'}
+                </button>
 
                 {/* Espaciador flexible */}
                 <div className="flex-grow"></div>

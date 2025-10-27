@@ -6,8 +6,18 @@ export default {
     description: "Descripción",
     monthPaid: "Mes Pagado",
     year: "Año",
-    totalCost: "Costo Total"
+    totalCost: "Costo Total",
+    status: "Estado",
+    actions: "Acciones"
   },
+  status: {
+    pendiente: "Pendiente",
+    en_revision: "En Revisión",
+    aceptado: "Aceptado",
+    rechazado: "Rechazado",
+    cancelado: "Cancelado"
+  },
+  viewDetails: "Ver Detalles",
   noPayments: "No hay pagos registrados",
   loadingPayments: "Cargando historial de pagos...", 
   search: {
@@ -31,5 +41,14 @@ export default {
       name: "Cliente",
       address: "Ciudad de Guatemala"
     }
+  },
+  detailsModal: {
+    title: "Detalles del Pago",
+    close: "Cerrar",
+    userNote: "Nota del Usuario",
+    adminNote: "Nota Administrativa",
+    noUserNote: "Sin notas del usuario",
+    noAdminNote: "Sin notas administrativas",
+    noNotes: "No hay notas para este pago"
   }
 };

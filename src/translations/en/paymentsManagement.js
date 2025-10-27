@@ -83,6 +83,8 @@ export const paymentsManagement = {
     
     // Notes
     notes: "Notes",
+    userNote: "User Note",
+    adminNote: "Administrative Note",
     
     // Action buttons
     confirm: "Confirm",

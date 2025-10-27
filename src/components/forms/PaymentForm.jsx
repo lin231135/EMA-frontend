@@ -7,6 +7,8 @@ import en from "../../translations/en/form/PaymentForm";
 import es from "../../translations/es/form/PaymentForm";
 
 import { useAuth } from "../../contexts/AuthContext";
+import { getUsers, getChildrenByParentId } from "../../services/admin/adminUsersService";
+import { uploadPaymentProof } from "../../services/app/uploadService";
 
 const fmtDate = (iso) => {
   if (!iso) return "dd / mm / yyyy";
@@ -28,7 +30,7 @@ export default function PaymentForm({
   isLoading = false,
 }) {
   const navigate = useNavigate();
-  const { lang, user } = useAuth();
+  const { lang, user, token } = useAuth(); // Agregar token del contexto
   const t = (lang === "es" ? es : en) ?? en;
 
   const dateRef = useRef(null);
@@ -36,10 +38,11 @@ export default function PaymentForm({
 
   const defaults = {
     studentName: "",
+    studentId: "", // ID del estudiante (para admin)
     parentName: "",
+    parentId: "", // Agregar parentId para el admin
     method: "transfer", // Valor por defecto: transferencia
     date: "",
-    status: "completed",
     currency: t.form.currencySymbol ?? "Q",
     total: "",
     notes: "",
@@ -47,6 +50,75 @@ export default function PaymentForm({
   };
 
   const [form, setForm] = useState({ ...defaults, ...initialValues });
+  
+  // Estados para dropdowns del administrador
+  const [parents, setParents] = useState([]);
+  const [children, setChildren] = useState([]);
+  const [loadingParents, setLoadingParents] = useState(false);
+  const [loadingChildren, setLoadingChildren] = useState(false);
+  
+  // Estados para la subida de imágenes
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState(initialValues.proof || null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // Guardar archivo sin subir
+
+  // Cargar padres cuando el componente es usado por el administrador
+  useEffect(() => {
+    console.log("PaymentForm - useEffect loadParents", { contextRole, user, token, hasToken: !!token });
+    if (contextRole === "admin" && token) {
+      loadParents();
+    }
+  }, [contextRole, token]);
+
+  // Cargar hijos cuando se selecciona un padre (solo para admin)
+  useEffect(() => {
+    console.log("PaymentForm - useEffect loadChildren", { 
+      contextRole, 
+      parentId: form.parentId, 
+      hasToken: !!token 
+    });
+    
+    if (contextRole === "admin" && form.parentId && token) {
+      loadChildren(form.parentId);
+    } else {
+      setChildren([]);
+      if (contextRole === "admin") {
+        setForm(prev => ({ ...prev, studentName: "" }));
+      }
+    }
+  }, [form.parentId, contextRole, token]);
+
+  const loadParents = async () => {
+    try {
+      console.log("Cargando padres...", { token });
+      setLoadingParents(true);
+      const data = await getUsers({ token, role: "padre" });
+      console.log("Padres cargados:", data);
+      setParents(data);
+    } catch (error) {
+      console.error("Error al cargar padres:", error);
+      alert("Error al cargar la lista de padres");
+    } finally {
+      setLoadingParents(false);
+    }
+  };
+
+  const loadChildren = async (parentId) => {
+    try {
+      console.log("loadChildren - parentId:", parentId, "tipo:", typeof parentId);
+      setLoadingChildren(true);
+      const data = await getChildrenByParentId({ token, parentId });
+      console.log("loadChildren - children recibidos:", data);
+      setChildren(data);
+    } catch (error) {
+      console.error("Error al cargar hijos:", error);
+      alert("Error al cargar la lista de hijos");
+      setChildren([]);
+    } finally {
+      setLoadingChildren(false);
+    }
+  };
 
   useEffect(() => {
       // Actualizar formulario cuando cambien los valores iniciales
@@ -71,15 +143,66 @@ export default function PaymentForm({
   }, [studentOptions, readOnlyFields.studentName, form.studentName]);
 
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value, files, type } = e.target;
+    
+    // Si el admin cambia el padre, actualizar parentId y parentName
+    if (name === "parentId" && contextRole === "admin") {
+      const selectedParent = parents.find(p => p.id === parseInt(value));
+      setForm((s) => ({
+        ...s,
+        parentId: value,
+        parentName: selectedParent ? `${selectedParent.name} ${selectedParent.last_name}` : "",
+        studentName: "", // Resetear estudiante cuando cambia el padre
+        studentId: "", // Resetear también el ID
+      }));
+      return;
+    }
+    
+    // Si el admin cambia el estudiante, actualizar el nombre y el ID
+    if (name === "studentId" && contextRole === "admin") {
+      const selectedChild = children.find(c => c.id === parseInt(value));
+      setForm((s) => ({
+        ...s,
+        studentId: value,
+        studentName: selectedChild ? selectedChild.name : "",
+      }));
+      return;
+    }
+    
+    // Si es un archivo (comprobante de pago), solo guardarlo localmente
+    if (type === "file" && files && files[0]) {
+      const file = files[0];
+      
+      // Guardar el archivo para subirlo después
+      setSelectedFile(file);
+      
+      // Crear preview local solo para imágenes (no para PDFs)
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Para PDFs, mostrar que hay un archivo seleccionado
+        setImagePreview(null);
+      }
+      
+      setForm((s) => ({
+        ...s,
+        proof: file.name, // Guardar solo el nombre temporalmente
+      }));
+      return;
+    }
+    
     setForm((s) => ({
       ...s,
-      [name]: type === "file" ? files?.[0] ?? null : value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Validaciones
@@ -99,11 +222,50 @@ export default function PaymentForm({
       return;
     }
     
-    const payload = { ...form, contextRole, userId: user?.id };
+    // Si hay un archivo seleccionado, subirlo primero
+    let proofUrl = form.proof;
+    if (selectedFile) {
+      try {
+        setUploadingImage(true);
+        const result = await uploadPaymentProof(selectedFile, token);
+        proofUrl = result.url;
+        setImageUrl(result.url);
+        console.log("Archivo subido exitosamente:", result);
+      } catch (error) {
+        console.error("Error al subir archivo:", error);
+        alert("Error al subir el comprobante: " + error.message);
+        setUploadingImage(false);
+        return; // No continuar si falla la subida
+      } finally {
+        setUploadingImage(false);
+      }
+    }
+    
+    // Determinar el estado del pago según el rol y el método de pago
+    let paymentState;
+    if (contextRole === "admin") {
+      // Si el admin registra un pago en efectivo, se acepta automáticamente
+      paymentState = form.method === "efectivo" ? "aceptado" : "en revision";
+    } else {
+      // Si un padre registra un pago, siempre va a revisión
+      paymentState = "en revision";
+    }
+    
+    const payload = { 
+      ...form, 
+      proof: proofUrl, // Usar la URL de ImageKit
+      state: paymentState, // Usar 'state' en lugar de 'status'
+      contextRole, 
+      userId: user?.id 
+    };
     onSubmit ? onSubmit(payload) : console.log("[PaymentForm] payload:", payload);
   };
 
   const handleCancel = () => {
+    // Limpiar archivo seleccionado si el usuario cancela
+    setSelectedFile(null);
+    setImagePreview(null);
+    
     if (onCancel) onCancel();
     else navigate(-1);
   };
@@ -149,7 +311,62 @@ export default function PaymentForm({
       <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900 min-h-[550px]">
         <form onSubmit={handleSubmit} className="w-full">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Student name */}
+            
+            {/* Parent name - Dropdown para admin */}
+            <div>
+              <label
+                htmlFor="parentName"
+                className="mb-2 block text-xl font-medium text-gray-900 dark:text-white"
+              >
+                {t.form.parentName}
+              </label>
+              
+              {contextRole === "admin" && !readOnlyFields.parentName ? (
+                // Dropdown de padres para admin
+                <select
+                  id="parentId"
+                  name="parentId"
+                  value={form.parentId}
+                  onChange={handleChange}
+                  required
+                  disabled={loadingParents}
+                  className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-2.5 
+                    text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
+                    dark:border-gray-600 dark:bg-gray-700 dark:text-white 
+                    dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500
+                    disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
+                >
+                  <option value="">
+                    {loadingParents ? "Cargando..." : (t.form.parentName_ph || "Selecciona un padre")}
+                  </option>
+                  {parents.map((parent) => (
+                    <option key={parent.id} value={parent.id}>
+                      {parent.name} {parent.last_name} - {parent.email}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                // Input texto para padre (no admin o readonly)
+                <input
+                  id="parentName"
+                  name="parentName"
+                  type="text"
+                  placeholder={t.form.parentName_ph}
+                  value={form.parentName}
+                  onChange={handleChange}
+                  required
+                  readOnly={!!readOnlyFields.parentName}
+                  disabled={readOnlyFields.parentName}
+                  className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 p-2.5 
+                    text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
+                    dark:border-gray-600 dark:bg-gray-700 dark:text-white 
+                    dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500
+                    disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
+                />
+              )}
+            </div>
+
+            {/* Student name - Dropdown para admin basado en padre seleccionado */}
             <div>
               <label
                 htmlFor="studentName"
@@ -158,8 +375,37 @@ export default function PaymentForm({
                 {t.form.studentName}
               </label>
               
-              {studentOptions.length > 0 && !readOnlyFields.studentName ? (
-                // Select cuando hay opciones disponibles
+              {contextRole === "admin" && !readOnlyFields.studentName ? (
+                // Dropdown de hijos para admin (depende de padre seleccionado)
+                <select
+                  id="studentId"
+                  name="studentId"
+                  value={form.studentId}
+                  onChange={handleChange}
+                  required
+                  disabled={!form.parentId || loadingChildren}
+                  className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-2.5 
+                    text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
+                    dark:border-gray-600 dark:bg-gray-700 dark:text-white 
+                    dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500
+                    disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
+                >
+                  <option value="">
+                    {!form.parentId 
+                      ? "Primero selecciona un padre" 
+                      : loadingChildren 
+                      ? "Cargando hijos..." 
+                      : (t.form.studentName_ph || "Selecciona un estudiante")
+                    }
+                  </option>
+                  {children.map((child) => (
+                    <option key={child.id} value={child.id}>
+                      {child.name}
+                    </option>
+                  ))}
+                </select>
+              ) : studentOptions.length > 0 && !readOnlyFields.studentName ? (
+                // Select cuando hay opciones disponibles (padre)
                 <select
                   id="studentName"
                   name="studentName"
@@ -197,32 +443,6 @@ export default function PaymentForm({
                   disabled={readOnlyFields.studentName}
                 />
               )}
-            </div>
-
-            {/* Parent name */}
-            <div>
-              <label
-                htmlFor="parentName"
-                className="mb-2 block text-xl font-medium text-gray-900 dark:text-white"
-              >
-                {t.form.parentName}
-              </label>
-              <input
-                id="parentName"
-                name="parentName"
-                type="text"
-                placeholder={t.form.parentName_ph}
-                value={form.parentName}
-                onChange={handleChange}
-                required
-                readOnly={!!readOnlyFields.parentName}
-                disabled={readOnlyFields.parentName}
-                className="block w-full max-w-xs rounded-lg border border-gray-300 bg-gray-50 p-2.5 
-                  text-sm text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 
-                  dark:border-gray-600 dark:bg-gray-700 dark:text-white 
-                  dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500
-                  disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
-              />
             </div>
 
             {/* Payment method */}
@@ -368,24 +588,86 @@ export default function PaymentForm({
                 ref={fileRef}
                 type="file"
                 name="proof"
-                accept=".jpg,.jpeg,.png,.pdf"
+                accept="image/*,.jpg,.jpeg,.png,.pdf,application/pdf"
                 onChange={handleChange}
-                disabled={isLoading}
+                disabled={isLoading || uploadingImage}
                 className="hidden"
               />
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                disabled={isLoading}
+                disabled={isLoading || uploadingImage}
                 className="w-full max-w-xs rounded-lg bg-cyan-500 px-4 py-3 text-sm font-medium text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {t.form.proof_btn || "Subir comprobante"}
+                {uploadingImage 
+                  ? "Subiendo archivo..." 
+                  : (t.form.proof_btn || "Subir comprobante (JPG, PNG, PDF)")}
               </button>
-              {form.proof && (
-                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  {t.form.selected || "Archivo seleccionado:"}{" "}
-                  <span className="font-medium">{form.proof.name}</span>
-                </p>
+              
+              {/* Preview del archivo */}
+              {(imagePreview || selectedFile || imageUrl) && (
+                <div className="mt-4">
+                  <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                    {selectedFile ? "Archivo seleccionado (se subirá al confirmar):" : "Vista previa:"}
+                  </p>
+                  {selectedFile && selectedFile.type === 'application/pdf' ? (
+                    <div className="flex items-center gap-2 rounded-lg border border-gray-300 bg-gray-50 p-4">
+                      <svg className="h-8 w-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z"/>
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
+                        <p className="text-xs text-gray-500">PDF • {(selectedFile.size / 1024).toFixed(2)} KB</p>
+                      </div>
+                    </div>
+                  ) : imagePreview ? (
+                    <div>
+                      <img 
+                        src={imagePreview} 
+                        alt="Comprobante de pago"
+                        className="max-w-xs rounded-lg border border-gray-300 shadow-sm"
+                      />
+                      {selectedFile && (
+                        <p className="mt-2 text-xs text-gray-500">
+                          {selectedFile.name} • {(selectedFile.size / 1024).toFixed(2)} KB
+                        </p>
+                      )}
+                    </div>
+                  ) : (form.proof && form.proof.endsWith('.pdf')) ? (
+                    <div className="flex items-center gap-2 rounded-lg border border-gray-300 bg-gray-50 p-4">
+                      <svg className="h-8 w-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z"/>
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Archivo PDF</p>
+                        <a 
+                          href={imageUrl || form.proof} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xs text-cyan-600 hover:underline"
+                        >
+                          Ver documento
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <img 
+                      src={imagePreview || imageUrl} 
+                      alt="Comprobante de pago"
+                      className="max-w-xs rounded-lg border border-gray-300 shadow-sm"
+                    />
+                  )}
+                  {imageUrl && !selectedFile && (
+                    <p className="mt-2 text-xs text-green-600 dark:text-green-400">
+                      ✓ Archivo subido correctamente
+                    </p>
+                  )}
+                  {selectedFile && !imageUrl && (
+                    <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
+                      ⚠ El archivo se subirá al confirmar el pago
+                    </p>
+                  )}
+                </div>
               )}
             </div>
 
@@ -423,10 +705,10 @@ export default function PaymentForm({
             </Button>
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || uploadingImage}
               className="w-full sm:w-auto min-w-[200px] bg-cyan-500 hover:bg-cyan-600 text-white disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {isLoading && (
+              {(isLoading || uploadingImage) && (
                 <svg
                   className="animate-spin h-5 w-5 text-white"
                   xmlns="http://www.w3.org/2000/svg"
@@ -448,9 +730,11 @@ export default function PaymentForm({
                   />
                 </svg>
               )}
-              {isLoading 
-                ? (t.actions?.submitting || "Procesando...") 
-                : (t.actions?.submit || "Enviar Pago")
+              {uploadingImage
+                ? "Subiendo comprobante..." 
+                : isLoading 
+                  ? (t.actions?.submitting || "Procesando...") 
+                  : (t.actions?.submit || "Enviar Pago")
               }
             </Button>
           </div>

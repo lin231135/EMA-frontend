@@ -148,7 +148,7 @@ export default function AdminPaymentDetailsModal({ paymentId, isOpen, onClose, o
                   {t.paymentId} #{payment.id}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {t.createdAt}: {formatDateTime(payment.created_at)}
+                  {t.createdAt}: {formatDateTime(payment.payment_date)}
                 </p>
               </div>
               <span className={`px-3 py-1.5 text-sm font-semibold rounded-full ${getStateBadge(payment.state)}`}>
@@ -213,7 +213,7 @@ export default function AdminPaymentDetailsModal({ paymentId, isOpen, onClose, o
             {/* Estudiantes e ítems del pago */}
             <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-l-4 border-cyan-500 pl-3">
-                {t.itemsInfo}
+                {t.itemsInfo || "Clases/Ítems"}
               </h4>
               {payment.items && payment.items.length > 0 ? (
                 <div className="space-y-3">
@@ -225,57 +225,117 @@ export default function AdminPaymentDetailsModal({ paymentId, isOpen, onClose, o
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <p className="font-medium text-gray-900 dark:text-white">
-                            {item.student_name || item.book_name || t.unknownItem}
+                            {item.student_name || t.unknownItem || "Ítem desconocido"}
                           </p>
                           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                            {item.course_name || item.book_name ? `${item.course_name || ''} ${item.description || ''}`.trim() : t.noDescription}
+                            {item.course_name || t.noDescription || "Sin descripción"}
                           </p>
+                          {item.schedule_date && (
+                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                              Fecha: {formatDate(item.schedule_date)}
+                              {item.start_time && ` • ${item.start_time.slice(0, 5)}`}
+                            </p>
+                          )}
                         </div>
                         <p className="text-lg font-semibold text-gray-900 dark:text-white ml-4">
-                          Q{parseFloat(item.subtotal || item.unit_cost || 0).toFixed(2)}
+                          Q{parseFloat(item.subtotal || 0).toFixed(2)}
                         </p>
                       </div>
                     </div>
                   ))}
+                  
+                  {/* Total de items */}
+                  <div className="pt-3 border-t border-gray-300 dark:border-gray-600">
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Total ({payment.items.length} {payment.items.length === 1 ? 'clase' : 'clases'}):
+                      </p>
+                      <p className="text-xl font-bold text-green-600 dark:text-green-400">
+                        Q{payment.items.reduce((sum, item) => sum + parseFloat(item.subtotal || 0), 0).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t.noItems}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t.noItems || "No hay ítems registrados"}</p>
               )}
             </div>
 
-            {/* Comprobante/Voucher */}
-            {payment.voucher_url && (
+            {/* Comprobante de Pago */}
+            {payment.reference_pic && (
               <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-l-4 border-cyan-500 pl-3">
-                  {t.voucher}
+                  {t.voucher || "Comprobante de Pago"}
                 </h4>
                 <div className="flex flex-col items-center gap-4">
-                  <img
-                    src={payment.voucher_url}
-                    alt="Comprobante de pago"
-                    className="max-w-full max-h-96 rounded-lg border border-gray-300 dark:border-gray-600 shadow-lg"
-                  />
+                  {/* Verificar si es PDF o imagen */}
+                  {payment.reference_pic.toLowerCase().endsWith('.pdf') ? (
+                    <div className="w-full">
+                      <div className="flex items-center justify-center gap-3 p-6 bg-white dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <svg className="h-12 w-12 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z"/>
+                        </svg>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            Documento PDF
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Haz clic en "Ver/Descargar" para abrir
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <img
+                      src={payment.reference_pic}
+                      alt="Comprobante de pago"
+                      className="max-w-full max-h-96 rounded-lg border border-gray-300 dark:border-gray-600 shadow-lg object-contain"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="%23f3f4f6" width="400" height="300"/><text x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-family="Arial" font-size="14">Imagen no disponible</text></svg>';
+                      }}
+                    />
+                  )}
                   <a
-                    href={payment.voucher_url}
+                    href={payment.reference_pic}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
                   >
                     <HiDownload className="w-4 h-4 mr-2" />
-                    {t.downloadVoucher}
+                    {t.downloadVoucher || "Ver/Descargar Comprobante"}
                   </a>
                 </div>
               </div>
             )}
 
-            {/* Notas */}
+            {/* Notas del Usuario */}
             {payment.note && (
-              <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-l-4 border-cyan-500 pl-3">
-                  {t.notes}
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
+                  </svg>
+                  {t.userNote || "Nota del Usuario"}
                 </h4>
-                <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-wrap">
                   {payment.note}
+                </p>
+              </div>
+            )}
+
+            {/* Notas Administrativas */}
+            {payment.admin_note && (
+              <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <h4 className="text-sm font-semibold text-yellow-900 dark:text-yellow-300 mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
+                  </svg>
+                  {t.adminNote || "Nota Administrativa"}
+                </h4>
+                <p className="text-sm text-yellow-800 dark:text-yellow-200 whitespace-pre-wrap">
+                  {payment.admin_note}
                 </p>
               </div>
             )}
