@@ -240,14 +240,14 @@ export const RegisterFormCard = () => {
     const baseClasses = "block w-full p-3 text-sm rounded-lg border transition-colors duration-200";
     
     if (errors[fieldName]) {
-      return `${baseClasses} bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500`;
+      return `${baseClasses} bg-red-50 dark:bg-red-900/20 border-red-500 dark:border-red-600 text-red-900 dark:text-red-400 placeholder-red-700 dark:placeholder-red-500 focus:ring-red-500 focus:border-red-500`;
     }
     
     if (touched[fieldName] && !errors[fieldName] && formData[fieldName]) {
-      return `${baseClasses} bg-green-50 border-green-500 text-green-900 focus:ring-green-500 focus:border-green-500`;
+      return `${baseClasses} bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-600 text-green-900 dark:text-green-400 focus:ring-green-500 focus:border-green-500`;
     }
     
-    return `${baseClasses} bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500`;
+    return `${baseClasses} bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-cyan-500 focus:border-cyan-500`;
   };
 
   // Componente para mostrar errores
@@ -307,7 +307,7 @@ export const RegisterFormCard = () => {
   };
 
   return (
-    <div className="flex-1 min-h-[400px] bg-white p-12 shadow-2xl flex flex-col justify-center rounded-lg">
+    <div className="flex-1 min-h-[400px] bg-white dark:bg-gray-800 p-12 shadow-2xl flex flex-col justify-center rounded-lg">
       {/* Logo y título */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
@@ -317,10 +317,10 @@ export const RegisterFormCard = () => {
             className="w-30 h-30 object-contain"
           />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t.title}
         </h1>
-        <p className="text-gray-600">{t.subtitle}</p>
+        <p className="text-gray-600 dark:text-gray-300">{t.subtitle}</p>
       </div>
 
       {/* Alertas de Flowbite */}
@@ -332,7 +332,7 @@ export const RegisterFormCard = () => {
         {/* Nombre y Apellido en fila */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900">
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               {t.firstName} <span className="text-red-500">*</span>
             </label>
             <input
@@ -348,7 +348,7 @@ export const RegisterFormCard = () => {
             <ErrorMessage errors={errors.nombre} />
           </div>
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900">
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               {t.lastName} <span className="text-red-500">*</span>
             </label>
             <input
@@ -367,11 +367,11 @@ export const RegisterFormCard = () => {
 
         {/* Prefijo + Teléfono */}
         <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900">
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             {t.phone} <span className="text-red-500">*</span>
           </label>
           <div className="flex">
-            <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-lg">
+            <span className="inline-flex items-center px-3 text-sm text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-lg">
               +502
             </span>
             <input
@@ -390,7 +390,7 @@ export const RegisterFormCard = () => {
 
         {/* Correo Electrónico */}
         <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900">
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             {t.email} <span className="text-red-500">*</span>
           </label>
           <input
@@ -408,7 +408,7 @@ export const RegisterFormCard = () => {
 
         {/* Contraseña */}
         <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900">
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             {t.password} <span className="text-red-500">*</span>
           </label>
           <input
@@ -426,7 +426,7 @@ export const RegisterFormCard = () => {
 
         {/* Confirmar Contraseña */}
         <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900">
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             {t.confirmPassword} <span className="text-red-500">*</span>
           </label>
           <input
@@ -469,11 +469,11 @@ export const RegisterFormCard = () => {
 
         {/* Enlace de inicio de sesión */}
         <div className="text-center mt-6">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             {t.alreadyHaveAccount}{' '}
             <Link
               to="/login"
-              className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
+              className="font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline"
             >
               {t.login}
             </Link>

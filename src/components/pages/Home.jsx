@@ -163,7 +163,7 @@ export default function Home() {
   return (
     <PageLayout>
       {/* Hero Carousel */}
-      <section className="px-4 sm:px-6 lg:px-8 py-6 w-full">
+      <section className="px-4 sm:px-6 lg:px-8 py-6 w-full bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
           <HeroCarousel
             slides={t.homeCarousel.slides}
@@ -177,7 +177,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-8 flex-1 bg-white w-full">
+      <section className="py-16 px-8 flex-1 bg-white dark:bg-gray-800 w-full">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
           {/* Image first */}
           <div className="md:w-1/2">
@@ -190,10 +190,10 @@ export default function Home() {
 
           {/* Text second */}
           <div className="md:w-1/2 text-left">
-            <h2 className="text-2xl lg:text-3xl font-bold mb-8 text-gray-900">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-8 text-gray-900 dark:text-white">
               {t.philosophyTitle}
             </h2>
-            <p className="text-gray-700 leading-relaxed max-w-3xl mb-8">
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mb-8">
               {t.philosophyText}
             </p>
             <button className="bg-[#01A6CC] hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
@@ -204,17 +204,17 @@ export default function Home() {
       </section>
 
       {/* Enroll Section con imagen */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
           {/* Texto */}
           <div className="md:w-1/2 text-left">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               {t.enrollTitle}
             </h2>
-            <h3 className="text-2xl font-semibold text-gray-800 mb-6">
+            <h3 className="text-2xl font-semibold text-gray-800 dark:text-cyan-400 mb-6">
               {t.enrollSubtitle}
             </h3>
-            <p className="text-gray-600 mb-8 leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
               {t.enrollText}
             </p>
             <button className="bg-cyan-500 hover:bg-[#018bb0] text-white px-8 py-3 rounded-lg font-semibold transition-colors"
@@ -236,11 +236,11 @@ export default function Home() {
       </section>
 
       {/* Cursos */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Our Courses</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mt-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Our Courses</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-4">
               Designed for children and adults who want to learn music in a fun and effective way.
             </p>
           </div>
@@ -255,7 +255,7 @@ export default function Home() {
               <div
                 key={index}
                 onMouseEnter={() => playCourseNote(index)}
-                className="group h-80 flex flex-col rounded-xl bg-white border border-gray-100 shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-cyan-200"
+                className="group h-80 flex flex-col rounded-xl bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-cyan-200 dark:hover:border-cyan-400"
               >
                 {/* Imagen = 80% de alto */}
                 <div className="flex-[4] overflow-hidden">
@@ -267,8 +267,8 @@ export default function Home() {
                 </div>
 
                 {/* Título = 20% de alto */}
-                <div className="flex-[1] p-4 flex items-center justify-center bg-white">
-                  <h4 className="font-semibold text-gray-900 text-center">{course.title}</h4>
+                <div className="flex-[1] p-4 flex items-center justify-center bg-white dark:bg-gray-700">
+                  <h4 className="font-semibold text-gray-900 dark:text-white text-center">{course.title}</h4>
                 </div>
               </div>
             ))}
@@ -277,17 +277,17 @@ export default function Home() {
       </section>
 
       {/* Join Our Team */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-4">
             Join Our Team
           </h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-300 text-center mb-12 max-w-2xl mx-auto">
             This form is for professional teachers who would like to be part of our academy.
             Please fill out your information and we will contact you soon.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white rounded-lg shadow-xl overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
             {/* Mapa */}
             <div className="w-full h-full min-h-[500px]">
               <MapContainer
@@ -317,7 +317,7 @@ export default function Home() {
             </div>
 
             {/* Formulario */}
-            <div className="p-8 flex flex-col items-center justify-center w-full">
+            <div className="p-8 flex flex-col items-center justify-center w-full bg-white dark:bg-gray-800">
               {/* Alertas dinámicas */}
               {alert && (
                 <Alert
@@ -340,7 +340,7 @@ export default function Home() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Enter your full name"
-                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
                   />
                   {errors?.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
@@ -352,7 +352,7 @@ export default function Home() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email"
-                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
                   />
                   {errors?.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
@@ -364,7 +364,7 @@ export default function Home() {
                     value={formData.subject}
                     onChange={handleInputChange}
                     placeholder="Enter the subject"
-                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
                   />
                 </div>
 
@@ -375,7 +375,7 @@ export default function Home() {
                     value={formData.message}
                     onChange={handleInputChange}
                     placeholder="Tell us a bit about your teaching experience..."
-                    className="w-full px-4 py-3 rounded-md border border-gray-400 bg-gray-100 text-gray-900 placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
+                    className="w-full px-4 py-3 rounded-md border border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-700 dark:placeholder:text-gray-400 placeholder:opacity-100 outline-none focus:ring-2 focus:ring-[#01A6CC]"
                   ></textarea>
                   {errors?.message && (
                     <p className="text-red-500 text-sm mt-1">{errors.message}</p>

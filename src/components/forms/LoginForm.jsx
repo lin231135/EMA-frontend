@@ -165,7 +165,7 @@ const Login = () => {
     <>
       {/* Layout principal de la página con navbar deshabilitado */}
       <PageLayout hideUserMenu={true}>
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-6">
           <div className="w-full max-w-6xl flex flex-col lg:flex-row items-start justify-center gap-8">
 
             {/* Columna izquierda: Tarjeta de imagen decorativa (solo visible en pantallas grandes) */}
@@ -177,7 +177,7 @@ const Login = () => {
 
             {/* Columna derecha: Formulario de login */}
             <div className="flex-[1.2] flex items-center justify-center">
-              <div className="flex-1 min-h-[400px] bg-white p-12 shadow-2xl flex flex-col justify-center rounded-lg">
+              <div className="flex-1 min-h-[400px] bg-white dark:bg-gray-800 p-12 shadow-2xl flex flex-col justify-center rounded-lg">
 
                 {/* Sección de encabezado: Logo y título */}
                 <div className="text-center mb-6">
@@ -191,14 +191,14 @@ const Login = () => {
                   </div>
 
                   {/* Título del formulario */}
-                  <h2 className="text-center text-2xl lg:text-3xl font-extrabold text-gray-900">
+                  <h2 className="text-center text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white">
                     {t.title}
                   </h2>
                 </div>
 
                 {/* Banner de error (se muestra solo si hay un error) */}
                 {error && (
-                  <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm mb-4">
+                  <div className="bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 border border-red-200 dark:border-red-800 p-3 rounded-md text-sm mb-4">
                     {error}
                   </div>
                 )}
@@ -208,7 +208,7 @@ const Login = () => {
 
                   {/* Campo de entrada: Email */}
                   <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       {t.emailLabel} <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -220,13 +220,13 @@ const Login = () => {
                       value={credentials.email}
                       onChange={handleChange}
                       placeholder={t.emailPlaceholder}
-                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
+                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
 
                   {/* Campo de entrada: Contraseña */}
                   <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-900">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       {t.passwordLabel} <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -238,7 +238,7 @@ const Login = () => {
                       value={credentials.password}
                       onChange={handleChange}
                       placeholder={t.passwordPlaceholder}
-                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 border-gray-300 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500"
+                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
 
@@ -252,9 +252,9 @@ const Login = () => {
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="h-5 w-5 p-3 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 accent-cyan-600"
+                        className="h-5 w-5 p-3 rounded border-gray-300 dark:border-gray-600 text-cyan-600 focus:ring-cyan-500 accent-cyan-600 dark:bg-gray-700"
                       />
-                      <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                      <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
                         {t.rememberMe}
                       </label>
                     </div>
@@ -263,7 +263,7 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setShowResetPopup(true)}
-                      className="text-sm p-3 font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
+                      className="text-sm p-3 font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline"
                     >
                       {t.forgotPassword}
                     </button>
@@ -282,11 +282,11 @@ const Login = () => {
 
                 {/* Pie del formulario: Enlace a registro */}
                 <div className="text-center mt-6">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {t.noAccount}{' '}
                     <Link
                       to="/register"
-                      className="font-medium text-cyan-600 hover:text-cyan-700 hover:underline"
+                      className="font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline"
                     >
                       {t.register}
                     </Link>

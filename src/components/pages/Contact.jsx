@@ -97,24 +97,24 @@ export default function Contact() {
   return (
     <PageLayout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white py-16">
+      <section className="bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-700 dark:to-cyan-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-4">
             {t.contactTitle}
           </h1>
-          <p className="text-xl lg:text-2xl text-teal-100">
+          <p className="text-xl lg:text-2xl text-teal-100 dark:text-cyan-100">
             {t.contactSubtitle}
           </p>
         </div>
       </section>
 
       {/* Contact Content */}
-      <main className="flex-1 py-16 px-8 bg-gray-50">
+      <main className="flex-1 py-16 px-8 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <Card className="p-8 bg-white border-gray-200 shadow-lg">
+              <Card className="p-8 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
                 {/* Alertas dinámicas */}
                 {alert && (
                   <Alert
@@ -128,12 +128,12 @@ export default function Contact() {
                     {alert.message}
                   </Alert>
                 )}
-                <h2 className="text-2xl font-bold mb-6 text-cyan-600">
+                <h2 className="text-2xl font-bold mb-6 text-cyan-600 dark:text-cyan-400">
                   {t.sendMessage}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <Label htmlFor="name" value={t.name} />
+                    <Label htmlFor="name" value={t.name} className="dark:text-gray-300" />
                     <TextInput
                       id="name"
                       name="name"
@@ -142,11 +142,12 @@ export default function Contact() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
+                      className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="email" value={t.email} />
+                    <Label htmlFor="email" value={t.email} className="dark:text-gray-300" />
                     <TextInput
                       id="email"
                       name="email"
@@ -155,11 +156,12 @@ export default function Contact() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
+                      className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="phone" value={t.phone} />
+                    <Label htmlFor="phone" value={t.phone} className="dark:text-gray-300" />
                     <TextInput
                       id="phone"
                       name="phone"
@@ -167,11 +169,12 @@ export default function Contact() {
                       placeholder={t.phonePlaceholder}
                       value={formData.phone}
                       onChange={handleInputChange}
+                      className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="subject" value={t.subject} />
+                    <Label htmlFor="subject" value={t.subject} className="dark:text-gray-300" />
                     <TextInput
                       id="subject"
                       name="subject"
@@ -180,11 +183,12 @@ export default function Contact() {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
+                      className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="message" value={t.message} />
+                    <Label htmlFor="message" value={t.message} className="dark:text-gray-300" />
                     <Textarea
                       id="message"
                       name="message"
@@ -193,7 +197,7 @@ export default function Contact() {
                       value={formData.message}
                       onChange={handleInputChange}
                       required
-                      className="resize-none"
+                      className="resize-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
@@ -201,7 +205,7 @@ export default function Contact() {
                     type="submit"
                     size="lg"
                     disabled={loading}
-                    className="w-full bg-cyan-500 hover:bg-cyan-600 text-white border-cyan-700 disabled:opacity-60"
+                    className="w-full bg-cyan-500 hover:bg-cyan-600 text-white border-cyan-700 disabled:opacity-60 dark:bg-cyan-600 dark:hover:bg-cyan-700"
                   >
                     {loading ? t.sending || "Enviando..." : t.sendButton}
                   </Button>
@@ -211,44 +215,44 @@ export default function Contact() {
 
             {/* Contact Information */}
             <div className="space-y-8">
-              <Card className="p-8 bg-white border-gray-200 shadow-lg">
-                <h2 className="text-2xl font-bold mb-6 text-cyan-600">
+              <Card className="p-8 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
+                <h2 className="text-2xl font-bold mb-6 text-cyan-600 dark:text-cyan-400">
                   {t.contactInfo}
                 </h2>
                 <div className="space-y-6">
                   <div className="flex items-start">
                     <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
-                      <Location className="text-cyan-600 text-lg" />
+                      <Location className="text-cyan-600 dark:text-cyan-400 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-600">
+                      <h3 className="font-semibold text-gray-600 dark:text-gray-300">
                         {t.address}
                       </h3>
-                      <p className="text-gray-500">{t.addressDetails}</p>
+                      <p className="text-gray-500 dark:text-gray-400">{t.addressDetails}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start">
                     <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
-                      <Phone className="text-cyan-600 text-lg" />
+                      <Phone className="text-cyan-600 dark:text-cyan-400 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-600">
+                      <h3 className="font-semibold text-gray-600 dark:text-gray-300">
                         {t.phoneContact}
                       </h3>
-                      <p className="text-gray-500">+502 5126-9532</p>
+                      <p className="text-gray-500 dark:text-gray-400">+502 5126-9532</p>
                     </div>
                   </div>
 
                   <div className="flex items-start">
                     <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
-                      <Email className="text-cyan-600 text-lg" />
+                      <Email className="text-cyan-600 dark:text-cyan-400 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-600">
+                      <h3 className="font-semibold text-gray-600 dark:text-gray-300">
                         {t.emailContact}
                       </h3>
-                      <p className="text-gray-500">
+                      <p className="text-gray-500 dark:text-gray-400">
                         elidelgado@elliesmusicacademy.com
                       </p>
                     </div>
@@ -256,24 +260,24 @@ export default function Contact() {
 
                   <div className="flex items-start">
                     <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
-                      <Clock className="text-cyan-600 text-lg" />
+                      <Clock className="text-cyan-600 dark:text-cyan-400 text-lg" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-600">
+                      <h3 className="font-semibold text-gray-600 dark:text-gray-300">
                         {t.schedule}
                       </h3>
-                      <p className="text-gray-500">{t.scheduleDetails}</p>
+                      <p className="text-gray-500 dark:text-gray-400">{t.scheduleDetails}</p>
                     </div>
                   </div>
                 </div>
               </Card>
 
               {/* Quick Info Card */}
-              <Card className="p-8 bg-cyan-50 border-cyan-200 shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-cyan-600">
+              <Card className="p-8 bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800 shadow-lg">
+                <h3 className="text-xl font-bold mb-4 text-cyan-600 dark:text-cyan-400">
                   {t.quickInfo}
                 </h3>
-                <ul className="space-y-2 text-gray-600">
+                <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                   <li>• {t.quickInfo1}</li>
                   <li>• {t.quickInfo2}</li>
                   <li>• {t.quickInfo3}</li>
@@ -285,10 +289,10 @@ export default function Contact() {
         </div>
 
         {/* Dirección Interactiva */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
-            <Card className="p-8 bg-white border-gray-200 shadow-lg">
-              <h2 className="text-3xl font-bold text-cyan-600 text-center mb-8">
+            <Card className="p-8 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
+              <h2 className="text-3xl font-bold text-cyan-600 dark:text-cyan-400 text-center mb-8">
                 {t.locationTitle || "Our Location"}
               </h2>
               <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">

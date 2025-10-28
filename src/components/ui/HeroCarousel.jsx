@@ -82,7 +82,7 @@ export default function HeroCarousel({
 
                 {/* Marco de imagen decorativo (derecha) */}
                 <div className="hidden md:block">
-                  <div className="bg-white/80 rounded-2xl shadow-xl overflow-hidden p-2">
+                  <div className="bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-xl overflow-hidden p-2">
                     <img
                       src={s.image}
                       alt={s.alt || ""}

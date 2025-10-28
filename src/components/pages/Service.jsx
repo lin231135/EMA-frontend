@@ -50,7 +50,7 @@ function ServiceBlock({
   const safeBulletSub = Array.isArray(bulletSub) ? bulletSub.filter(Boolean) : [];
 
   return (
-    <Card className="border border-gray-200/60 shadow-md overflow-hidden">
+    <Card className="border border-gray-200/60 dark:border-gray-700 shadow-md overflow-hidden bg-white dark:bg-gray-800">
       <div
         className={[
           "flex flex-col items-center gap-6 md:gap-10",
@@ -59,22 +59,22 @@ function ServiceBlock({
       >
         {/* Texto */}
         <div className="w-full md:w-1/2 space-y-4 px-2 md:px-0">
-          <h3 className="text-2xl font-semibold text-gray-900">{title}</h3>
+          <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">{title}</h3>
 
           {description ? (
-            <p className="text-gray-600 leading-relaxed">{description}</p>
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{description}</p>
           ) : null}
 
           {safeBullets.length > 0 && (
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
+            <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-1">
               {safeBullets.map((b, i) => (
                 <li key={i}>{b}</li>
               ))}
             </ul>
           )}
-          <h4 className="text-2xl text-gray-600 leading-relaxed">{subTitle}</h4>
+          <h4 className="text-2xl text-gray-600 dark:text-gray-300 leading-relaxed">{subTitle}</h4>
           {safeBulletSub.length > 0 && (
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
+            <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-1">
               {safeBulletSub.map((b, i) => (
                 <li key={i}>{b}</li>
               ))}
@@ -195,7 +195,7 @@ export default function Service() {
 
       {/* === CONTENIDO PRINCIPAL === */}
       {/* Sección con fondo gris claro que contiene los tres bloques de servicios */}
-      <section className="bg-gray-50">
+      <section className="bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
           
           {/* === BLOQUE 1: ESTIMULACIÓN MUSICAL === */}

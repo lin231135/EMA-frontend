@@ -45,7 +45,7 @@ export default function ServiceImageCarousel({
       {images.map((src, i) => (
         <div
           key={i}
-          className={`absolute inset-0 w-full h-full flex items-center justify-center bg-white dark:bg-white transition-opacity duration-700 ease-in-out ${
+          className={`absolute inset-0 w-full h-full flex items-center justify-center bg-white dark:bg-gray-900 transition-opacity duration-700 ease-in-out ${
             i === index ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
@@ -65,7 +65,7 @@ export default function ServiceImageCarousel({
             key={i}
             aria-label={`Ir a la imagen ${i + 1}`}
             className={`w-3 h-3 rounded-full transition-colors duration-150 ${
-                i === index ? "bg-white" : "bg-white"
+                i === index ? "bg-cyan-500 dark:bg-cyan-400" : "bg-white/70 dark:bg-gray-400/70"
               }`}
             onClick={() => setIndex(i)}
           />

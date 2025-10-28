@@ -71,11 +71,11 @@ export default function About() {
         </section>
 
         {/* Values Section */}
-        <section className="py-16 px-8 bg-gray-50 w-full">
+        <section className="py-16 px-8 bg-gray-50 dark:bg-gray-900 w-full">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {/* Mission */}
-              <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1/4 h-2 bg-cyan-500"></div>
                 <div className="absolute bottom-0 left-0 w-full h-20 bg-cyan-500 flex items-center justify-center">
                   <h3 className="text-white text-2xl font-bold">
@@ -83,14 +83,14 @@ export default function About() {
                   </h3>
                 </div>
                 <div className="pb-24">
-                  <p className="leading-relaxed text-gray-600 text-center">
+                  <p className="leading-relaxed text-gray-600 dark:text-gray-300 text-center">
                     {t.missionText}
                   </p>
                 </div>
               </div>
 
               {/* Vision */}
-              <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1/4 h-2 bg-purple-500"></div>
                 <div className="absolute bottom-0 left-0 w-full h-20 bg-cyan-500 flex items-center justify-center">
                   <h3 className="text-white text-2xl font-bold">
@@ -98,14 +98,14 @@ export default function About() {
                   </h3>
                 </div>
                 <div className="pb-24">
-                  <p className="leading-relaxed text-gray-600 text-center">
+                  <p className="leading-relaxed text-gray-600 dark:text-gray-300 text-center">
                     {t.visionText}
                   </p>
                 </div>
               </div>
 
               {/* Commitment */}
-              <div className="bg-white p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-lg text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1/4 h-2 bg-pink-500"></div>
                 <div className="absolute bottom-0 left-0 w-full h-20 bg-cyan-500 flex items-center justify-center">
                   <h3 className="text-white text-2xl font-bold">
@@ -113,7 +113,7 @@ export default function About() {
                   </h3>
                 </div>
                 <div className="pb-24">
-                  <p className="leading-relaxed text-gray-600 text-center">
+                  <p className="leading-relaxed text-gray-600 dark:text-gray-300 text-center">
                     {t.commitmentText}
                   </p>
                 </div>
@@ -123,38 +123,38 @@ export default function About() {
         </section>
 
         {/* Professional Career Section */}
-        <section className="py-16 px-8 bg-white w-full">
+        <section className="py-16 px-8 bg-white dark:bg-gray-800 w-full">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-slate-800 text-3xl lg:text-4xl font-bold mb-4">
+                <h2 className="text-slate-800 dark:text-white text-3xl lg:text-4xl font-bold mb-4">
                   {t.professionalCareer}
                 </h2>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                   {t.careerText}
                 </p>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
-                    <span className="block text-4xl font-bold text-slate-800">
+                    <span className="block text-4xl font-bold text-slate-800 dark:text-cyan-400">
                       20+
                     </span>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {t.yearsExperience}
                     </span>
                   </div>
                   <div className="text-center">
-                    <span className="block text-4xl font-bold text-slate-800">
+                    <span className="block text-4xl font-bold text-slate-800 dark:text-cyan-400">
                       100+
                     </span>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {t.studentsTrained}
                     </span>
                   </div>
                   <div className="text-center">
-                    <span className="block text-4xl font-bold text-slate-800">
+                    <span className="block text-4xl font-bold text-slate-800 dark:text-cyan-400">
                       30+
                     </span>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {t.recitalsOrganized}
                     </span>
                   </div>
@@ -175,10 +175,10 @@ export default function About() {
         </section>
 
         {/* Recitals */}
-        <section className="py-16 px-8 w-full">
+        <section className="py-16 px-8 w-full bg-gray-50 dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.recitals}</h2>
-            <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed font-bold">{t.recitalsText}</p>
+            <h2 className="text-center text-slate-800 dark:text-white text-3xl lg:text-4xl font-bold mb-4">{t.recitals}</h2>
+            <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-bold">{t.recitalsText}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {recitalEvents.map((event, index) => (
                 <RecitalCard key={index} recital={event} />
@@ -188,10 +188,10 @@ export default function About() {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 px-8 bg-blue-50 w-full">
+        <section className="py-16 px-8 bg-blue-50 dark:bg-gray-800 w-full">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-center text-slate-800 text-3xl lg:text-4xl font-bold mb-4">{t.testimonials}</h2>
-            <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 leading-relaxed">{t.testimonialsText}</p>
+            <h2 className="text-center text-slate-800 dark:text-white text-3xl lg:text-4xl font-bold mb-4">{t.testimonials}</h2>
+            <p className="text-center max-w-2xl mx-auto mb-12 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">{t.testimonialsText}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
                 <TestimonialCard key={index} testimonial={testimonial} />
