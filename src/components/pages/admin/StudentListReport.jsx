@@ -366,6 +366,240 @@ const handlePrint = () => {
   window.addEventListener("focus", removeIframe);
 };
 
+// Función para exportar a PDF 
+const handleExportPDF = async () => {
+  try {
+    const jsPDF = (await import('jspdf')).default;
+    const autoTable = (await import('jspdf-autotable')).default;
+    const doc = new jsPDF({ compress: true });
+
+    const pageWidth  = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // -------- cargar imagen como dataURL --------
+    const loadAsDataURL = async (url) => {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Fetch logo failed');
+      const blob = await res.blob();
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    };
+
+    // -------- Header --------
+    const marginX = 14;
+    const logoBox = { x: marginX, y: 10, w: 18, h: 18 }; // caja reservada del logo
+    let logoLoaded = false;
+
+    // 1) Intentar logo
+    try {
+      const logoUrl = `${window.location.origin}/LogoColorEMA3.png`;
+      const dataURL = await loadAsDataURL(logoUrl); // admite PNG/JPEG
+      // Detectar formato por cabecera del dataURL
+      const isPNG = /^data:image\/png/i.test(dataURL);
+      const isJPG = /^data:image\/jpe?g/i.test(dataURL);
+
+      doc.addImage(
+        dataURL,
+        isPNG ? 'PNG' : (isJPG ? 'JPEG' : 'PNG'),
+        logoBox.x, logoBox.y, logoBox.w, logoBox.h,
+        undefined,
+        'FAST' // calidad adecuada; usa 'SLOW' si quieres máxima nitidez
+      );
+      logoLoaded = true;
+    } catch {
+      // si falla, continuamos con fallback tipográfico
+      logoLoaded = false;
+    }
+
+    // 2) Títulos del header (a la derecha del logo si cargó; si no, en el lugar del header)
+    const textBaseX = logoLoaded ? (logoBox.x + logoBox.w + 4) : marginX;
+    const titleY    = logoBox.y + 7;   // alineado verticalmente con el logo
+    const subY      = logoBox.y + 12;
+
+    if (!logoLoaded) {
+      // marco visual sutil para mantener alturas consistentes cuando no hay logo
+      doc.setDrawColor(255,255,255);
+      doc.rect(logoBox.x, logoBox.y, logoBox.w, logoBox.h);
+    }
+
+    // 3) Fecha de impresión (arriba derecha)
+    doc.setFontSize(9);
+    doc.setTextColor(107, 114, 128);
+    const printDateText =
+      `${lang === "es" ? "Fecha de impresión" : "Print Date"}: ` +
+      new Date().toLocaleDateString(lang === "es" ? "es-GT" : "en-US");
+    doc.text(printDateText, pageWidth - marginX, logoBox.y + 5, { align: 'right' });
+
+    // 4) Línea divisoria bajo el header (dejamos 28px de alto total de header)
+    doc.setDrawColor(14, 165, 233);
+    doc.setLineWidth(0.5);
+    const headerBottomY = Math.max(logoBox.y + logoBox.h, subY + 3) + 4; // altura segura
+    doc.line(marginX, headerBottomY, pageWidth - marginX, headerBottomY);
+
+    // -------- Título de la página --------
+    let yPosition = headerBottomY + 10;
+    doc.setFontSize(18);
+    doc.setTextColor(15, 23, 42);
+    doc.text(
+      t.title || (lang === "es" ? "Listado de Estudiantes" : "Student List"),
+      pageWidth / 2, yPosition, { align: 'center' }
+    );
+    yPosition += 12;
+
+    // -------- Cuadro de información --------
+    const boxY = yPosition;
+    const boxHeight = 24;
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(229, 231, 235);
+    doc.roundedRect(marginX, boxY, pageWidth - marginX * 2, boxHeight, 2, 2, 'FD');
+
+    const colWidth = (pageWidth - marginX * 2) / 3;
+    const col = (i) => marginX + 4 + i * colWidth;
+
+    // Col 1 - Origen
+    doc.setFontSize(10); doc.setFont(undefined, 'bold'); doc.setTextColor(51, 65, 85);
+    doc.text(lang === "es" ? "Origen" : "From", col(0), boxY + 6);
+    doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.setTextColor(15,23,42);
+    doc.text("Ellie's Music Academy", col(0), boxY + 12);
+    doc.setFontSize(9); doc.setFont(undefined, 'normal'); doc.setTextColor(100,116,139);
+    doc.text(lang === "es" ? "Ciudad de Guatemala" : "Guatemala City", col(0), boxY + 17);
+    doc.text("Guatemala", col(0), boxY + 21);
+
+    // Col 2 - Resumen
+    doc.setFontSize(10); doc.setFont(undefined, 'bold'); doc.setTextColor(51, 65, 85);
+    doc.text(lang === "es" ? "Resumen" : "Summary", col(1), boxY + 6);
+    doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.setTextColor(15,23,42);
+    doc.text(lang === "es" ? "Total de estudiantes" : "Total students", col(1), boxY + 12);
+    doc.setFontSize(10); doc.setFont(undefined, 'normal'); doc.setTextColor(71,85,105);
+    doc.text(`${filteredStudents.length}`, col(1), boxY + 17);
+
+    // Col 3 - Fecha
+    doc.setFontSize(10); doc.setFont(undefined, 'bold'); doc.setTextColor(51, 65, 85);
+    doc.text(lang === "es" ? "Fecha" : "Date", col(2), boxY + 6);
+    doc.setFontSize(9); doc.setFont(undefined, 'normal'); doc.setTextColor(71,85,105);
+    const fullDate = new Date().toLocaleDateString(
+      lang === "es" ? "es-GT" : "en-US",
+      { year: "numeric", month: "long", day: "numeric" }
+    );
+    doc.text(fullDate, col(2), boxY + 12);
+
+    yPosition = boxY + boxHeight + 8;
+
+    // -------- Tabla --------
+    const tableData = filteredStudents.map(s => [
+      s.id || '',
+      s.name || '',
+      s.role || (lang === "es" ? 'Estudiante' : 'Student'),
+      s.created_at
+        ? new Date(s.created_at).toLocaleDateString(lang === "es" ? "es-GT" : "en-US", { year: 'numeric', month: 'long', day: 'numeric' })
+        : ''
+    ]);
+
+    autoTable(doc, {
+      startY: yPosition,
+      head: [[
+        t.id || 'ID',
+        t.name || (lang === "es" ? "Nombre" : "Name"),
+        t.role || (lang === "es" ? "Rol" : "Role"),
+        t.registrationDate || (lang === "es" ? "Fecha de Registro" : "Registered At")
+      ]],
+      body: tableData,
+      theme: 'striped',
+      headStyles: {
+        fillColor: [224, 242, 254],
+        textColor: [12, 74, 110],
+        fontSize: 10,
+        fontStyle: 'bold',
+        halign: 'left',
+        cellPadding: 3
+      },
+      bodyStyles: { fontSize: 10, halign: 'left', cellPadding: 2.5 },
+      alternateRowStyles: { fillColor: [249, 250, 251] },
+      columnStyles: { 0: { cellWidth: 20 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 35 }, 3: { cellWidth: 50 } },
+      margin: { left: marginX, right: marginX },
+      didDrawPage: (data) => {
+        const footerY = pageHeight - 15;
+        doc.setDrawColor(226, 232, 240);
+        doc.setLineWidth(0.3);
+        doc.line(marginX, footerY - 5, pageWidth - marginX, footerY - 5);
+        doc.setFontSize(9);
+        doc.setTextColor(148, 163, 184);
+        doc.text(`© ${new Date().getFullYear()} Ellie's Music Academy`, pageWidth / 2, footerY, { align: 'center' });
+      }
+    });
+
+    // -------- Totales --------
+    const finalY = doc.lastAutoTable.finalY + 5;
+    const totalsBoxWidth = 70;
+    const totalsBoxHeight = 12;
+    const totalsBoxX = pageWidth - marginX - totalsBoxWidth;
+
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.roundedRect(totalsBoxX, finalY, totalsBoxWidth, totalsBoxHeight, 2, 2, 'FD');
+
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(15, 23, 42);
+    doc.text(lang === "es" ? "Total de registros:" : "Total records:", totalsBoxX + 4, finalY + 8);
+    doc.setTextColor(3, 105, 161);
+    doc.text(`${filteredStudents.length}`, totalsBoxX + totalsBoxWidth - 4, finalY + 8, { align: 'right' });
+
+    // Guardar PDF
+    doc.save(`estudiantes_${new Date().toISOString().split('T')[0]}.pdf`);
+  } catch (err) {
+    console.error('Error al generar PDF:', err);
+    alert(lang === "es" ? "Error al generar el PDF" : "Error generating PDF");
+  }
+};
+
+
+// Función para exportar a Excel
+const handleExportExcel = async () => {
+  try {
+    // Importar xlsx dinámicamente
+    const XLSX = await import('xlsx');
+    
+    // Preparar datos para Excel
+    const excelData = filteredStudents.map(student => ({
+      [t.id || 'ID']: student.id || '',
+      [t.name || 'Nombre']: student.name || '',
+      [t.role || 'Rol']: student.role || 'Estudiante',
+      [t.accountStatus || 'Estado de Cuenta']: student.is_active ? (t.active || 'Activo') : (t.inactive || 'Inactivo'),
+      [t.registrationDate || 'Fecha de Registro']: new Date(student.created_at).toLocaleDateString(lang === "es" ? "es-GT" : "en-US", {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    }));
+    
+    // Crear libro de trabajo
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, lang === "es" ? "Estudiantes" : "Students");
+    
+    // Ajustar ancho de columnas
+    const columnWidths = [
+      { wch: 10 },  // ID
+      { wch: 30 },  // Nombre
+      { wch: 15 },  // Rol
+      { wch: 20 },  // Estado
+      { wch: 25 }   // Fecha
+    ];
+    worksheet['!cols'] = columnWidths;
+    
+    // Guardar archivo
+    XLSX.writeFile(workbook, `estudiantes_${new Date().toISOString().split('T')[0]}.xlsx`);
+  } catch (error) {
+    console.error('Error al generar Excel:', error);
+    alert(lang === "es" ? "Error al generar el archivo Excel" : "Error generating Excel file");
+  }
+};
+
 
   return (
     <AdminLayout>
@@ -496,6 +730,28 @@ const handlePrint = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                     </svg>
                     {t.printButton || "Imprimir"}
+                  </button>
+                  
+                  {/* Botón de exportar a PDF */}
+                  <button
+                    onClick={handleExportPDF}
+                    className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 transition-colors"
+                  >
+                    <svg className="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z" clipRule="evenodd"/>
+                    </svg>
+                    {t.exportPDF || "PDF"}
+                  </button>
+                  
+                  {/* Botón de exportar a Excel */}
+                  <button
+                    onClick={handleExportExcel}
+                    className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 transition-colors"
+                  >
+                    <svg className="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z" clipRule="evenodd"/>
+                    </svg>
+                    {t.exportExcel || "Excel"}
                   </button>
                 </div>
               </div>
