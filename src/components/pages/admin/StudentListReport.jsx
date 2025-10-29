@@ -196,61 +196,176 @@ export default function StudentListReport() {
     return visiblePages;
   };
 
-  // Función para imprimir
-  const handlePrint = () => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+ // Función para imprimir
+const handlePrint = () => {
+  // Definir URL del logo
+  const logoUrl = `${window.location.origin}/LogoColorEMA3.svg`;
+  
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "fixed";
+  iframe.style.right = "0";
+  iframe.style.bottom = "0";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "none";
+  document.body.appendChild(iframe);
 
-    const printContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>${t.title || 'Listado de Estudiantes'}</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .header { text-align: center; margin-bottom: 30px; }
-            .print-date { text-align: right; margin-bottom: 20px; color: #6b7280; font-size: 12px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; font-weight: bold; }
-            .badge { background-color: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 12px; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <div class="print-date">${lang === 'es' ? 'Fecha de impresión' : 'Print Date'}: ${new Date().toLocaleDateString()}</div>
-          <div class="header">
-            <h1>${t.title || 'Listado de Estudiantes'}</h1>
-          </div>
-          <table>
-            <thead>
+  const doc = iframe.contentWindow.document;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>${t.title || "Listado de Estudiantes"}</title>
+    <style>
+      @page { size: A4 portrait; margin: 20mm; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body { font-family: "Segoe UI", Roboto, Arial, sans-serif; margin: 0; color: #1f2937; background: #ffffff; }
+
+      header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #0ea5e9; padding: 10px 0; margin-bottom: 20px; }
+      .invoice-logo { height: 60px; }
+
+      h1 { text-align: center; color: #0f172a; font-size: 22px; margin: 20px 0; letter-spacing: 0.5px; }
+
+      .invoice-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 18px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 25px;
+      }
+      .invoice-section h3 { font-size: 13px; font-weight: 600; color: #334155; margin: 0 0 6px 0; }
+      .company-name { font-weight: 700; color: #0f172a; font-size: 14px; }
+      .company-address { font-size: 12px; color: #64748b; white-space: pre-line; }
+      .client-name { font-weight: 600; font-size: 14px; }
+      .client-address { font-size: 12px; color: #475569; }
+
+      table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+      th { background-color: #e0f2fe; color: #0c4a6e; padding: 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #0ea5e9; }
+      td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; }
+      tr:nth-child(even) { background-color: #f9fafb; }
+
+      .print-date { text-align: right; color: #6b7280; font-size: 12px; margin: 5px 0 0 0; }
+
+      .badge { display: inline-block; background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+
+      .totals { margin-top: 12px; display: flex; justify-content: flex-end; }
+      .totals-box { min-width: 280px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; background: #f8fafc; }
+      .totals-row { display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
+      .totals-label { color: #0f172a; font-weight: 600; }
+      .totals-value { color: #0369a1; font-weight: 700; }
+
+      .empty { text-align: center; color: #64748b; padding: 18px 0; font-size: 13px; }
+
+      footer { text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; margin-top: 40px; padding-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="${logoUrl}" alt="EMA Logo" class="invoice-logo" />
+      <div class="print-date">${lang === "es" ? "Fecha de impresión" : "Print Date"}: ${new Date().toLocaleDateString(lang === "es" ? "es-GT" : "en-US")}</div>
+    </header>
+
+    <h1>${t.title || (lang === "es" ? "Listado de Estudiantes" : "Student List")}</h1>
+
+    <div class="invoice-header">
+      <div class="invoice-section">
+        <h3>${lang === "es" ? "Origen" : "From"}</h3>
+        <div class="company-name">Ellie's Music Academy</div>
+        <div class="company-address">${lang === "es" ? "Ciudad de Guatemala\nGuatemala" : "Guatemala City\nGuatemala"}</div>
+      </div>
+
+      <div class="invoice-section">
+        <h3>${lang === "es" ? "Resumen" : "Summary"}</h3>
+        <div class="client-name">${lang === "es" ? "Total de estudiantes" : "Total students"}</div>
+        <div class="client-address">${filteredStudents.length}</div>
+      </div>
+
+      <div class="invoice-section">
+        <h3>${lang === "es" ? "Fecha" : "Date"}</h3>
+        <div>${new Date().toLocaleDateString(lang === "es" ? "es-GT" : "en-US", { year: "numeric", month: "long", day: "numeric" })}</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>${t.id || "ID"}</th>
+          <th>${t.name || (lang === "es" ? "Nombre" : "Name")}</th>
+          <th>${t.role || (lang === "es" ? "Rol" : "Role")}</th>
+          <th>${t.registeredAt || (lang === "es" ? "Fecha de Registro" : "Registered At")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${
+          filteredStudents.length === 0
+            ? `<tr><td colspan="4"><div class="empty">${lang === "es" ? "No hay estudiantes para mostrar." : "There are no students to display."}</div></td></tr>`
+            : filteredStudents
+                .map(
+                  (student) => `
               <tr>
-                <th>${t.id || 'ID'}</th>
-                <th>${t.name || 'Nombre'}</th>
-                <th>Rol</th>
-                <th>Fecha de Registro</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filteredStudents.map(student => `
-                <tr>
-                  <td>${student.id}</td>
-                  <td>${student.name}</td>
-                  <td><span class="badge">${student.role || 'Estudiante'}</span></td>
-                  <td>${new Date(student.created_at).toLocaleDateString('es-GT', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `;
+                <td>${student.id ?? ""}</td>
+                <td>${student.name ?? ""}</td>
+                <td><span class="badge">${student.role || (lang === "es" ? "Estudiante" : "Student")}</span></td>
+                <td>${
+                  student.created_at
+                    ? new Date(student.created_at).toLocaleDateString(
+                        lang === "es" ? "es-GT" : "en-US",
+                        { year: "numeric", month: "long", day: "numeric" }
+                      )
+                    : ""
+                }</td>
+              </tr>`
+                )
+                .join("")
+        }
+      </tbody>
+    </table>
 
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
+    <div class="totals">
+      <div class="totals-box">
+        <div class="totals-row">
+          <div class="totals-label">${lang === "es" ? "Total de registros:" : "Total records:"}</div>
+          <div class="totals-value">${filteredStudents.length}</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      © ${new Date().getFullYear()} Ellie's Music Academy
+    </footer>
+
+    <script>
+      const imgs = Array.from(document.images);
+      Promise.all(
+        imgs.map(img => img.complete ? Promise.resolve() : new Promise(res => { img.onload = res; img.onerror = res; }))
+      ).then(() => {
+        window.focus();
+        window.print();
+      });
+    </script>
+  </body>
+</html>
+  `;
+
+  doc.open();
+  doc.write(html);
+  doc.close();
+
+  // eliminar iframe después de imprimir
+  const removeIframe = () => {
+    setTimeout(() => {
+      if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      window.removeEventListener("focus", removeIframe);
+    }, 500);
   };
+  window.addEventListener("focus", removeIframe);
+};
+
 
   return (
     <AdminLayout>
