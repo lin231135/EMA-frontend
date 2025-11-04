@@ -227,6 +227,7 @@ export default function ParentHistoryPayments() {
         errorMessage={error}                  // Mensaje de error si existe
         clientInfoOverride={clientInfo}       // Info del padre para la factura
         customFilters={childrenFilter}        // Filtro de hijos personalizado
+        showTotal={false}                     // Ocultar total para padres (estrategia de negocio)
       />
     </ParentLayout>
   );

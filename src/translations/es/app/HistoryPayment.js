@@ -110,4 +110,32 @@ export default {
     November: "Noviembre",
     December: "Diciembre",
   },
+
+  // Modal de Detalles
+  modal: {
+    titleD: "Detalles del Pago",
+    close: "Cerrar",
+    status: "Estado del Pago",
+    paymentInfo: "Información del Pago",
+    description: "Descripción",
+    amount: "Monto",
+    month: "Mes",
+    year: "Año",
+    paymentMethod: "Método de Pago",
+    receipt: "Comprobante de Pago",
+    pdfDocument: "Documento PDF",
+    viewDownloadPdf: "Ver/Descargar PDF",
+    imageLoadError: "No se pudo cargar la imagen",
+    notes: "Notas",
+    parentNote: "Nota del Padre",
+    adminNote: "Nota del Admin",
+    rejectionReason: "Motivo del Rechazo",
+    actionRequired: "Acción requerida:",
+    rejectionMessage: "Revisa el motivo del rechazo y vuelve a realizar el pago con la información correcta.",
+    paymentMethods: {
+      transferencia: "Transferencia",
+      deposito: "Depósito",
+      efectivo: "Efectivo",
+    },
+  },
 };

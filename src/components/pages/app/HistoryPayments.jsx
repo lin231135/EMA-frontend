@@ -28,6 +28,7 @@
  *   - name: nombre del cliente
  *   - address: dirección del cliente
  * @prop {number} [pageSize=10] - Cantidad de registros por página (opcional)
+ * @prop {boolean} [showTotal=true] - Si debe mostrar el total de pagos (opcional, default true)
 
 
  * 
@@ -53,6 +54,7 @@ import PaymentDetailsModal from '../../forms/Parent/PaymentDetailsModal';
  * @param {Object} props.clientInfoOverride - Información del cliente
  * @param {number} props.pageSize - Tamaño de página para paginación
  * @param {JSX.Element} props.customFilters - Componente de filtros personalizados
+ * @param {boolean} props.showTotal - Si debe mostrar el total de pagos
  * @returns {JSX.Element} Componente HistoryPayments renderizado
  */
 export default function HistoryPayments({
@@ -62,6 +64,7 @@ export default function HistoryPayments({
   clientInfoOverride,
   pageSize: pageSizeProp,
   customFilters = null,
+  showTotal = true,
 }) {
   // Obtener idioma actual del contexto de autenticación
   const { lang } = useAuth();
@@ -691,19 +694,21 @@ export default function HistoryPayments({
       </div>
 
 
-      {/* TOTAL en pantalla */}
-      <div className="mt-4 flex justify-end">
-        <div className="min-w-[260px] px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {lang === "es" ? "Total:" : "Total:"}
-            </span>
-            <span className="text-base font-bold text-cyan-700 dark:text-cyan-400">
-              {formattedTotalFiltered}
-            </span>
+      {/* TOTAL en pantalla - Solo se muestra si showTotal es true */}
+      {showTotal && (
+        <div className="mt-4 flex justify-end">
+          <div className="min-w-[260px] px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                {lang === "es" ? "Total:" : "Total:"}
+              </span>
+              <span className="text-base font-bold text-cyan-700 dark:text-cyan-400">
+                {formattedTotalFiltered}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Paginación */}
       {totalPages > 1 && (

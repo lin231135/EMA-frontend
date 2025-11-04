@@ -56,7 +56,7 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {lang === 'es' ? 'Detalles del Pago' : 'Payment Details'}
+              {t.modal.titleD}
             </h3>
             <button
               onClick={onClose}
@@ -74,7 +74,7 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {lang === 'es' ? 'Estado del Pago' : 'Payment Status'}
+                  {t.modal.status}
                 </p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">
                   {payment.serialNumber}
@@ -89,38 +89,35 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {lang === 'es' ? 'Descripción' : 'Description'}
+                  {t.modal.description}
                 </p>
                 <p className="font-medium text-gray-900 dark:text-white">{payment.description}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {lang === 'es' ? 'Monto' : 'Amount'}
+                  {t.modal.amount}
                 </p>
                 <p className="font-semibold text-cyan-700 dark:text-cyan-400">{payment.totalCost}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {lang === 'es' ? 'Mes' : 'Month'}
+                  {t.modal.month}
                 </p>
                 <p className="font-medium text-gray-900 dark:text-white">{payment.monthPaid}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {lang === 'es' ? 'Año' : 'Year'}
+                  {t.modal.year}
                 </p>
                 <p className="font-medium text-gray-900 dark:text-white">{payment.year}</p>
               </div>
               {payment.paymentMethod && (
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {lang === 'es' ? 'Método de Pago' : 'Payment Method'}
+                    {t.modal.paymentMethod}
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white capitalize">
-                    {payment.paymentMethod === 'transferencia' ? (lang === 'es' ? 'Transferencia' : 'Transfer') :
-                     payment.paymentMethod === 'deposito' ? (lang === 'es' ? 'Depósito' : 'Deposit') :
-                     payment.paymentMethod === 'efectivo' ? (lang === 'es' ? 'Efectivo' : 'Cash') :
-                     payment.paymentMethod}
+                    {t.modal.paymentMethods[payment.paymentMethod] || payment.paymentMethod}
                   </p>
                 </div>
               )}
@@ -130,7 +127,7 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
             {payment.referencePic && (
               <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                 <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                  {lang === 'es' ? 'Comprobante de Pago' : 'Payment Receipt'}
+                  {t.modal.receipt}
                 </h4>
                 {payment.referencePic.toLowerCase().endsWith('.pdf') ? (
                   <div className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
@@ -139,7 +136,7 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
                     </svg>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        {lang === 'es' ? 'Documento PDF' : 'PDF Document'}
+                        {t.modal.pdfDocument}
                       </p>
                       <a 
                         href={payment.referencePic} 
@@ -147,7 +144,7 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
                         rel="noopener noreferrer"
                         className="text-sm text-cyan-600 hover:underline dark:text-cyan-400"
                       >
-                        {lang === 'es' ? 'Ver/Descargar PDF' : 'View/Download PDF'}
+                        {t.modal.viewDownloadPdf}
                       </a>
                     </div>
                   </div>
@@ -155,7 +152,7 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
                   <div>
                     <img
                       src={payment.referencePic}
-                      alt={lang === 'es' ? 'Comprobante' : 'Receipt'}
+                      alt={t.modal.receipt}
                       className="w-full rounded-lg border border-gray-200 dark:border-gray-700"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -163,89 +160,89 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
                       }}
                     />
                     <div style={{display: 'none'}} className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                      {lang === 'es' ? 'No se pudo cargar la imagen' : 'Could not load image'}
+                      {t.modal.imageLoadError}
                     </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Nota del Usuario */}
-            {payment.userNote && (
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2 flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
-                  </svg>
-                  {lang === 'es' ? 'Tu Nota' : 'Your Note'}
+            {/* Notas - Diseño mejorado lado a lado */}
+            {(payment.userNote || payment.adminNote) && (
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {t.modal.notes}
                 </h4>
-                <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-wrap">
-                  {payment.userNote}
-                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Nota del Padre/Usuario */}
+                  {payment.userNote && (
+                    <div className="p-3 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                      <div className="flex items-start gap-2 mb-2">
+                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-blue-900 dark:text-blue-300">
+                            {t.modal.parentNote}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-blue-800 dark:text-blue-200 pl-10 whitespace-pre-wrap break-words">
+                        {payment.userNote}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Nota del Administrador */}
+                  {payment.adminNote && (
+                    <div className={`p-3 rounded-lg border ${
+                      payment.state === 'rechazado'
+                        ? 'bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border-red-200 dark:border-red-700'
+                        : 'bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-700'
+                    }`}>
+                      <div className="flex items-start gap-2 mb-2">
+                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                          payment.state === 'rechazado'
+                            ? 'bg-red-500'
+                            : 'bg-amber-500'
+                        }`}>
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold ${
+                            payment.state === 'rechazado'
+                              ? 'text-red-900 dark:text-red-300'
+                              : 'text-amber-900 dark:text-amber-300'
+                          }`}>
+                            {payment.state === 'rechazado' ? t.modal.rejectionReason : t.modal.adminNote}
+                          </p>
+                        </div>
+                      </div>
+                      <p className={`text-sm pl-10 whitespace-pre-wrap break-words ${
+                        payment.state === 'rechazado'
+                          ? 'text-red-800 dark:text-red-200'
+                          : 'text-amber-800 dark:text-amber-200'
+                      }`}>
+                        {payment.adminNote}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
-            {/* Nota Administrativa */}
-            {payment.adminNote && (
-              <div className={`p-4 rounded-lg border ${
-                payment.state === 'rechazado' 
-                  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' 
-                  : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-              }`}>
-                <h4 className={`text-sm font-semibold mb-2 flex items-center gap-2 ${
-                  payment.state === 'rechazado'
-                    ? 'text-red-900 dark:text-red-300'
-                    : 'text-yellow-900 dark:text-yellow-300'
-                }`}>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
-                  </svg>
-                  {payment.state === 'rechazado' 
-                    ? (lang === 'es' ? 'Motivo del Rechazo' : 'Rejection Reason')
-                    : (lang === 'es' ? 'Nota Administrativa' : 'Administrative Note')
-                  }
-                </h4>
-                <p className={`text-sm whitespace-pre-wrap ${
-                  payment.state === 'rechazado'
-                    ? 'text-red-800 dark:text-red-200'
-                    : 'text-yellow-800 dark:text-yellow-200'
-                }`}>
-                  {payment.adminNote}
-                </p>
-              </div>
-            )}
-
-            {/* Mensaje informativo según el estado */}
+            {/* Mensaje informativo SOLO para rechazados */}
             {payment.state === 'rechazado' && (
-              <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+              <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border-l-4 border-orange-500">
                 <p className="text-sm text-orange-800 dark:text-orange-200">
-                  {lang === 'es' 
-                    ? '⚠️ Este pago fue rechazado. Por favor, revisa el motivo del rechazo y vuelve a realizar el pago con la información correcta.'
-                    : '⚠️ This payment was rejected. Please review the rejection reason and resubmit the payment with the correct information.'
-                  }
-                </p>
-              </div>
-            )}
-
-            {payment.state === 'en revision' && (
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  {lang === 'es'
-                    ? 'ℹ️ Tu pago está en revisión. El administrador lo verificará pronto y actualizará el estado.'
-                    : 'ℹ️ Your payment is under review. The administrator will verify it soon and update the status.'
-                  }
-                </p>
-              </div>
-            )}
-
-            {payment.state === 'aceptado' && (
-              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                <p className="text-sm text-green-800 dark:text-green-200">
-                  {lang === 'es'
-                    ? '✅ Tu pago ha sido aceptado exitosamente.'
-                    : '✅ Your payment has been successfully accepted.'
-                  }
+                  <span className="font-semibold">⚠️ {t.modal.actionRequired}</span>
+                  {' '}
+                  {t.modal.rejectionMessage}
                 </p>
               </div>
             )}
@@ -257,7 +254,7 @@ export default function PaymentDetailsModal({ payment, isOpen, onClose }) {
               onClick={onClose}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
             >
-              {lang === 'es' ? 'Cerrar' : 'Close'}
+              {t.modal.close}
             </button>
           </div>
         </div>

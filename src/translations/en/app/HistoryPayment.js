@@ -110,4 +110,32 @@ export default {
     November: "November",
     December: "December",
   },
+
+  // Details Modal
+  modal: {
+    titleD: "Payment Details",
+    close: "Close",
+    status: "Payment Status",
+    paymentInfo: "Payment Information",
+    description: "Description",
+    amount: "Amount",
+    month: "Month",
+    year: "Year",
+    paymentMethod: "Payment Method",
+    receipt: "Payment Receipt",
+    pdfDocument: "PDF Document",
+    viewDownloadPdf: "View/Download PDF",
+    imageLoadError: "Could not load image",
+    notes: "Notes",
+    parentNote: "Parent Note",
+    adminNote: "Admin Note",
+    rejectionReason: "Rejection Reason",
+    actionRequired: "Action required:",
+    rejectionMessage: "Review the rejection reason and resubmit the payment with the correct information.",
+    paymentMethods: {
+      transferencia: "Transfer",
+      deposito: "Deposit",
+      efectivo: "Cash",
+    },
+  },
 };
