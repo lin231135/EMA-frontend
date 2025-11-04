@@ -2,6 +2,7 @@
 export default {
   dashboard: "Dashboard", 
   calendar: "Calendario",
+  enrollment: "Inscripción",
   payments: "Pagos",
   paymentHistory: "Historial de Pagos",
   books: "Libros",

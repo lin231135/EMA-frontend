@@ -23,6 +23,9 @@ import StudentPayment from "./components/pages/student/StudentPayment";
 import ParentPayment from "./components/pages/parent/ParentPayment";
 import ParentHistoryPayments from "./components/pages/parent/ParentHistoryPayments";
 import HistoryPayments from "./components/pages/app/HistoryPayments";
+import Enrollment from "./components/pages/app/Enrollment.jsx";
+import StudentEnrollment from "./components/pages/student/StudentEnrollment";
+import ParentEnrollment from "./components/pages/parent/ParentEnrollment";
 
 export function AppRoutes() {
   return (
@@ -34,6 +37,7 @@ export function AppRoutes() {
       <Route path="/parent/dashboard" element={<ParentDashboard />} />
       <Route path="/parent/payment" element={<ParentPayment />} />
       <Route path="/parent/calendar" element={<ParentCalendar />} />
+      <Route path="/parent/enrollment" element={<ParentEnrollment />} />
       <Route path="/parent/profile" element={<Profile />} />
       <Route path="/parent/historyPayments" element={<ParentHistoryPayments />} />
 
@@ -50,6 +54,7 @@ export function AppRoutes() {
       {/* <Route path="/student/payments" element={<StudentHistoryPayments />} /> */}
       <Route path="/student/historyPayments" element={<StudentHistoryPayments />} />
       <Route path="/student/payment" element={<StudentPayment />} />
+      <Route path="/student/enrollment" element={<StudentEnrollment />} />
       <Route path="/student/profile" element={<Profile />} />
 
       {/* Varios */}
@@ -63,6 +68,7 @@ export function AppRoutes() {
       <Route path="/service" element={<Service />} />
       <Route path="/paymentForm" element={<PaymentForm />} />
       <Route path="/historyPayments" element={<HistoryPayments />} />
+      <Route path="/enrollment" element={<Enrollment />} />
 
       {/* 404 → home */}
       <Route path="*" element={<Navigate to="/" replace />} />
