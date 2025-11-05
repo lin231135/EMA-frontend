@@ -108,7 +108,8 @@ const Login = () => {
           navigate(`/student/dashboard/${user.id}`);
           break;
         case "maestro":
-          navigate(`/teacher/dashboard/${user.id}`);
+          //navigate(`/teacher/dashboard/${user.id}`);
+          navigate(`/teacher/materials/`);
           break;
         default:
           navigate("/");

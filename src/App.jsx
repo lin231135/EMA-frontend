@@ -30,6 +30,7 @@ import StudentEnrollmentSchedule from "./components/pages/student/StudentEnrollm
 import ParentEnrollmentSchedule from "./components/pages/parent/ParentEnrollmentSchedule";
 import StudentEnrollmentConfirm from "./components/pages/student/StudentEnrollmentConfirm";
 import ParentEnrollmentConfirm from "./components/pages/parent/ParentEnrollmentConfirm";
+import Material from "./components/pages/teacher/Materials.jsx";
 
 export function AppRoutes() {
   return (
@@ -64,6 +65,9 @@ export function AppRoutes() {
       <Route path="/student/enrollment/schedule" element={<StudentEnrollmentSchedule />} />
       <Route path="/student/enrollment/confirm" element={<StudentEnrollmentConfirm />} />
       <Route path="/student/profile" element={<Profile />} />
+
+      {/* Teacher */}
+      <Route path="/teacher/materials" element={<Material />} />
 
 
       {/* Varios */}

@@ -233,8 +233,6 @@ export default function Profile() {
             addToast("danger", err.message || "Error actualizando dirección.");
         }
     };
-
-    // ⬇️ FUNCIONES PARA FOTO DE PERFIL ⬇️
     
     // Subir imagen de perfil
     const handleUploadImage = async (file) => {
@@ -317,7 +315,6 @@ export default function Profile() {
         }
     };
 
-    // ⬆️ FIN FUNCIONES DE FOTO ⬆️
 
     // Layout dinámico por rol
     const layoutsByRole = {
