@@ -31,6 +31,7 @@ import ParentEnrollmentSchedule from "./components/pages/parent/ParentEnrollment
 import StudentEnrollmentConfirm from "./components/pages/student/StudentEnrollmentConfirm";
 import ParentEnrollmentConfirm from "./components/pages/parent/ParentEnrollmentConfirm";
 import Material from "./components/pages/teacher/Materials.jsx";
+import TeacherDashboard from "./components/pages/teacher/TeacherDashboard.jsx";
 
 export function AppRoutes() {
   return (
@@ -68,6 +69,7 @@ export function AppRoutes() {
 
       {/* Teacher */}
       <Route path="/teacher/materials" element={<Material />} />
+      <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
 
 
       {/* Varios */}
