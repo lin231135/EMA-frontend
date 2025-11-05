@@ -1,6 +1,7 @@
 // src/components/pages/app/Enrollment.jsx
 import { useEffect, useMemo, useState } from "react";
 import { Alert, Button, Spinner } from "flowbite-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import CourseCard from "../../ui/CourseCard";
 import { getActiveCourses } from "../../../services/app/coursesService";
 import { useAuth } from "../../../contexts/AuthContext"; // si el endpoint requiere token
@@ -10,12 +11,15 @@ import { useAuth } from "../../../contexts/AuthContext"; // si el endpoint requi
  * - Usable por roles "parent" y "student".
  * - Stepper centrado con el paso 1 activo.
  * - Grid responsive de cursos -> selección.
- * - Este componente NO incluye layout, debe ser envuelto por StudentLayout o ParentLayout
+ * - Este componente NO incluye layout, debe ser envuelto por StudentLayout o ParentLayout.
  */
 export default function Enrollment() {
   const auth = useAuth();
   const token = auth?.token;
   const user = auth?.user;
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -64,20 +68,31 @@ export default function Enrollment() {
     return "Usuario";
   }, [user]);
 
+  // Detecta el contexto para construir la ruta del paso 2
+  const isParent = location.pathname.startsWith("/parent");
+  const isStudent = location.pathname.startsWith("/student");
+  const schedulePath = isParent
+    ? "/parent/enrollment/schedule"
+    : isStudent
+    ? "/student/enrollment/schedule"
+    : "schedule"; // fallback si usas rutas anidadas
+
   return (
     <div className="w-full">
       {/* Título de la página */}
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Inscripción</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
+        Inscripción
+      </h1>
 
       {/* Stepper CENTRADO */}
-      <div className="w-full flex justify-center mb-6">
+      <div className="mb-6 flex w-full justify-center">
         <nav aria-label="Stepper" className="w-full max-w-2xl">
           <ol className="flex items-center justify-center gap-3">
             {/* Paso 1: Activo */}
             <li className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 dark:bg-blue-800 shrink-0">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-800 lg:h-12 lg:w-12">
                 <svg
-                  className="w-3.5 h-3.5 text-blue-600 lg:w-4 lg:h-4 dark:text-blue-300"
+                  className="h-3.5 w-3.5 text-indigo-700 dark:text-indigo-200 lg:h-4 lg:w-4"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -93,14 +108,14 @@ export default function Enrollment() {
                 </svg>
               </span>
               {/* Conector */}
-              <div className="hidden sm:block h-1 w-16 bg-blue-200 dark:bg-blue-900 rounded"></div>
+              <div className="hidden h-1 w-16 rounded bg-indigo-200 dark:bg-indigo-900 sm:block"></div>
             </li>
 
             {/* Paso 2: Deshabilitado */}
             <li className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 lg:h-12 lg:w-12">
                 <svg
-                  className="w-4 h-4 text-gray-500 lg:w-5 lg:h-5 dark:text-gray-100"
+                  className="h-4 w-4 text-gray-500 dark:text-gray-100 lg:h-5 lg:w-5"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -110,20 +125,20 @@ export default function Enrollment() {
                 </svg>
               </span>
               {/* Conector */}
-              <div className="hidden sm:block h-1 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
+              <div className="hidden h-1 w-16 rounded bg-gray-300 dark:bg-gray-700 sm:block"></div>
             </li>
 
             {/* Paso 3: Deshabilitado */}
             <li className="flex items-center">
-              <span className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 lg:h-12 lg:w-12">
                 <svg
-                  className="w-4 h-4 text-gray-500 lg:w-5 lg:h-5 dark:text-gray-100"
+                  className="h-4 w-4 text-gray-500 dark:text-gray-100 lg:h-5 lg:w-5"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 18 20"
                 >
-                  <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2ZM7 2h4v3H7V2Zm5.7 8.289-3.975 3.857a1 1 0 0 1-1.393 0L5.3 12.182a1.002 1.002 0 1 1 1.4-1.436l1.328 1.289 3.28-3.181a1 1 0 1 1 1.392 1.435Z" />
+                  <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2ZM7 2h4v3H7V2Zm5.7 8.289-3.975 3.857a1 1 0 0 1-1.393 0L5.3 12.182a1 1 0 1 1 1.4-1.436l1.328 1.289 3.28-3.181a1 1 0 1 1 1.392 1.435Z" />
                 </svg>
               </span>
             </li>
@@ -133,7 +148,9 @@ export default function Enrollment() {
 
       {/* Encabezado contextual */}
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-black">Paso 1: Selecciona un curso</h2>
+        <h2 className="text-xl font-semibold text-slate-100">
+          Paso 1: Selecciona un curso
+        </h2>
         <p className="text-sm text-slate-400">
           {roleText}: elige el curso al que deseas inscribirte.
         </p>
@@ -161,7 +178,7 @@ export default function Enrollment() {
               No hay cursos activos disponibles por el momento.
             </Alert>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {courses.map((c) => (
                 <CourseCard
                   key={c.id}
@@ -175,28 +192,21 @@ export default function Enrollment() {
 
           {/* Acciones */}
           <div className="flex justify-end gap-3">
-            <Button
-              color="red"
-              onClick={() => setSelected(null)}
-              disabled={!selected}
-            >
+            <Button color="gray" onClick={() => setSelected(null)} disabled={!selected}>
               Quitar selección
             </Button>
 
             <Button
-              color="cyan"
+              color="indigo"
               disabled={!canContinue}
               onClick={() => {
-                alert(
-                  `Curso seleccionado: ${selected?.name} (id: ${selected?.id}). ` +
-                    `Continúa al Paso 2 en tu flujo.`
-                );
+                // Navega al Paso 2 con el curso seleccionado.
+                navigate(schedulePath, { state: { course: selected } });
               }}
             >
               Continuar
             </Button>
           </div>
-
         </>
       )}
     </div>

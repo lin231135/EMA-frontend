@@ -26,6 +26,10 @@ import HistoryPayments from "./components/pages/app/HistoryPayments";
 import Enrollment from "./components/pages/app/Enrollment.jsx";
 import StudentEnrollment from "./components/pages/student/StudentEnrollment";
 import ParentEnrollment from "./components/pages/parent/ParentEnrollment";
+import StudentEnrollmentSchedule from "./components/pages/student/StudentEnrollmentSchedule";
+import ParentEnrollmentSchedule from "./components/pages/parent/ParentEnrollmentSchedule";
+import StudentEnrollmentConfirm from "./components/pages/student/StudentEnrollmentConfirm";
+import ParentEnrollmentConfirm from "./components/pages/parent/ParentEnrollmentConfirm";
 
 export function AppRoutes() {
   return (
@@ -38,6 +42,8 @@ export function AppRoutes() {
       <Route path="/parent/payment" element={<ParentPayment />} />
       <Route path="/parent/calendar" element={<ParentCalendar />} />
       <Route path="/parent/enrollment" element={<ParentEnrollment />} />
+      <Route path="/parent/enrollment/schedule" element={<ParentEnrollmentSchedule />} />
+      <Route path="/parent/enrollment/confirm" element={<ParentEnrollmentConfirm />} />
       <Route path="/parent/profile" element={<Profile />} />
       <Route path="/parent/historyPayments" element={<ParentHistoryPayments />} />
 
@@ -55,7 +61,10 @@ export function AppRoutes() {
       <Route path="/student/historyPayments" element={<StudentHistoryPayments />} />
       <Route path="/student/payment" element={<StudentPayment />} />
       <Route path="/student/enrollment" element={<StudentEnrollment />} />
+      <Route path="/student/enrollment/schedule" element={<StudentEnrollmentSchedule />} />
+      <Route path="/student/enrollment/confirm" element={<StudentEnrollmentConfirm />} />
       <Route path="/student/profile" element={<Profile />} />
+
 
       {/* Varios */}
       <Route path="/about" element={<About />} />
