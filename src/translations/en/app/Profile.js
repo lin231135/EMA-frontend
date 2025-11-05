@@ -30,4 +30,13 @@ export default {
     personalTitle: "Edit Personal Information",
     addressTitle: "Edit Address",
   },
+
+  changePhoto: "Change photo",
+  deletePhoto: "Delete photo",
+  uploadPhoto: "Upload photo",
+  maxSize: "Max. 5MB (JPG, PNG, WEBP, GIF)",
+  confirmDelete: "Are you sure you want to delete your profile picture?",
+  invalidType: "Invalid file type. Only JPG, PNG, WEBP, or GIF images are allowed.",
+  tooLarge: "File is too large. Maximum size: 5MB",
+
 };

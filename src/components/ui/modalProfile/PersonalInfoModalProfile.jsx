@@ -1,9 +1,18 @@
-// src/components/ui/student/PersonalInfoModalProfile.jsx
+// src/components/ui/modalProfile/PersonalInfoModalProfile.jsx
 import { useEffect, useRef, useState } from "react";
+import ProfileImageUpload from "./ProfileImageUpload";
 import translations from "../../../translations";
 import { useAuth } from "../../../contexts/AuthContext";
 
-export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
+export default function PersonalInfoModal({ 
+  open, 
+  onClose, 
+  user, 
+  onSubmit,
+  onUploadImage,   
+  onDeleteImage,   
+  isUploadingImage, 
+}) {
   const { lang } = useAuth();
   const t = translations[lang].studentProfile;
   const dialogRef = useRef(null);
@@ -60,9 +69,9 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
         ref={dialogRef}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg mx-4 p-8"
+        className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-3xl mx-4 p-10 max-h-[95vh] overflow-y-auto"
       >
-        {/* Botón X  */}
+        {/* Botón X */}
         <button
           onClick={onClose}
           aria-label="Cerrar"
@@ -73,12 +82,22 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
           </svg>
         </button>
 
-        {/* Avatar centrado */}
-        <div className="w-full flex justify-center">
-          <img
-            src={user?.avatar || "/avatar.png"}
-            alt="Avatar"
-            className="w-16 h-16 rounded-full object-cover"
+        <div className="w-full flex justify-center mb-4">
+          <ProfileImageUpload
+            currentImage={user?.profile_image}
+            userName={`${user?.name || ""} ${user?.lastName || ""}`}
+            onUpload={onUploadImage}
+            onDelete={onDeleteImage}
+            isLoading={isUploadingImage}
+            translations={{
+              changePhoto: t.changePhoto || "Cambiar foto",
+              deletePhoto: t.deletePhoto || "Eliminar foto",
+              uploadPhoto: t.uploadPhoto || "Subir foto",
+              maxSize: t.maxSize || "Máx. 5MB (JPG, PNG, WEBP, GIF)",
+              confirmDelete: t.confirmDelete,
+              invalidType: t.invalidType,
+              tooLarge: t.tooLarge,
+            }}
           />
         </div>
 
@@ -87,9 +106,9 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
           {t.modals.personalTitle}
         </h2>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {/* Nombre / Apellido  */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+          {/* Nombre / Apellido */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {t.fields.name}
@@ -118,10 +137,7 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
 
           {/* Correo */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {t.fields.email}
             </label>
             <input
@@ -135,7 +151,7 @@ export default function PersonalInfoModal({ open, onClose, user, onSubmit }) {
             />
           </div>
 
-          {/* Teléfono  */}
+          {/* Teléfono */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {t.fields.phone}

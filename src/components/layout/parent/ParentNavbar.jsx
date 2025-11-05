@@ -1,7 +1,8 @@
 // src/components/layout/parent/ParentNavbar.jsx
 import { NavLink } from "react-router-dom";
-import { Dropdown, DropdownItem, Avatar } from "flowbite-react";
+import { Dropdown, Avatar } from "flowbite-react";
 import { useAuth } from "../../../contexts/AuthContext";
+import { HiGlobeAlt } from "react-icons/hi";
 import translations from "../../../translations";
 
 function initialsFromName(name = "") {
@@ -12,7 +13,7 @@ function initialsFromName(name = "") {
 }
 
 export default function ParentNavbar({ onLogout, parentName = "" }) {
-  const { lang, setLang } = useAuth();
+  const { lang, setLang, user } = useAuth(); 
   const t = translations[lang]?.parentNavbar || translations.es.parentNavbar;
 
   const languages = {
@@ -21,7 +22,8 @@ export default function ParentNavbar({ onLogout, parentName = "" }) {
   };
   const safe = languages[lang] ?? languages.en;
 
-  const displayName = parentName || t.parent; // fallback si aún no cargó
+  const profileImage = user?.profile_image || null;
+  const displayName = parentName || user?.name || t.parent;
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800">
@@ -39,21 +41,35 @@ export default function ParentNavbar({ onLogout, parentName = "" }) {
           </svg>
         </button>
 
-        {/* Language */}
-        <Dropdown inline placement="bottom" label={`${safe.label} ${safe.flag}`}>
-          <DropdownItem onClick={() => setLang("en")}>{t.language.english}</DropdownItem>
-          <DropdownItem onClick={() => setLang("es")}>{t.language.spanish}</DropdownItem>
+        {/* Language - MEJORADO para dark mode */}
+        <Dropdown
+          inline
+          label={
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200">
+              <HiGlobeAlt className="w-5 h-5" />
+              <span className="text-sm">{safe.flag}</span>
+            </div>
+          }
+          arrowIcon={false}
+        >
+          <Dropdown.Item onClick={() => setLang("en")}>
+            🇬🇧 {t.language.english}
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => setLang("es")}>
+            🇪🇸 {t.language.spanish}
+          </Dropdown.Item>
         </Dropdown>
 
-        {/* Profile */}
+        {/* Profile - CON FOTO */}
         <NavLink
           to="/profile"
           className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg px-2 py-1"
         >
           <Avatar
-            img=""
+            img={profileImage || undefined}
             rounded
-            placeholderInitials={initialsFromName(displayName)}
+            placeholderInitials={profileImage ? undefined : initialsFromName(displayName)}
+            alt={displayName}
           />
           <div className="hidden sm:flex flex-col leading-tight">
             <span className="text-sm font-medium text-gray-900 dark:text-white" title={displayName}>

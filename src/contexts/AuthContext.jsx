@@ -54,8 +54,8 @@ function parseJwt(token) {
     // Decodifica y parsea el JSON
     const payload = JSON.parse(atob(base64));
     return payload || null;
-  } catch { 
-    return null; 
+  } catch {
+    return null;
   }
 }
 
@@ -65,29 +65,29 @@ function parseJwt(token) {
  * funciones para login, logout, refresh de tokens, etc.
  */
 export const AuthProvider = ({ children }) => {
-  
+
   /* ==================
      ESTADO DE AUTENTICACIÓN
      ================== */
-  
+
   /**
    * Indica si el usuario está autenticado.
    * @type {boolean}
    */
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   /**
    * Información del usuario autenticado.
    * @type {Object|null} Objeto con { id, name, email, role, ... }
    */
   const [user, setUser] = useState(null);
-  
+
   /**
    * Token JWT de autenticación.
    * @type {string|null}
    */
   const [token, setToken] = useState(null);
-  
+
   /**
    * Indica si se está verificando el estado de autenticación inicial.
    * @type {boolean}
@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
   /* ==================
      ESTADO DE INTERNACIONALIZACIÓN
      ================== */
-  
+
   /**
    * Idioma actual de la aplicación ('es' o 'en').
    * Se persiste en localStorage.
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }) => {
   /* ==================
      ESTADO DE PERFIL ACTIVO
      ================== */
-  
+
   /**
    * Estudiante activo cuando un padre accede como hijo.
    * @type {Object|null} Objeto con { id, name } o null si se accede como padre
@@ -124,10 +124,10 @@ export const AuthProvider = ({ children }) => {
   /* ==================
      EFECTOS DE INICIALIZACIÓN
      ================== */
-  
+
   // Verifica el estado de autenticación al montar el componente
   useEffect(() => { checkAuthStatus(); }, []);
-  
+
   // Persiste el idioma seleccionado en localStorage
   useEffect(() => { localStorage.setItem("lang", lang); }, [lang]);
 
@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // Busca token y usuario en ambos storages (preferencia: localStorage)
       const storedToken = localStorage.getItem("token") || sessionStorage.getItem("token");
-      const storedUser  = localStorage.getItem("user")  || sessionStorage.getItem("user");
+      const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
 
       if (storedToken && storedUser) {
         const u = JSON.parse(storedUser);
@@ -175,16 +175,16 @@ export const AuthProvider = ({ children }) => {
       // Realiza petición de login al backend
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
-        headers: { "Content-Type":"application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      
+
       if (!res.ok) throw new Error(data?.message || "Error de autenticación");
 
       // Guarda en localStorage (persistente) o sessionStorage (temporal)
       const storage = rememberMe ? localStorage : sessionStorage;
-      const other   = rememberMe ? sessionStorage : localStorage;
+      const other = rememberMe ? sessionStorage : localStorage;
       storage.setItem("token", data.token);
       storage.setItem("user", JSON.stringify(data.user));
       other.removeItem("token");// Limpia el otro storage para borrar sesiones antiguas
@@ -199,7 +199,7 @@ export const AuthProvider = ({ children }) => {
 
       // Programa la renovación automática del token
       scheduleRefresh(data.token);
-      
+
       return { ok: true, data };
     } catch (err) {
       console.error("Login error:", err);
@@ -244,14 +244,14 @@ export const AuthProvider = ({ children }) => {
    */
   const scheduleRefresh = (jwt) => {
     if (!jwt) return;
-    
+
     // Extrae información de expiración del token
     const payload = parseJwt(jwt);
     if (!payload?.exp) return;
 
     // Calcula tiempo (en milisegundos) hasta que expire el token
     const msToExpire = payload.exp * 1000 - Date.now();
-    
+
     // Renueva 60 segundos antes de expirar (mínimo 5 segundos)
     const leeway = 60_000; // 60 segundos
     const due = Math.max(msToExpire - leeway, 5_000);
@@ -276,17 +276,17 @@ export const AuthProvider = ({ children }) => {
   const refreshToken = async () => {
     try {
       if (!token) return false;
-      
+
       // Solicita un nuevo token al backend
       const res = await fetch(`${API_BASE}/auth/refresh`, {
         method: "POST",
         headers: {
-          "Content-Type":"application/json",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
       const data = await res.json();
-      
+
       if (!res.ok || !data?.token) return false;
 
       // Actualiza el token en el mismo storage donde estaba guardado
@@ -301,10 +301,10 @@ export const AuthProvider = ({ children }) => {
       // Actualiza el estado con el nuevo token
       setToken(data.token);
       if (data.user) setUser(data.user);
-      
+
       // Programa la siguiente renovación
       scheduleRefresh(data.token);
-      
+
       return true;
     } catch (e) {
       console.error("refreshToken error:", e);
@@ -332,7 +332,7 @@ export const AuthProvider = ({ children }) => {
 
     // Realiza la petición inicial
     let res = await doFetch();
-    
+
     // Si responde con 401 (no autorizado), intenta renovar el token y reintentar
     if (res.status === 401) {
       const ok = await refreshToken();
@@ -340,7 +340,7 @@ export const AuthProvider = ({ children }) => {
         logout(); // Si no se puede renovar, cierra sesión
         return res;
       }
-      
+
       // Reintenta la petición con el nuevo token
       const headers2 = new Headers(options.headers || {});
       const newToken = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -348,8 +348,23 @@ export const AuthProvider = ({ children }) => {
       headers2.set("Content-Type", headers2.get("Content-Type") || "application/json");
       res = await fetch(url, { ...options, headers: headers2 });
     }
-    
+
     return res;
+  };
+
+  /**
+ * Actualiza la información del usuario en el contexto y storage.
+ * Útil cuando se actualiza el perfil (ej: cambio de foto).
+ * 
+ * @param {Object} updatedUser - Datos actualizados del usuario
+ */
+  const updateUser = (updatedUser) => {
+    // Actualiza el estado
+    setUser(updatedUser);
+
+    // Actualiza el storage correspondiente
+    const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+    storage.setItem("user", JSON.stringify(updatedUser));
   };
 
   /**
@@ -363,21 +378,22 @@ export const AuthProvider = ({ children }) => {
     user,             // Object|null: datos del usuario autenticado
     token,            // string|null: token JWT actual
     loading,          // boolean: indica si se está cargando el estado inicial
-    
+
     // Estado de internacionalización
     lang,             // string: idioma actual ('es' o 'en')
     setLang,          // function: establece el idioma
-    
+
     // Estado de perfil activo
     activeStudent,    // Object|null: estudiante activo si un padre accede como hijo
     setActiveStudent, // function: establece el estudiante activo
-    
+
     // Acciones de autenticación
     login,            // function: autentica un usuario
     logout,           // function: cierra la sesión actual
     checkAuthStatus,  // function: verifica y restaura sesión guardada
     refreshToken,     // function: renueva el token JWT
     authFetch,        // function: realiza peticiones HTTP autenticadas
+    updateUser       // function: actualiza la información del usuario
   }), [isAuthenticated, user, token, loading, lang, activeStudent]);
 
   return (
@@ -387,3 +403,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+

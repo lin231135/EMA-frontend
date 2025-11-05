@@ -1,11 +1,12 @@
 // src/components/layout/admin/AdminNavbar.jsx
 
 import { NavLink } from "react-router-dom";
-import { Dropdown, DropdownItem, Avatar } from "flowbite-react";
+import { Dropdown, Avatar } from "flowbite-react";
 import { useAuth } from "../../../contexts/AuthContext";
+import { HiGlobeAlt } from "react-icons/hi";
 
 export default function AdminNavbar({ onLogout }) {
-  const { lang, setLang } = useAuth();
+  const { lang, setLang, user } = useAuth(); 
 
   // Diccionario simple de idiomas
   const languages = {
@@ -18,6 +19,9 @@ export default function AdminNavbar({ onLogout }) {
   const handleSelectLang = (code) => {
     setLang(code);
   };
+
+  const profileImage = user?.profile_image || null;
+  const userName = user?.name || "Admin";
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800">
@@ -39,29 +43,38 @@ export default function AdminNavbar({ onLogout }) {
           </svg>
         </button>
 
-        {/* Idioma */}
+        {/* Idioma - MEJORADO para dark mode */}
         <Dropdown
           inline
-          placement="bottom"
-          label={`${safe.label} ${safe.flag}`}
+          label={
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200">
+              <HiGlobeAlt className="w-5 h-5" />
+              <span className="text-sm">{safe.flag}</span>
+            </div>
+          }
+          arrowIcon={false}
         >
-          <DropdownItem onClick={() => handleSelectLang("en")}>
-            English
-          </DropdownItem>
-          <DropdownItem onClick={() => handleSelectLang("es")}>
-            Español
-          </DropdownItem>
+          <Dropdown.Item onClick={() => handleSelectLang("en")}>
+            🇬🇧 English
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSelectLang("es")}>
+            🇪🇸 Español
+          </Dropdown.Item>
         </Dropdown>
 
-        {/* Perfil */}
+        {/* Perfil - CON FOTO */}
         <NavLink
           to="/admin/profile"
           className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg px-2 py-1"
         >
-          <Avatar img="" rounded />
+          <Avatar 
+            img={profileImage || undefined}
+            rounded 
+            alt={userName}
+          />
           <div className="hidden sm:flex flex-col leading-tight">
             <span className="text-sm font-medium text-gray-900 dark:text-white">
-              Admin
+              {userName}
             </span>
             <span className="text-[11px] text-gray-500 dark:text-gray-400">
               Administrator

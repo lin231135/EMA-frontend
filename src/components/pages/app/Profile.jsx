@@ -1,5 +1,5 @@
 // src/components/pages/app/Profile.jsx
-import { Card, Button, Avatar } from "flowbite-react";
+import { Card, Button } from "flowbite-react";
 import StudentLayout from "../../layout/student/StudentLayout";
 import AdminLayout from "../../layout/admin/AdminLayout";
 import ParentLayout from "../../layout/parent/ParentLayout";
@@ -10,6 +10,7 @@ import ChildrenManagementSection from "../parent/ChildrenManagementSection";
 import translations from "../../../translations";
 import { useAuth } from "../../../contexts/AuthContext";
 import { EditIcon } from "../../ui/Icons";
+import UserService from "../../../services/app/userService";
 
 /* ---------- Small helper components ---------- */
 function ReadonlyField({ label, value }) {
@@ -47,13 +48,8 @@ function Section({ title, onEdit, editText, children }) {
 }
 
 /* ---------- Toast system (React-controlled) ---------- */
-/* - toasts: array of { id, type: 'success'|'danger'|'warning', message }
-   - se muestran en la esquina inferior derecha, auto-dismiss después de duration ms
-   - close manual con botón
-*/
 function ToastStack({ toasts, onClose }) {
     return (
-        // posicion fija: bottom-right
         <div aria-live="polite" className="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 z-50">
             <div className="w-full flex flex-col items-end space-y-2">
                 {toasts.map((t) => (
@@ -63,17 +59,7 @@ function ToastStack({ toasts, onClose }) {
                         role="alert"
                     >
                         <div className="flex items-center">
-                            <div className="inline-flex items-center justify-center shrink-0 w-8 h-8 rounded-lg mr-3"
-                                style={{
-                                    backgroundColor:
-                                        t.type === "success"
-                                            ? undefined
-                                            : t.type === "danger"
-                                            ? undefined
-                                            : undefined,
-                                }}
-                            >
-                                {/* Simple icons (inline, small) - avoids complex SVG attribute differences */}
+                            <div className="inline-flex items-center justify-center shrink-0 w-8 h-8 rounded-lg mr-3">
                                 {t.type === "success" && (
                                     <svg className="w-5 h-5 text-green-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
@@ -90,9 +76,7 @@ function ToastStack({ toasts, onClose }) {
                                     </svg>
                                 )}
                             </div>
-
                             <div className="flex-1 text-sm font-normal">{t.message}</div>
-
                             <button
                                 onClick={() => onClose(t.id)}
                                 className="ms-3 -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
@@ -113,13 +97,14 @@ function ToastStack({ toasts, onClose }) {
 
 /* ---------- Main component ---------- */
 export default function Profile() {
-    const { lang, token, user: authUser, authFetch } = useAuth();
+    const { lang, token, user: authUser, authFetch, updateUser } = useAuth();
     const t = translations[lang].studentProfile;
     const API_BASE = String(import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
 
     const [openPersonal, setOpenPersonal] = useState(false);
     const [openAddress, setOpenAddress] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState(null);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
 
     const [user, setUser] = useState({
         name: "",
@@ -127,31 +112,22 @@ export default function Profile() {
         email: "",
         phone: "",
         addresses: [],
+        profile_image: null,
     });
 
-    // Toasts: array controlled by state
     const [toasts, setToasts] = useState([]);
-    const TOAST_DURATION = 4500; // ms (ajusta si quieres más/menos)
+    const TOAST_DURATION = 4500;
 
     const addToast = (type, message, duration = TOAST_DURATION) => {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
         setToasts((s) => [...s, { id, type, message }]);
-        // auto remove
         setTimeout(() => {
             setToasts((s) => s.filter((x) => x.id !== id));
         }, duration);
     };
     const removeToast = (id) => setToasts((s) => s.filter((x) => x.id !== id));
 
-    const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
-    const jsonHeaders = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        ...authHeaders,
-    };
-    const withCreds = { credentials: "include" };
-
-    // Cargar perfil del usuario (con múltiples direcciones)
+    // Cargar perfil del usuario
     useEffect(() => {
         const loadProfile = async () => {
             try {
@@ -167,10 +143,10 @@ export default function Profile() {
                     email: data.user?.email || "",
                     phone: data.user?.phone || "",
                     addresses: data.addresses || [],
+                    profile_image: data.user?.profile_image || null,
                 });
             } catch (err) {
                 console.error("Error cargando perfil:", err);
-                // notificar al usuario
                 addToast("danger", "Error cargando perfil.");
             }
         };
@@ -193,7 +169,6 @@ export default function Profile() {
                 body: JSON.stringify(body),
             });
             if (!res.ok) {
-                // intenta parsear mensaje de error (si viene)
                 let msg = `Error actualizando perfil (${res.status})`;
                 try {
                     const errJson = await res.json();
@@ -210,8 +185,6 @@ export default function Profile() {
                 phone: updated.user?.phone ?? u.phone,
             }));
             setOpenPersonal(false);
-
-            // Notificaciones: toast y fallback alert
             addToast("success", "Perfil actualizado correctamente.");
         } catch (err) {
             console.error("Error actualizando perfil:", err);
@@ -219,7 +192,7 @@ export default function Profile() {
         }
     };
 
-    // Abrir modal para editar la dirección principal (o la primera disponible)
+    // Abrir modal para editar dirección
     const openAddressEditor = () => {
         const primary = user.addresses.find((a) => a.is_primary) || user.addresses[0] || null;
         setSelectedAddress(primary);
@@ -254,7 +227,6 @@ export default function Profile() {
             }));
             setOpenAddress(false);
             setSelectedAddress(null);
-
             addToast("success", "Dirección actualizada correctamente.");
         } catch (err) {
             console.error("Error actualizando dirección:", err);
@@ -262,7 +234,92 @@ export default function Profile() {
         }
     };
 
-    // Layout dinámico por rol (fallback a Fragment)
+    // ⬇️ FUNCIONES PARA FOTO DE PERFIL ⬇️
+    
+    // Subir imagen de perfil
+    const handleUploadImage = async (file) => {
+        setIsUploadingImage(true);
+        try {
+            const base64 = await UserService.prepareImageForUpload(file);
+
+            const url = `${API_BASE}/users/profile/image`;
+            const res = await authFetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ file: base64 }),
+            });
+
+            if (!res.ok) {
+                let msg = `Error subiendo imagen (${res.status})`;
+                try {
+                    const errJson = await res.json();
+                    if (errJson?.message) msg = errJson.message;
+                } catch (e) {}
+                throw new Error(msg);
+            }
+
+            const result = await res.json();
+            const newImageUrl = result.imageUrl || result.user?.profile_image;
+
+            setUser((u) => ({
+                ...u,
+                profile_image: newImageUrl,
+            }));
+
+            updateUser({
+                ...authUser,
+                profile_image: newImageUrl,
+            });
+
+            addToast("success", "Foto de perfil actualizada correctamente.");
+        } catch (err) {
+            console.error("Error subiendo imagen:", err);
+            addToast("danger", err.message || "Error al subir la imagen.");
+        } finally {
+            setIsUploadingImage(false);
+        }
+    };
+
+    // Eliminar imagen de perfil
+    const handleDeleteImage = async () => {
+        setIsUploadingImage(true);
+        try {
+            const url = `${API_BASE}/users/profile/image`;
+            const res = await authFetch(url, {
+                method: "DELETE",
+            });
+
+            if (!res.ok) {
+                let msg = `Error eliminando imagen (${res.status})`;
+                try {
+                    const errJson = await res.json();
+                    if (errJson?.message) msg = errJson.message;
+                } catch (e) {}
+                throw new Error(msg);
+            }
+
+            setUser((u) => ({
+                ...u,
+                profile_image: null,
+            }));
+
+            updateUser({
+                ...authUser,
+                profile_image: null,
+            });
+
+            addToast("success", "Foto de perfil eliminada correctamente.");
+        } catch (err) {
+            console.error("Error eliminando imagen:", err);
+            addToast("danger", err.message || "Error al eliminar la imagen.");
+        } finally {
+            setIsUploadingImage(false);
+        }
+    };
+
+    // ⬆️ FIN FUNCIONES DE FOTO ⬆️
+
+    // Layout dinámico por rol
     const layoutsByRole = {
         admin: AdminLayout,
         padre: ParentLayout,
@@ -271,7 +328,7 @@ export default function Profile() {
     if (!authUser) return null;
     const LayoutComponent = layoutsByRole[authUser.role] || Fragment;
 
-    // Dirección a mostrar (solo lectura)
+    // Dirección a mostrar
     const addr = user.addresses.find((a) => a.is_primary) || user.addresses[0] || {};
 
     return (
@@ -280,10 +337,35 @@ export default function Profile() {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t.title}</h1>
 
-                    {/* Tarjeta superior */}
+                    {/* ⬇️ Card principal: SOLO foto + nombre + rol (SIN botones) ⬇️ */}
                     <Card className="mb-6 shadow-sm border border-gray-200/80 dark:border-gray-700">
                         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                            <Avatar img={user.avatar} rounded size="lg" />
+                            {/* Avatar circular (solo lectura) */}
+                            <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 ring-4 ring-gray-200 dark:ring-gray-600">
+                                {user.profile_image ? (
+                                    <img
+                                        src={user.profile_image}
+                                        alt={`${user.name} ${user.lastName}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <svg
+                                            className="w-12 h-12 text-gray-400"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Información del usuario */}
                             <div className="text-center sm:text-left">
                                 <p className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                                     {user.name} {user.lastName}
@@ -292,6 +374,7 @@ export default function Profile() {
                             </div>
                         </div>
                     </Card>
+                    {/* ⬆️ FIN card principal ⬆️ */}
 
                     {/* Información Personal */}
                     <Section title={t.sections.personal} editText={t.buttons.edit} onEdit={() => setOpenPersonal(true)}>
@@ -303,7 +386,7 @@ export default function Profile() {
                         </div>
                     </Section>
 
-                    {/* Dirección (simple, sin tabla) */}
+                    {/* Dirección */}
                     <div className="mt-6">
                         <Section
                             title={t.sections.address || t.sections.addresses}
@@ -346,6 +429,9 @@ export default function Profile() {
                 onClose={() => setOpenPersonal(false)}
                 user={user}
                 onSubmit={handleUpdatePersonal}
+                onUploadImage={handleUploadImage}        // ⬅️ NUEVO
+                onDeleteImage={handleDeleteImage}        // ⬅️ NUEVO
+                isUploadingImage={isUploadingImage}      // ⬅️ NUEVO
             />
             <AddressModalProfile
                 open={openAddress}
