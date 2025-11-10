@@ -1,10 +1,181 @@
 // src/components/pages/app/EnrollmentSchedule.jsx
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Alert, Button, Textarea } from "flowbite-react";
+import { Alert, Button, Textarea, Badge } from "flowbite-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { getSchedulesByCourse } from "../../../services/app/schedulesService";
 import ScheduleCard from "../../ui/ScheduleCard";
+
+// Helpers para manejo de fechas
+const addDays = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+const startOfWeek = (date) => {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Lunes como primer día
+  return new Date(d.setDate(diff));
+};
+
+const sameYMD = (d1, d2) => {
+  return d1.getFullYear() === d2.getFullYear() &&
+         d1.getMonth() === d2.getMonth() &&
+         d1.getDate() === d2.getDate();
+};
+
+const fmtKey = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+const formatTime = (hour) => {
+  const h = hour % 12 || 12;
+  const period = hour >= 12 ? 'PM' : 'AM';
+  return `${h}:00 ${period}`;
+};
+
+// Horarios de 8 AM a 8 PM
+const SCHEDULE_HOURS = Array.from({ length: 13 }, (_, i) => 8 + i);
+
+// Nombres de días
+const DAY_NAMES = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+// Colores para los horarios
+const COLOR_PALETTE = [
+  "bg-indigo-500 hover:bg-indigo-600",
+  "bg-purple-500 hover:bg-purple-600",
+  "bg-pink-500 hover:bg-pink-600",
+  "bg-rose-500 hover:bg-rose-600",
+  "bg-orange-500 hover:bg-orange-600",
+  "bg-cyan-500 hover:bg-cyan-600",
+];
+
+/** Componente Vista de Semana */
+function WeekView({ weekStart, schedules, selected, onSelect }) {
+  const weekDays = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  }, [weekStart]);
+
+  // Organizar horarios por día
+  const schedulesByDay = useMemo(() => {
+    const map = {};
+    schedules.forEach(schedule => {
+      const scheduleDate = new Date(schedule.scheduleDate);
+      const dayKey = fmtKey(scheduleDate);
+      if (!map[dayKey]) map[dayKey] = [];
+      map[dayKey].push(schedule);
+    });
+    return map;
+  }, [schedules]);
+
+  const hasSchedules = weekDays.some(day => {
+    const dayKey = fmtKey(day);
+    return schedulesByDay[dayKey] && schedulesByDay[dayKey].length > 0;
+  });
+
+  return (
+    <div className="flex-1 overflow-x-auto">
+      {/* Grid de semana */}
+      <div className="min-w-[800px]">
+        <div className="grid grid-cols-8 gap-1">
+          {/* Columna de horas */}
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-l-lg">
+            <div className="h-14 flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-300 border-b-2 border-gray-300 dark:border-gray-600">
+              Hora
+            </div>
+            {SCHEDULE_HOURS.map((hour) => (
+              <div key={hour} className="h-20 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-400 border-b border-gray-200/50 dark:border-gray-600/50">
+                {formatTime(hour)}
+              </div>
+            ))}
+          </div>
+
+          {/* Columnas de días */}
+          {weekDays.map((day, dayIndex) => {
+            const dayKey = fmtKey(day);
+            const daySchedules = schedulesByDay[dayKey] || [];
+            const isToday = sameYMD(day, new Date());
+            
+            return (
+              <div key={dayKey} className={`bg-white dark:bg-gray-800 ${dayIndex === 6 ? 'rounded-r-lg' : ''} border-l border-gray-200 dark:border-gray-700`}>
+                {/* Header del día */}
+                <div className={`h-14 flex flex-col items-center justify-center border-b-2 ${isToday ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-300 dark:border-indigo-600' : 'border-gray-300 dark:border-gray-600'}`}>
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    {DAY_NAMES[dayIndex]}
+                  </div>
+                  <div className={`text-lg font-bold ${isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-800 dark:text-gray-200'}`}>
+                    {day.getDate()}
+                  </div>
+                </div>
+
+                {/* Slots de horas */}
+                {SCHEDULE_HOURS.map((hour) => {
+                  // Encontrar horarios que coincidan con esta hora
+                  const matchingSchedules = daySchedules.filter(schedule => {
+                    const startTime = schedule.startTime;
+                    const scheduleHour = parseInt(startTime.split(':')[0]);
+                    return scheduleHour === hour;
+                  });
+
+                  return (
+                    <div key={`${dayKey}-${hour}`} className="h-20 border-b border-gray-100 dark:border-gray-700 p-1 relative flex flex-col gap-1">
+                      {matchingSchedules.map((schedule, idx) => {
+                        const isSelected = selected?.id === schedule.id;
+                        const colorClass = COLOR_PALETTE[schedule.id % COLOR_PALETTE.length];
+                        
+                        return (
+                          <button
+                            key={schedule.id}
+                            onClick={() => onSelect(schedule)}
+                            className={`w-full h-full text-left text-xs px-2 py-2 rounded-md transition-all duration-200 flex flex-col justify-center ${
+                              isSelected 
+                                ? 'bg-indigo-600 dark:bg-indigo-500 text-white ring-2 ring-indigo-400 ring-offset-1 dark:ring-offset-gray-800 shadow-lg scale-[1.02]' 
+                                : `${colorClass} text-white opacity-90 hover:opacity-100 hover:shadow-md`
+                            }`}
+                          >
+                            <div className="font-semibold truncate">
+                              {schedule.startTime} - {schedule.endTime}
+                            </div>
+                            <div className="text-[10px] opacity-90 truncate">
+                              Cap: {schedule.capacity}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {!hasSchedules && (
+        <div className="flex items-center justify-center py-12 mt-8">
+          <div className="text-center">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="mt-4 text-gray-500 dark:text-gray-400">
+              No hay horarios disponibles esta semana
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function EnrollmentSchedule() {
   const { token, user } = useAuth?.() ?? { token: null, user: null };
@@ -35,6 +206,8 @@ export default function EnrollmentSchedule() {
   const [schedules, setSchedules] = useState([]);
   const [selected, setSelected] = useState(null);
   const [note, setNote] = useState("");
+  const [currentWeekStart, setCurrentWeekStart] = useState(() => startOfWeek(new Date()));
+  const [viewMode, setViewMode] = useState("week"); // "week" o "list"
 
   useEffect(() => {
     if (!course?.id) {
@@ -190,13 +363,88 @@ export default function EnrollmentSchedule() {
         </Alert>
       )}
 
-      {/* Grid de horarios */}
+      {/* Controles de vista y navegación de semana */}
+      {!loading && !error && schedules.length > 0 && (
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Navegación de semana */}
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              color="light"
+              onClick={() => setCurrentWeekStart(prev => addDays(prev, -7))}
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </Button>
+            
+            <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                {currentWeekStart.toLocaleDateString('es-ES', { month: 'long', day: 'numeric' })} - {addDays(currentWeekStart, 6).toLocaleDateString('es-ES', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </span>
+            </div>
+            
+            <Button
+              size="sm"
+              color="light"
+              onClick={() => setCurrentWeekStart(prev => addDays(prev, 7))}
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Button>
+
+            <Button
+              size="sm"
+              color="gray"
+              onClick={() => setCurrentWeekStart(startOfWeek(new Date()))}
+            >
+              Hoy
+            </Button>
+          </div>
+
+          {/* Toggle de vista */}
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              color={viewMode === "week" ? "indigo" : "light"}
+              onClick={() => setViewMode("week")}
+            >
+              <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Semana
+            </Button>
+            <Button
+              size="sm"
+              color={viewMode === "list" ? "indigo" : "light"}
+              onClick={() => setViewMode("list")}
+            >
+              <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+              Lista
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Vista de horarios */}
       {!loading && !error && (
         <>
           {schedules.length === 0 ? (
             <Alert color="warning" className="mb-24">
               No hay horarios disponibles por el momento.
             </Alert>
+          ) : viewMode === "week" ? (
+            <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+              <WeekView
+                weekStart={currentWeekStart}
+                schedules={schedules}
+                selected={selected}
+                onSelect={setSelected}
+              />
+            </div>
           ) : (
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {schedules.map((s) => (
@@ -207,6 +455,69 @@ export default function EnrollmentSchedule() {
                   onSelect={setSelected}
                 />
               ))}
+            </div>
+          )}
+
+          {/* Horario seleccionado */}
+          {selected && (
+            <div className="mb-6 rounded-xl border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-6 shadow-lg dark:border-indigo-800 dark:from-indigo-950/20 dark:to-gray-800">
+              <div className="mb-4 flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg">
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    Horario seleccionado
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {new Date(selected.scheduleDate).toLocaleDateString('es-ES', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="flex items-center gap-3 rounded-lg bg-white p-3 dark:bg-gray-800/50">
+                  <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Inicio</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">{selected.startTime}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 rounded-lg bg-white p-3 dark:bg-gray-800/50">
+                  <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Fin</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">{selected.endTime}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 rounded-lg bg-white p-3 dark:bg-gray-800/50">
+                  <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Capacidad</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">{selected.capacity} personas</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

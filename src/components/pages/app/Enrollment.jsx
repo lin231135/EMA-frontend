@@ -148,7 +148,7 @@ export default function Enrollment() {
 
       {/* Encabezado contextual */}
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-slate-100">
+        <h2 className="text-xl font-semibold text-black">
           Paso 1: Selecciona un curso
         </h2>
         <p className="text-sm text-slate-400">
@@ -192,12 +192,12 @@ export default function Enrollment() {
 
           {/* Acciones */}
           <div className="flex justify-end gap-3">
-            <Button color="gray" onClick={() => setSelected(null)} disabled={!selected}>
+            <Button color="red" onClick={() => setSelected(null)} disabled={!selected}>
               Quitar selección
             </Button>
 
             <Button
-              color="indigo"
+              color="cyan"
               disabled={!canContinue}
               onClick={() => {
                 // Navega al Paso 2 con el curso seleccionado.
