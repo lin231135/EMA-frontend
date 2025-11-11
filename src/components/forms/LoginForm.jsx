@@ -1,64 +1,63 @@
 // src/components/forms/LoginForm.jsx
-// Componente de formulario de inicio de sesión 
+// Componente de formulario de inicio de sesión con modal de bienvenida
 
-import React, { useState, useEffect } from 'react';
-import PasswordModal from './Popup';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import React, { useState } from "react";
+import PasswordModal from "./Popup";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import PageLayout from "../layout/PageLayout";
 import { RegisterImageCard } from "../forms/RegisterCards";
-import { Link } from "react-router-dom";
-import translations from '../../translations';
+import translations from "../../translations";
+import WelcomeModal from "../ui/WelcomeModal";
 
 /**
  * Componente Login
- * Formulario de inicio de sesión con validación, manejo de errores y opciones de recordar sesión
- * @returns {JSX.Element} Página completa de login con layout y formulario
+ * Formulario de inicio de sesión con validación, manejo de errores,
+ * popup de restablecimiento de contraseña y modal de bienvenida.
  */
 const Login = () => {
   // Hooks de contexto y navegación
   const { lang, login } = useAuth();
-  const t = translations[lang].login; // Traducciones según el idioma activo
-
-  // Estado para los campos de email y contraseña
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: ''
-  });
-
+  const t = translations[lang].login;
   const navigate = useNavigate();
 
-  // Estado para el checkbox "Recordar sesión" (localStorage vs sessionStorage)
+  // Estados del formulario
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
 
-  // Estado para mostrar mensajes de error en el formulario
-  const [error, setError] = useState('');
-
-  // Estado para controlar la visibilidad del popup de restablecimiento de contraseña
+  // Estados para el popup de restablecimiento
   const [showResetPopup, setShowResetPopup] = useState(false);
-  console.log('showResetPopup:', showResetPopup);
-
-  // Estado para detectar si es el primer login del usuario (requiere cambio de contraseña)
   const [isFirstLogin, setIsFirstLogin] = useState(false);
 
-  /**
-   * Maneja el cambio en los inputs de email y contraseña
-   * Actualiza el estado de credentials dinámicamente según el campo modificado
-   * @param {Event} e - Evento del input
-   */
+  // Estado para el modal de bienvenida
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeName, setWelcomeName] = useState("");
+  const [redirectTo, setRedirectTo] = useState("/");
+
+  // Manejar cambios en los inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCredentials(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
-  /**
-   * Maneja el envío del formulario de login
-   * Valida los datos, realiza la petición al backend y maneja la respuesta
-   * @param {Event} e - Evento de submit del formulario
-   */
+  // Redirección según el rol del usuario
+  const computeRedirectByRole = (user) => {
+    switch (user.role) {
+      case "admin":
+        return "/admin/dashboard";
+      case "padre":
+        return "/parent/ParentProfileSelect";
+      case "estudiante":
+        return `/student/dashboard/${user.id}`;
+      case "maestro":
+        return `/teacher/materials/`;
+      default:
+        return "/";
+    }
+  };
+
+  // Envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -73,7 +72,6 @@ const Login = () => {
     }
 
     try {
-      // Usa directamente el login del contexto
       const { ok, data, error } = await login(
         credentials.email,
         credentials.password,
@@ -86,35 +84,15 @@ const Login = () => {
       const isFirst = user.is_first_login || false;
 
       if (isFirst) {
-        // si es el primer login, mostrar popup de cambio de contraseña
         setIsFirstLogin(true);
         setShowResetPopup(true);
         return;
       }
 
-      // mensaje de bienvenida, hay que actualizarlo por un
-      // alert de flowbite o similar
-      alert(t.welcomeMessage.replace("{name}", user.name));
-
-      // Redirección según el rol
-      switch (user.role) {
-        case "admin":
-          navigate("/admin/dashboard");
-          break;
-        case "padre":
-          navigate("/parent/ParentProfileSelect");
-          break;
-        case "estudiante":
-          navigate(`/student/dashboard/${user.id}`);
-          break;
-        case "maestro":
-          //navigate(`/teacher/dashboard/${user.id}`);
-          navigate(`/teacher/materials/`);
-          break;
-        default:
-          navigate("/");
-          break;
-      }
+      // Mostrar modal de bienvenida
+      setWelcomeName(user.name || "");
+      setRedirectTo(computeRedirectByRole(user));
+      setShowWelcome(true);
 
       setError("");
     } catch (err) {
@@ -123,66 +101,63 @@ const Login = () => {
     }
   };
 
+  // Confirmar modal de bienvenida
+  const handleWelcomeConfirm = () => {
+    setShowWelcome(false);
+    navigate(redirectTo);
+  };
 
-  /**
-   * Maneja la actualización de contraseña del usuario
-   * Se ejecuta cuando el usuario completa el formulario del PasswordModal
-   * @param {Object} data - Objeto con las contraseñas (current y new)
-   */
+  // Actualizar contraseña del usuario
   const handlePasswordUpdate = async (data) => {
     try {
-      // Obtener información del usuario desde localStorage o sessionStorage
-      const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user'));
+      const user = JSON.parse(
+        localStorage.getItem("user") || sessionStorage.getItem("user")
+      );
 
-      // Petición al backend para actualizar la contraseña
-      const response = await fetch('http://localhost:5000/api/auth/update-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          currentPassword: data.current,
-          newPassword: data.new
-        })
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/auth/update-password",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            currentPassword: data.current,
+            newPassword: data.new,
+          }),
+        }
+      );
 
       const result = await response.json();
 
       if (!response.ok) throw new Error(result.message);
 
-      // Contraseña actualizada exitosamente
       alert(t.passwordUpdateSuccess);
-      setTimeout(() => navigate('/'), 1000);
-
-      // Cerrar el popup y resetear estado
+      setTimeout(() => navigate("/"), 1000);
       setShowResetPopup(false);
       setIsFirstLogin(false);
     } catch (err) {
       console.error(err.message);
-      alert(t.passwordUpdateError.replace('{message}', err.message));
+      alert(t.passwordUpdateError.replace("{message}", err.message));
     }
   };
 
   return (
     <>
-      {/* Layout principal de la página con navbar deshabilitado */}
+      {/* Layout principal */}
       <PageLayout hideUserMenu={true}>
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-6">
           <div className="w-full max-w-6xl flex flex-col lg:flex-row items-start justify-center gap-8">
-
-            {/* Columna izquierda: Tarjeta de imagen decorativa (solo visible en pantallas grandes) */}
+            {/* Imagen lateral */}
             <div className="flex-1 hidden lg:block">
               <div className="h-full max-h-[650px] overflow-hidden rounded-lg">
                 <RegisterImageCard />
               </div>
             </div>
 
-            {/* Columna derecha: Formulario de login */}
+            {/* Formulario */}
             <div className="flex-[1.2] flex items-center justify-center">
               <div className="flex-1 min-h-[400px] bg-white dark:bg-gray-800 p-12 shadow-2xl flex flex-col justify-center rounded-lg">
-
-                {/* Sección de encabezado: Logo y título */}
                 <div className="text-center mb-6">
-                  {/* Logo de Ellie's Music Academy */}
                   <div className="inline-flex items-center justify-center w-30 h-30 mb-4">
                     <img
                       src="/LogoColorEMA4.svg"
@@ -190,24 +165,20 @@ const Login = () => {
                       className="w-30 h-30 object-contain"
                     />
                   </div>
-
-                  {/* Título del formulario */}
                   <h2 className="text-center text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white">
                     {t.title}
                   </h2>
                 </div>
 
-                {/* Banner de error (se muestra solo si hay un error) */}
+                {/* Error */}
                 {error && (
                   <div className="bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 border border-red-200 dark:border-red-800 p-3 rounded-md text-sm mb-4">
                     {error}
                   </div>
                 )}
 
-                {/* Formulario principal de inicio de sesión */}
+                {/* Formulario */}
                 <form className="space-y-4" onSubmit={handleSubmit}>
-
-                  {/* Campo de entrada: Email */}
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       {t.emailLabel} <span className="text-red-500">*</span>
@@ -221,11 +192,10 @@ const Login = () => {
                       value={credentials.email}
                       onChange={handleChange}
                       placeholder={t.emailPlaceholder}
-                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-cyan-500 focus:border-cyan-500"
+                      className="block w-full p-4 text-sm rounded-lg border bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
 
-                  {/* Campo de entrada: Contraseña */}
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       {t.passwordLabel} <span className="text-red-500">*</span>
@@ -239,13 +209,12 @@ const Login = () => {
                       value={credentials.password}
                       onChange={handleChange}
                       placeholder={t.passwordPlaceholder}
-                      className="block w-full p-4 text-sm rounded-lg border transition-colors duration-200 bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-cyan-500 focus:border-cyan-500"
+                      className="block w-full p-4 text-sm rounded-lg border bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-cyan-500 focus:border-cyan-500"
                     />
                   </div>
 
-                  {/* Fila de opciones: Recordar sesión y Olvidé mi contraseña */}
+                  {/* Recordar sesión y olvidé contraseña */}
                   <div className="flex items-center justify-between">
-                    {/* Checkbox: Recordar sesión */}
                     <div className="flex items-center">
                       <input
                         id="remember-me"
@@ -253,38 +222,38 @@ const Login = () => {
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="h-5 w-5 p-3 rounded border-gray-300 dark:border-gray-600 text-cyan-600 focus:ring-cyan-500 accent-cyan-600 dark:bg-gray-700"
+                        className="h-5 w-5 rounded border-gray-300 dark:border-gray-600 text-cyan-600 focus:ring-cyan-500 dark:bg-gray-700"
                       />
-                      <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                      <label
+                        htmlFor="remember-me"
+                        className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
+                      >
                         {t.rememberMe}
                       </label>
                     </div>
 
-                    {/* Enlace: ¿Olvidaste tu contraseña? */}
                     <button
                       type="button"
                       onClick={() => setShowResetPopup(true)}
-                      className="text-sm p-3 font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline"
+                      className="text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline"
                     >
                       {t.forgotPassword}
                     </button>
                   </div>
 
-                  {/* Botón de submit: Iniciar sesión */}
                   <div>
                     <button
                       type="submit"
-                      className="w-full font-medium rounded-lg text-sm px-5 py-4 text-center transition-all duration-200 transform text-white bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 hover:scale-[1.02] cursor-pointer"
+                      className="w-full font-medium rounded-lg text-sm px-5 py-4 text-center text-white bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 hover:scale-[1.02] transition-all duration-200"
                     >
                       {t.loginButton}
                     </button>
                   </div>
                 </form>
 
-                {/* Pie del formulario: Enlace a registro */}
                 <div className="text-center mt-6">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {t.noAccount}{' '}
+                    {t.noAccount}{" "}
                     <Link
                       to="/register"
                       className="font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline"
@@ -299,9 +268,7 @@ const Login = () => {
         </div>
       </PageLayout>
 
-      {/* Modal de restablecimiento/cambio de contraseña */}
-      {/* Se muestra cuando el usuario hace clic en "¿Olvidaste tu contraseña?" 
-          o cuando es su primer login */}
+      {/* Popup de restablecimiento */}
       <PasswordModal
         isOpen={showResetPopup}
         onClose={() => {
@@ -309,6 +276,15 @@ const Login = () => {
           setIsFirstLogin(false);
         }}
         onSubmit={handlePasswordUpdate}
+      />
+
+      {/* Modal de bienvenida */}
+      <WelcomeModal
+        open={showWelcome}
+        name={welcomeName}
+        message={t.welcomeMessage?.replace("{name}", welcomeName || "usuario")}
+        onConfirm={handleWelcomeConfirm}
+        onClose={() => setShowWelcome(false)}
       />
     </>
   );
