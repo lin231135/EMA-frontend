@@ -1,6 +1,8 @@
 // src/components/layout/parent/ParentNavbar.jsx
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Dropdown, Avatar } from "flowbite-react";
+import { Avatar } from "flowbite-react";
+import { Dropdown, DropdownButton, DropdownMenu, DropdownItem } from "../../ui/Dropdown";
 import { useAuth } from "../../../contexts/AuthContext";
 import { HiGlobeAlt } from "react-icons/hi";
 import translations from "../../../translations";
@@ -14,6 +16,7 @@ function initialsFromName(name = "") {
 
 export default function ParentNavbar({ onLogout, parentName = "" }) {
   const { lang, setLang, user } = useAuth(); 
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const t = translations[lang]?.parentNavbar || translations.es.parentNavbar;
 
   const languages = {
@@ -21,6 +24,11 @@ export default function ParentNavbar({ onLogout, parentName = "" }) {
     es: { label: t.language.spanish, flag: "🇪🇸" },
   };
   const safe = languages[lang] ?? languages.en;
+
+  const handleSelectLang = (code) => {
+    setLang(code);
+    setIsLangMenuOpen(false);
+  };
 
   const profileImage = user?.profile_image || null;
   const displayName = parentName || user?.name || t.parent;
@@ -42,22 +50,22 @@ export default function ParentNavbar({ onLogout, parentName = "" }) {
         </button>
 
         {/* Language - MEJORADO para dark mode */}
-        <Dropdown
-          inline
-          label={
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200">
-              <HiGlobeAlt className="w-5 h-5" />
-              <span className="text-sm">{safe.flag}</span>
-            </div>
-          }
-          arrowIcon={false}
-        >
-          <Dropdown.Item onClick={() => setLang("en")}>
-            🇬🇧 {t.language.english}
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => setLang("es")}>
-            🇪🇸 {t.language.spanish}
-          </Dropdown.Item>
+        <Dropdown isOpen={isLangMenuOpen} onClose={() => setIsLangMenuOpen(false)}>
+          <DropdownButton
+            onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200"
+          >
+            <HiGlobeAlt className="w-5 h-5" />
+            <span className="text-sm">{safe.flag}</span>
+          </DropdownButton>
+          <DropdownMenu isOpen={isLangMenuOpen}>
+            <DropdownItem onClick={() => handleSelectLang("en")}>
+              🇬🇧 {t.language.english}
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSelectLang("es")}>
+              🇪🇸 {t.language.spanish}
+            </DropdownItem>
+          </DropdownMenu>
         </Dropdown>
 
         {/* Profile - CON FOTO */}

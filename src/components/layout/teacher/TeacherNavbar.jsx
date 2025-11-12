@@ -15,8 +15,10 @@
  * @version 2.0.0
  */
 
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Dropdown, Avatar } from "flowbite-react";
+import { Avatar } from "flowbite-react";
+import { Dropdown, DropdownButton, DropdownMenu, DropdownItem } from "../../ui/Dropdown";
 import { useAuth } from "../../../contexts/AuthContext";
 import { HiGlobeAlt } from "react-icons/hi";
 
@@ -36,6 +38,7 @@ import { HiGlobeAlt } from "react-icons/hi";
 export default function TeacherNavbar({ onLogout }) {
   // Obtiene datos de autenticación: idioma, usuario y función para cambiar idioma
   const { lang, setLang, user } = useAuth(); 
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   // Diccionario de idiomas disponibles con labels y banderas
   const languages = {
@@ -52,6 +55,7 @@ export default function TeacherNavbar({ onLogout }) {
    */
   const handleSelectLang = (code) => {
     setLang(code);
+    setIsLangMenuOpen(false);
   };
 
   // Extrae información del usuario con valores por defecto
@@ -79,22 +83,22 @@ export default function TeacherNavbar({ onLogout }) {
         </button>
 
         {/* ===== Selector de Idioma ===== */}
-        <Dropdown
-          inline
-          label={
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200">
-              <HiGlobeAlt className="w-5 h-5" />
-              <span className="text-sm">{safe.flag}</span>
-            </div>
-          }
-          arrowIcon={false}
-        >
-          <Dropdown.Item onClick={() => handleSelectLang("en")}>
-            🇬🇧 English
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handleSelectLang("es")}>
-            🇪🇸 Español
-          </Dropdown.Item>
+        <Dropdown isOpen={isLangMenuOpen} onClose={() => setIsLangMenuOpen(false)}>
+          <DropdownButton
+            onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200"
+          >
+            <HiGlobeAlt className="w-5 h-5" />
+            <span className="text-sm">{safe.flag}</span>
+          </DropdownButton>
+          <DropdownMenu isOpen={isLangMenuOpen}>
+            <DropdownItem onClick={() => handleSelectLang("en")}>
+              🇬🇧 English
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSelectLang("es")}>
+              🇪🇸 Español
+            </DropdownItem>
+          </DropdownMenu>
         </Dropdown>
 
         {/* ===== Perfil del Usuario ===== */}

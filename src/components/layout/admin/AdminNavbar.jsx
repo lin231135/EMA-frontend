@@ -1,12 +1,15 @@
 // src/components/layout/admin/AdminNavbar.jsx
 
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Dropdown, Avatar } from "flowbite-react";
+import { Avatar } from "flowbite-react";
+import { Dropdown, DropdownButton, DropdownMenu, DropdownItem } from "../../ui/Dropdown";
 import { useAuth } from "../../../contexts/AuthContext";
 import { HiGlobeAlt } from "react-icons/hi";
 
 export default function AdminNavbar({ onLogout }) {
   const { lang, setLang, user } = useAuth(); 
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   // Diccionario simple de idiomas
   const languages = {
@@ -18,6 +21,7 @@ export default function AdminNavbar({ onLogout }) {
 
   const handleSelectLang = (code) => {
     setLang(code);
+    setIsLangMenuOpen(false);
   };
 
   const profileImage = user?.profile_image || null;
@@ -44,22 +48,22 @@ export default function AdminNavbar({ onLogout }) {
         </button>
 
         {/* Idioma - MEJORADO para dark mode */}
-        <Dropdown
-          inline
-          label={
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200">
-              <HiGlobeAlt className="w-5 h-5" />
-              <span className="text-sm">{safe.flag}</span>
-            </div>
-          }
-          arrowIcon={false}
-        >
-          <Dropdown.Item onClick={() => handleSelectLang("en")}>
-            🇬🇧 English
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handleSelectLang("es")}>
-            🇪🇸 Español
-          </Dropdown.Item>
+        <Dropdown isOpen={isLangMenuOpen} onClose={() => setIsLangMenuOpen(false)}>
+          <DropdownButton
+            onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200"
+          >
+            <HiGlobeAlt className="w-5 h-5" />
+            <span className="text-sm">{safe.flag}</span>
+          </DropdownButton>
+          <DropdownMenu isOpen={isLangMenuOpen}>
+            <DropdownItem onClick={() => handleSelectLang("en")}>
+              🇬🇧 English
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSelectLang("es")}>
+              🇪🇸 Español
+            </DropdownItem>
+          </DropdownMenu>
         </Dropdown>
 
         {/* Perfil - CON FOTO */}
