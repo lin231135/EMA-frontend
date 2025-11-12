@@ -1,6 +1,6 @@
 // src/components/layout/admin/Sidebar.jsx
 
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { Logo } from "../Logo";
 import { useAuth } from "../../../contexts/AuthContext";
 import translations from "../../../translations";
@@ -20,8 +20,6 @@ function Icon({ name }) {
     grid: "M4.857 3A1.857 1.857 0 0 0 3 4.857v4.286C3 10.169 3.831 11 4.857 11h4.286A1.857 1.857 0 0 0 11 9.143V4.857A1.857 1.857 0 0 0 9.143 3H4.857Zm10 0A1.857 1.857 0 0 0 13 4.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 9.143V4.857A1.857 1.857 0 0 0 19.143 3h-4.286Zm-10 10A1.857 1.857 0 0 0 3 14.857v4.286C3 20.169 3.831 21 4.857 21h4.286A1.857 1.857 0 0 0 11 19.143v-4.286A1.857 1.857 0 0 0 9.143 13H4.857Zm10 0A1.857 1.857 0 0 0 13 14.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 21 19.143v-4.286A1.857 1.857 0 0 0 19.143 13h-4.286Z",
     card:
       "M4 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm0 6h16v6H4v-6Z M5 14a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Zm5 0a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2h-5a1 1 0 0 1-1-1Z",
-    book:
-      "M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z",
     report:
       "M9 2a1 1 0 000 2h2a1 1 0 100-2H9z M4 5a2 2 0 012-2v1a1 1 0 001 1h6a1 1 0 001-1V3a2 2 0 012 2v6.586l.707.707A1 1 0 0016 12v7a1 1 0 01-1 1H5a1 1 0 01-1-1v-7a1 1 0 01.293-.707L5 10.586V5z M8 16a1 1 0 01-1-1v-3a1 1 0 112 0v3a1 1 0 01-1 1z M12 16a1 1 0 01-1-1v-2a1 1 0 112 0v2a1 1 0 01-1 1z",
     user:
@@ -35,16 +33,13 @@ function Icon({ name }) {
   );
 }
 
-export default function AdminSidebar({ collapsed, onToggleCollapse }) {
-  const navigate = useNavigate();
-  const auth = useAuth ? useAuth() : null;
-  const { lang } = auth || { lang: "es" };
-  const t = translations[lang].adminDashboard.adminSidebar;
+export default function AdminSidebar({ collapsed, onToggleCollapse, onLogout }) {
+  const { lang } = useAuth();
+  const t = translations[lang]?.adminSidebar || translations.es.adminSidebar;
 
   const items = [
     { to: "/admin/dashboard", label: t.dashboard, icon: "grid" },
     { to: "/admin/payments", label: t.paymentsManagement, icon: "card" },
-    { to: "/admin/books", label: t.books, icon: "book" },
     { to: "/admin/student-list-report", label: t.studentListReport, icon: "report" },
     { to: "/admin/profile", label: t.profile, icon: "user" },
   ];
@@ -108,7 +103,7 @@ export default function AdminSidebar({ collapsed, onToggleCollapse }) {
       </nav>
 
       {/* Footer */}
-      <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800">
+      <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800 pt-2">
         <NavLink
           to="/admin/settings"
           className={({ isActive }) => linkCls(isActive, collapsed)}
@@ -122,10 +117,7 @@ export default function AdminSidebar({ collapsed, onToggleCollapse }) {
           <span className={collapsed ? "hidden" : "ms-1 truncate"}>{t.settings}</span>
         </NavLink>
         <button
-          onClick={() => {
-            try { auth?.logout?.(); } catch {}
-            navigate("/login");
-          }}
+          onClick={onLogout}
           className={linkCls(false, collapsed)}
           title={collapsed ? t.logout : undefined}
         >

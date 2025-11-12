@@ -43,11 +43,15 @@ export default function AdminLayout({ children }) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* SIDEBAR fijo a la izquierda (sobre el navbar) */}
-      <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed(c => !c)} />
+      <Sidebar 
+        collapsed={collapsed} 
+        onToggleCollapse={() => setCollapsed(c => !c)}
+        onLogout={logout}
+      />
 
       {/* NAVBAR (debajo del sidebar) */}
       <div className={contentShift}>
-        <AdminNavbar onLogout={logout} />
+        <AdminNavbar />
       </div>
 
       {/* CONTENIDO */}

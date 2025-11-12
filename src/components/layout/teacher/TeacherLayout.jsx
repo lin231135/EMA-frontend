@@ -107,13 +107,14 @@ export default function TeacherLayout({ children }) {
       {/* Fijo a la izquierda, z-index más alto para estar sobre el navbar */}
       <Sidebar 
         collapsed={collapsed} 
-        onToggleCollapse={() => setCollapsed(c => !c)} 
+        onToggleCollapse={() => setCollapsed(c => !c)}
+        onLogout={logout}
       />
 
       {/* ===== NAVBAR ===== */}
       {/* Sticky en la parte superior, desplazado según estado del sidebar */}
       <div className={contentShift}>
-        <TeacherNavbar onLogout={logout} />
+        <TeacherNavbar />
       </div>
 
       {/* ===== CONTENIDO PRINCIPAL ===== */}

@@ -42,11 +42,12 @@ export default function ParentLayout({
         onToggleKid={onToggleKid}
         kidsLabels={kidsLabels}
         kidStyles={kidStyles}  // <-- pasa los colores por hijo al sidebar
+        onLogout={logout}      // <-- pasa la función de logout
       />
 
       <div className={contentShift}>
         {/* Pasamos parentName al Navbar para que lo muestre */}
-        <ParentNavbar onLogout={logout} parentName={parentName} />
+        <ParentNavbar parentName={parentName} />
       </div>
 
       <main className={`flex-1 min-w-0 ${contentShift} px-4 sm:px-6 pt-4 pb-8`}>

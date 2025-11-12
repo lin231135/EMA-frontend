@@ -1,6 +1,6 @@
-// src/translations/es/parent/ParentSidebar.js
+// src/translations/es/student/StudentSidebar.js
 export default {
-  dashboard: "Dashboard", 
+  dashboard: "Dashboard",
   calendar: "Calendario",
   enrollment: "Inscripción",
   payments: "Pagos",
@@ -8,6 +8,4 @@ export default {
   profile: "Perfil",
   settings: "Configuración",
   logout: "Cerrar Sesión",
-  students: "Estudiantes",
-  all: "Todos",
 };

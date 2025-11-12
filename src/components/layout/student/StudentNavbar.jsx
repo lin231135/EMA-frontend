@@ -6,15 +6,17 @@ import { Avatar } from "flowbite-react";
 import { Dropdown, DropdownButton, DropdownMenu, DropdownItem } from "../../ui/Dropdown";
 import { useAuth } from "../../../contexts/AuthContext";
 import { HiGlobeAlt } from "react-icons/hi";
+import translations from "../../../translations";
 
-export default function StudentNavbar({ onLogout }) {
+export default function StudentNavbar() {
   const { lang, setLang, user } = useAuth(); 
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const t = translations[lang]?.studentNavbar || translations.es.studentNavbar;
 
   // Diccionario simple de idiomas
   const languages = {
-    en: { label: "English", flag: "🇬🇧" },
-    es: { label: "Español", flag: "🇪🇸" },
+    en: { label: t.language.english, flag: "🇬🇧" },
+    es: { label: t.language.spanish, flag: "🇪🇸" },
   };
 
   const safe = languages[lang] ?? languages.en;
@@ -25,7 +27,7 @@ export default function StudentNavbar({ onLogout }) {
   };
 
   const profileImage = user?.profile_image || null;
-  const userName = user?.name || "Student";
+  const userName = user?.name || t.student;
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800">
@@ -34,8 +36,8 @@ export default function StudentNavbar({ onLogout }) {
         <button
           type="button"
           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-          aria-label="Notifications"
-          title="Notifications"
+          aria-label={t.notifications}
+          title={t.notifications}
         >
           <svg
             className="w-6 h-6 text-gray-600 dark:text-gray-300"
@@ -57,10 +59,10 @@ export default function StudentNavbar({ onLogout }) {
           </DropdownButton>
           <DropdownMenu isOpen={isLangMenuOpen}>
             <DropdownItem onClick={() => handleSelectLang("en")}>
-              🇬🇧 English
+              🇬🇧 {t.language.english}
             </DropdownItem>
             <DropdownItem onClick={() => handleSelectLang("es")}>
-              🇪🇸 Español
+              🇪🇸 {t.language.spanish}
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -80,18 +82,10 @@ export default function StudentNavbar({ onLogout }) {
               {userName}
             </span>
             <span className="text-[11px] text-gray-500 dark:text-gray-400">
-              Student
+              {t.student}
             </span>
           </div>
         </NavLink>
-
-        {/* Logout */}
-        <button
-          onClick={onLogout}
-          className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
-        >
-          Logout
-        </button>
       </div>
     </header>
   );

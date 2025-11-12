@@ -14,7 +14,7 @@ function initialsFromName(name = "") {
   return (first + last).toUpperCase();
 }
 
-export default function ParentNavbar({ onLogout, parentName = "" }) {
+export default function ParentNavbar({ parentName = "" }) {
   const { lang, setLang, user } = useAuth(); 
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const t = translations[lang]?.parentNavbar || translations.es.parentNavbar;
@@ -87,13 +87,6 @@ export default function ParentNavbar({ onLogout, parentName = "" }) {
           </div>
         </NavLink>
 
-        {/* Logout */}
-        <button
-          onClick={onLogout}
-          className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
-        >
-          {t.logout}
-        </button>
       </div>
     </header>
   );

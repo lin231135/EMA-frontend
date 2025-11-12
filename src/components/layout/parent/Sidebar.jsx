@@ -46,7 +46,6 @@ const getItems = (t) => [
   { to: "/parent/enrollment", label: t.enrollment || "Enrollment", icon: "clipboard" },
   { to: "/parent/payment", label: t.payments, icon: "card" },
   { to: "/parent/historyPayments", label: t.paymentHistory, icon: "card" },
-  // { to: "/parent/books", label: t.books, icon: "book" },  // Deshabilitado temporalmente
   { to: "/parent/profile", label: t.profile, icon: "user" },
 ];
 
@@ -109,6 +108,7 @@ const barToAccent = (barClass) =>
  * @param {Function} props.onToggleKid - Callback para toggle de filtro de hijo
  * @param {Object} [props.kidsLabels={}] - Nombres de hijos { 'kid-<id>': 'Nombre' }
  * @param {Object} [props.kidStyles={}] - Estilos por hijo { 'kid-<id>': { bar, ring, text } }
+ * @param {Function} props.onLogout - Callback para cerrar sesión
  * @returns {JSX.Element} Sidebar completo del padre
  */
 export default function Sidebar({
@@ -118,6 +118,7 @@ export default function Sidebar({
   onToggleKid,
   kidsLabels = {},   // { 'kid-<id>': 'Nombre' }
   kidStyles = {},    // { 'kid-<id>': { bar, ring, text } }
+  onLogout,          // función de logout
 }) {
   // Obtener idioma actual y traducciones
   const { lang } = useAuth();
@@ -231,26 +232,30 @@ export default function Sidebar({
 
       {/* ========== Footer: Settings y Logout ========== */}
       {/* mt-auto empuja el footer hacia abajo del sidebar */}
-      <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800">
+      <div className="mt-auto px-3 pb-4 space-y-1 border-t border-gray-200 dark:border-gray-800 pt-2">
         {/* Enlace a Settings */}
-        <NavLink to="/settings" className={({ isActive }) => linkCls(isActive, collapsed)} title={collapsed ? "Settings" : undefined}>
+        <NavLink to="/settings" className={({ isActive }) => linkCls(isActive, collapsed)} title={collapsed ? t.settings : undefined}>
           <span className="me-2 flex-shrink-0">
             <svg className="w-5 h-5 text-gray-400 dark:text-gray-400" viewBox="0 0 24 24" fill="currentColor">
               <path d="M9.586 2.586A2 2 0 0 1 11 2h2a2 2 0 0 1 2 2v.089l.473.196.063-.063a2 2 0 0 1 2.828 0l1.414 1.414a2 2 0 0 1 0 2.827l-.063.064.196.473H20a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-.089l-.196.473.063.063a2 2 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0l-.063-.063-.473.196V20a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-.089l-.473-.196-.063.063a2.002 2.002 0 0 1-2.828 0l-1.414-1.414a2 2 0 0 1 0-2.827l.063-.064L4.089 15H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.09l.195-.473-.063-.063a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.827 0l.064.063L9 4.089V4a2 2 0 0 1 .586-1.414Z" />
             </svg>
           </span>
-          <span className={collapsed ? "hidden" : "ms-1 truncate"}>Settings</span>
+          <span className={collapsed ? "hidden" : "ms-1 truncate"}>{t.settings}</span>
         </NavLink>
 
-        {/* Enlace a Logout */}
-        <NavLink to="/logout" className={linkCls(false, collapsed)} title={collapsed ? "Logout" : undefined}>
+        {/* Botón de Logout */}
+        <button
+          onClick={onLogout}
+          className={linkCls(false, collapsed)}
+          title={collapsed ? t.logout : undefined}
+        >
           <span className="me-2 flex-shrink-0">
             <svg className="w-5 h-5 text-gray-400 dark:text-gray-400" viewBox="0 0 24 24" fill="none">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
             </svg>
           </span>
-          <span className={collapsed ? "hidden" : "ms-1 truncate"}>Logout</span>
-        </NavLink>
+          <span className={collapsed ? "hidden" : "ms-1 truncate"}>{t.logout}</span>
+        </button>
       </div>
     </aside>
   );
