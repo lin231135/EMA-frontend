@@ -7,7 +7,7 @@ import {
 } from "flowbite-react";
 import { Logo, Footer as AppFooter, AvatarDropdown } from './index';
 import { useAuth } from '../../contexts/AuthContext';
-import { useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import translations from "../../translations";
 import * as Tone from "tone";
@@ -19,6 +19,8 @@ export default function PageLayout({ children, className = "", hideUserMenu = fa
   const location = useLocation();
   const synthRef = useRef(null);
   const samplerReadyRef = useRef(false);
+  const initPromiseRef = useRef(null); // Promise para coordinar la inicialización
+  const [audioInitialized, setAudioInitialized] = useState(false);
 
   const handleLogin = () => navigate('/login');
   const handleRegister = () => navigate('/register');
@@ -31,58 +33,92 @@ export default function PageLayout({ children, className = "", hideUserMenu = fa
   const isActiveLink = (path) => location.pathname === path;
 
   //efecto notas musicales
-  const ensureSampler = async () => {
-    if (samplerReadyRef.current && synthRef.current) return;
-    await Tone.start();
+  const initializeAudio = async () => {
+    // Si ya hay una Promise de inicialización en proceso, retornarla
+    if (initPromiseRef.current) {
+      return initPromiseRef.current;
+    }
 
-    const reverb = new Tone.Reverb({ decay: 2.8, wet: 0.25 }).toDestination();
-    const comp = new Tone.Compressor({ threshold: -24, ratio: 3 }).connect(reverb);
+    // Si ya está inicializado, no hacer nada
+    if (audioInitialized && samplerReadyRef.current) {
+      return Promise.resolve();
+    }
 
-    const sampler = new Tone.Sampler({
-      urls: {
-        A1: "A1.mp3",
-        C2: "C2.mp3",
-        "D#2": "Ds2.mp3",
-        "F#2": "Fs2.mp3",
-        A2: "A2.mp3",
-        C3: "C3.mp3",
-        "D#3": "Ds3.mp3",
-        "F#3": "Fs3.mp3",
-        A3: "A3.mp3",
-        C4: "C4.mp3",
-        "D#4": "Ds4.mp3",
-        "F#4": "Fs4.mp3",
-        A4: "A4.mp3",
-        C5: "C5.mp3",
-        "D#5": "Ds5.mp3",
-        "F#5": "Fs5.mp3",
-        A5: "A5.mp3",
-      },
-      baseUrl: "https://tonejs.github.io/audio/salamander/",
-      attack: 0.003,
-      release: 1.2,
-    }).connect(comp);
+    // Crear nueva Promise de inicialización
+    initPromiseRef.current = (async () => {
+      try {
+        await Tone.start();
+        console.log("✅ Audio context iniciado desde PageLayout");
 
-    sampler.volume.value = -6;
-    await sampler.loaded;
-    synthRef.current = sampler;
-    samplerReadyRef.current = true;
+        const reverb = new Tone.Reverb({ decay: 2.8, wet: 0.25 }).toDestination();
+        const comp = new Tone.Compressor({ threshold: -24, ratio: 3 }).connect(reverb);
+
+        const sampler = new Tone.Sampler({
+          urls: {
+            C4: "C4.mp3",
+            D4: "D4.mp3",
+            E4: "E4.mp3",
+            C5: "C5.mp3",
+            D5: "D5.mp3",
+            E5: "E5.mp3",
+            F5: "F5.mp3",
+          },
+          baseUrl: "https://tonejs.github.io/audio/salamander/",
+          attack: 0.003,
+          release: 1.2,
+        });
+
+        sampler.volume.value = -6;
+        sampler.connect(comp);
+
+        // Esperar explícitamente a que el sampler esté completamente cargado
+        await sampler.loaded;
+        
+        // Asignar referencias solo después de que esté completamente listo
+        synthRef.current = sampler;
+        samplerReadyRef.current = true;
+        setAudioInitialized(true);
+        
+        console.log("✅ Sampler del PageLayout cargado y listo");
+      } catch (e) {
+        console.error("❌ Error inicializando audio:", e);
+        initPromiseRef.current = null; // Resetear en caso de error
+        throw e;
+      }
+    })();
+
+    return initPromiseRef.current;
   };
 
-  useEffect(() => {
-    const onUserGesture = () => {
-      ensureSampler();
-      window.removeEventListener("pointerdown", onUserGesture);
-    };
-    window.addEventListener("pointerdown", onUserGesture, { once: true });
-    return () => window.removeEventListener("pointerdown", onUserGesture);
-  }, []);
+  const playNote = async (i) => {
+    const notes = ["C5", "D5", "E5", "C4"];
+    const note = notes[i % notes.length];
 
-  const playCourseNote = async (i) => {
-    await ensureSampler();
-    const notes = ["C5", "D5", "E5", "F5"];
-    const note = notes[i % notes.length]; // <-- corregido (antes usabas index)
-    synthRef.current.triggerAttackRelease(note, 0.25);
+    // Si no está inicializado, inicializar y esperar
+    if (!audioInitialized || !samplerReadyRef.current) {
+      try {
+        await initializeAudio();
+        // Esperar un frame adicional para asegurar que todo esté listo
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } catch (e) {
+        console.error("❌ Error inicializando para reproducir:", e);
+        return;
+      }
+    }
+
+    // Verificar que esté listo antes de reproducir
+    if (!synthRef.current || !samplerReadyRef.current) {
+      console.log("⏳ Sampler aún no está listo");
+      return;
+    }
+
+    // Reproducir la nota
+    try {
+      synthRef.current.triggerAttackRelease(note, "8n", undefined, 0.7);
+      console.log(`🎵 Nota reproducida: ${note}`);
+    } catch (e) {
+      console.error("❌ Error reproduciendo nota:", e);
+    }
   };
 
   return (
@@ -115,10 +151,10 @@ export default function PageLayout({ children, className = "", hideUserMenu = fa
           <NavbarToggle />
         </div>
         <NavbarCollapse>
-          <NavbarLink as={Link} to="/" onClick={() => playCourseNote(0)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/')}>{t.home}</NavbarLink>
-          <NavbarLink as={Link} to="/about" onClick={() => playCourseNote(1)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/about')}>{t.about}</NavbarLink>
-          <NavbarLink as={Link} to="/service" onClick={() => playCourseNote(2)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/service')}>{t.service}</NavbarLink>
-          <NavbarLink as={Link} to="/contact" onClick={() => playCourseNote(3)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/contact')}>{t.contact}</NavbarLink>
+          <NavbarLink as={Link} to="/" onClick={() => playNote(0)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/')}>{t.home}</NavbarLink>
+          <NavbarLink as={Link} to="/about" onClick={() => playNote(1)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/about')}>{t.about}</NavbarLink>
+          <NavbarLink as={Link} to="/service" onClick={() => playNote(2)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/service')}>{t.service}</NavbarLink>
+          <NavbarLink as={Link} to="/contact" onClick={() => playNote(3)} className={'text-gray-500 hover:!text-[#038EFE]'} active={isActiveLink('/contact')}>{t.contact}</NavbarLink>
         </NavbarCollapse>
       </FlowbiteNavbar>
 

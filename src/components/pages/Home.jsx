@@ -1,5 +1,5 @@
 import { useAuth } from "../../contexts/AuthContext";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../layout";
 import translations from "../../translations";
@@ -28,9 +28,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
   const navigate = useNavigate();
-  //sonidos
+
+  // Estados para sonidos
   const synthRef = useRef(null);
   const samplerReadyRef = useRef(false);
+  const [audioInitialized, setAudioInitialized] = useState(false); // Nuevo estado
+  const [hoveredCourse, setHoveredCourse] = useState(null); // Para mostrar tooltip
 
   const API_BASE = String(import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
 
@@ -102,62 +105,86 @@ export default function Home() {
     }
   };
 
-  //efecto notas musicales
-  useEffect(() => {
-    const onUserGesture = async () => {
-      try {
-        await Tone.start();
+  const initializeAudio = async () => {
+    if (audioInitialized || samplerReadyRef.current) return; // Ya está inicializado
 
-        // Ambience para sonido más realista
-        const reverb = new Tone.Reverb({ decay: 2.8, wet: 0.25 }).toDestination();
-        const comp = new Tone.Compressor({ threshold: -24, ratio: 3 }).connect(reverb);
+    try {
+      await Tone.start();
+      console.log("Audio context iniciado en Home");
 
-        const sampler = new Tone.Sampler({
-          // Más zonas para mejor timbre
-          urls: {
-            A1: "A1.mp3",
-            C2: "C2.mp3",
-            "D#2": "Ds2.mp3",
-            "F#2": "Fs2.mp3",
-            A2: "A2.mp3",
-            C3: "C3.mp3",
-            "D#3": "Ds3.mp3",
-            "F#3": "Fs3.mp3",
-            A3: "A3.mp3",
-            C4: "C4.mp3",
-            "D#4": "Ds4.mp3",
-            "F#4": "Fs4.mp3",
-            A4: "A4.mp3",
-            C5: "C5.mp3",
-            "D#5": "Ds5.mp3",
-            "F#5": "Fs5.mp3",
-            A5: "A5.mp3",
-          },
-          baseUrl: "https://tonejs.github.io/audio/salamander/",
-          attack: 0.003,
-          release: 1.2,
-        });
+      const reverb = new Tone.Reverb({ decay: 2.8, wet: 0.25 }).toDestination();
+      const comp = new Tone.Compressor({ threshold: -24, ratio: 3 }).connect(reverb);
 
-        sampler.volume.value = -6; // menos duro
-        sampler.connect(comp);
+      const sampler = new Tone.Sampler({
+        urls: {
+          A1: "A1.mp3",
+          C2: "C2.mp3",
+          "D#2": "Ds2.mp3",
+          "F#2": "Fs2.mp3",
+          A2: "A2.mp3",
+          C3: "C3.mp3",
+          "D#3": "Ds3.mp3",
+          "F#3": "Fs3.mp3",
+          A3: "A3.mp3",
+          C4: "C4.mp3",
+          "D#4": "Ds4.mp3",
+          "F#4": "Fs4.mp3",
+          A4: "A4.mp3",
+          C5: "C5.mp3",
+          "D#5": "Ds5.mp3",
+          "F#5": "Fs5.mp3",
+          A5: "A5.mp3",
+        },
+        baseUrl: "https://tonejs.github.io/audio/salamander/",
+        attack: 0.003,
+        release: 1.2,
+      });
 
-        await sampler.loaded; // espera carga
-        synthRef.current = sampler;
-        samplerReadyRef.current = true;
-      } catch (e) {
-        console.error(e);
-      }
-      window.removeEventListener("pointerdown", onUserGesture);
-    };
+      sampler.volume.value = -6;
+      sampler.connect(comp);
 
-    window.addEventListener("pointerdown", onUserGesture, { once: true });
-    return () => window.removeEventListener("pointerdown", onUserGesture);
-  }, []);
+      await sampler.loaded;
+      synthRef.current = sampler;
+      samplerReadyRef.current = true;
+      setAudioInitialized(true);
+      console.log("Sampler cargado en Home");
+    } catch (e) {
+      console.error("Error inicializando audio en Home:", e);
+    }
+  };
+
+  const handleCourseClick = async (index) => {
+    if (!audioInitialized) {
+      // Primera vez: inicializar audio y reproducir
+      await initializeAudio();
+      // Esperar un poquito para que se cargue
+      setTimeout(() => playCourseNote(index), 100);
+    } else {
+      // Ya está inicializado, reproducir directamente
+      playCourseNote(index);
+    }
+  };
+
+  // Maneja el hover (solo reproduce si ya está inicializado)
+  const handleCourseHover = (index) => {
+    setHoveredCourse(index);
+    if (audioInitialized) {
+      playCourseNote(index);
+    }
+  };
 
   const playCourseNote = (i) => {
-    if (!samplerReadyRef.current || !synthRef.current) return;
-    const notes = ["C5", "D5", "E5", "F5"]; 
-    synthRef.current.triggerAttackRelease(notes[i % notes.length], "8n", undefined, 0.9);
+    if (!samplerReadyRef.current || !synthRef.current) {
+      console.log("Sampler no está listo aún");
+      return;
+    }
+    const notes = ["C5", "D5", "E5", "F5"];
+    try {
+      synthRef.current.triggerAttackRelease(notes[i % notes.length], "8n", undefined, 0.9);
+      console.log(`Nota reproducida: ${notes[i % notes.length]}`);
+    } catch (e) {
+      console.error("Error reproduciendo nota:", e);
+    }
   };
 
   return (
@@ -247,16 +274,32 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Singing Class", image: "Service/Canto/canto.png" },
+              { title: "Singing Class", image: "Service/Canto/Canto1.jpg" },
               { title: "Piano", image: "Service/Piano/fotoPiano5.jpg" },
               { title: "Music Stimulation 2-3 years old", image: "Service/EstMusical/Est1.jpg" },
               { title: "Music Stimulation 4-5 years old", image: "Service/EstMusical/Est2.jpg" },
             ].map((course, index) => (
               <div
                 key={index}
-                onMouseEnter={() => playCourseNote(index)}
-                className="group h-80 flex flex-col rounded-xl bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-cyan-200 dark:hover:border-cyan-400"
+                onClick={() => handleCourseClick(index)}
+                onMouseEnter={() => handleCourseHover(index)}
+                onMouseLeave={() => setHoveredCourse(null)}
+                className="group relative h-80 flex flex-col rounded-xl bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-cyan-200 dark:hover:border-cyan-400 cursor-pointer"
               >
+                {/* Tooltip cuando hace hover (solo si el audio NO está inicializado) */}
+                {hoveredCourse === index && !audioInitialized && (
+                  <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-cyan-500 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg z-10 whitespace-nowrap animate-bounce">
+                    ♫ Click to activate sound
+                  </div>
+                )}
+
+                {/* Indicador de sonido activo cuando hace hover */}
+                {hoveredCourse === index && audioInitialized && (
+                  <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg z-10 whitespace-nowrap">
+                    ♫ Playing note...
+                  </div>
+                )}
+
                 {/* Imagen = 80% de alto */}
                 <div className="flex-[4] overflow-hidden">
                   <img
@@ -382,24 +425,26 @@ export default function Home() {
                   )}
                 </div>
 
-                <Button
-                  type="submit"
-                  style={{ backgroundColor: "#01A6CC" }}
-                  className="w-1/3 ml-auto block text-white font-semibold py-3 rounded-lg hover:bg-[#018bb0] transition-colors"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending...
-                    </>
-                  ) : (
-                    "Send Application"
-                  )}
-                </Button>
+                <div className="flex justify-end">
+                  <Button
+                    type="submit"
+                    style={{ backgroundColor: "#01A6CC" }}
+                    className="w-full sm:w-auto text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#018bb0] transition-colors whitespace-nowrap"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Application"
+                    )}
+                  </Button>
+                </div>
               </form>
             </div>
           </div>
