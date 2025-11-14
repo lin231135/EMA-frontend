@@ -1,5 +1,7 @@
 // src/components/ui/ScheduleCard.jsx
 import { Card, Badge } from "flowbite-react";
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * ScheduleCard
@@ -11,10 +13,13 @@ export default function ScheduleCard({
   selected = false,
   onSelect,
 }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.scheduleCard;
+
   if (!schedule) return null;
 
-  const date = formatDate(schedule.scheduleDate);
-  const dayName = getDayName(schedule.scheduleDate);
+  const date = formatDate(schedule.scheduleDate, lang);
+  const dayName = getDayName(schedule.scheduleDate, lang, t.days);
   const range = `${formatTime(schedule.startTime)} – ${formatTime(schedule.endTime)}`;
 
   return (
@@ -54,7 +59,7 @@ export default function ScheduleCard({
                 <path d="M1 5.917 5.724 10.5 15 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                Seleccionado
+                {t.selected}
               </span>
             </div>
           )}
@@ -78,7 +83,7 @@ export default function ScheduleCard({
         {/* Hint text */}
         {!selected && (
           <p className="mt-3 text-xs text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-            Haz clic para seleccionar este horario
+            {t.clickToSelect}
           </p>
         )}
       </div>
@@ -89,21 +94,25 @@ export default function ScheduleCard({
 /* ------- utils ------- */
 function pad(n){ return String(n).padStart(2, "0"); }
 
-export function formatDate(isoLike) {
+export function formatDate(isoLike, lang = "es") {
   try {
     const d = new Date(isoLike);
     const y = d.getFullYear();
     const m = pad(d.getMonth() + 1);
     const day = pad(d.getDate());
-    return `${day}/${m}/${y}`;
+    return lang === "es" ? `${day}/${m}/${y}` : `${m}/${day}/${y}`;
   } catch { return isoLike; }
 }
 
-export function getDayName(isoLike) {
+export function getDayName(isoLike, lang = "es", customDays = null) {
   try {
     const d = new Date(isoLike);
-    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    return days[d.getDay()];
+    if (customDays && Array.isArray(customDays)) {
+      return customDays[d.getDay()];
+    }
+    const daysES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const daysEN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return lang === "es" ? daysES[d.getDay()] : daysEN[d.getDay()];
   } catch { return ""; }
 }
 

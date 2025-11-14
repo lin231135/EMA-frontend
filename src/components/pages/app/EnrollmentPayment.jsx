@@ -5,6 +5,7 @@ import { Alert, Button } from "flowbite-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { EnrollmentStepper } from "../../enrollment";
 import PaymentMethodCard from "../../enrollment/PaymentMethodCard";
+import translations from "../../../translations";
 
 /**
  * Inscripción (Paso 3: Seleccionar método de pago)
@@ -12,7 +13,8 @@ import PaymentMethodCard from "../../enrollment/PaymentMethodCard";
  * - Usable por roles "parent" y "student"
  */
 export default function EnrollmentPayment() {
-  const { user } = useAuth?.() ?? { user: null };
+  const { user, lang } = useAuth?.() ?? { user: null, lang: "es" };
+  const t = translations[lang].enrollmentComponents.pages.payment;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,8 +27,8 @@ export default function EnrollmentPayment() {
   const paymentMethods = [
     {
       value: "efectivo",
-      label: "Efectivo",
-      description: "Pago en efectivo en las instalaciones",
+      label: t.cash,
+      description: t.cashDescription,
       icon: (
         <svg
           className="h-6 w-6"
@@ -45,8 +47,8 @@ export default function EnrollmentPayment() {
     },
     {
       value: "transferencia",
-      label: "Transferencia Bancaria",
-      description: "Transferencia electrónica a cuenta bancaria",
+      label: t.transfer,
+      description: t.transferDescription,
       icon: (
         <svg
           className="h-6 w-6"
@@ -65,8 +67,8 @@ export default function EnrollmentPayment() {
     },
     {
       value: "deposito",
-      label: "Depósito Bancario",
-      description: "Depósito en ventanilla o cajero automático",
+      label: t.deposit,
+      description: t.depositDescription,
       icon: (
         <svg
           className="h-6 w-6"
@@ -88,10 +90,10 @@ export default function EnrollmentPayment() {
   const roleText = useMemo(() => {
     const role =
       user?.role?.toLowerCase?.() || user?.roles?.[0]?.toLowerCase?.() || "";
-    if (role.includes("parent")) return "Padre";
-    if (role.includes("student")) return "Estudiante";
-    return "Usuario";
-  }, [user]);
+    if (role.includes("parent")) return translations[lang].enrollmentComponents.pages.enrollment.parent;
+    if (role.includes("student")) return translations[lang].enrollmentComponents.pages.enrollment.student;
+    return translations[lang].enrollmentComponents.pages.enrollment.user;
+  }, [user, lang]);
 
   // Detecta el contexto para construir la ruta del paso 4
   const isParent = location.pathname.startsWith("/parent");
@@ -106,11 +108,10 @@ export default function EnrollmentPayment() {
     return (
       <div className="w-full">
         <Alert color="warning" className="mb-6">
-          No se encontraron datos para mostrar. Por favor vuelve al paso
-          anterior.
+          {t.noDataWarning}
           <div className="mt-3">
             <Button color="indigo" onClick={() => navigate(-1)}>
-              Regresar
+              {translations[lang].enrollmentComponents.pages.child.backButton}
             </Button>
           </div>
         </Alert>
@@ -138,7 +139,7 @@ export default function EnrollmentPayment() {
     <div className="w-full">
       {/* Título de la página */}
       <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
-        Inscripción
+        {t.title}
       </h1>
 
       {/* Stepper */}
@@ -147,10 +148,10 @@ export default function EnrollmentPayment() {
       {/* Encabezado contextual */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Paso {isParent ? 4 : 3}: Selecciona el método de pago
+          {isParent ? t.step4Title : t.step3Title}
         </h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {roleText}: elige cómo deseas realizar el pago de{" "}
+          {roleText}: {t.description}{" "}
           <span className="font-semibold text-indigo-600 dark:text-indigo-400">
             {course.name}
           </span>
@@ -194,7 +195,7 @@ export default function EnrollmentPayment() {
               />
             </svg>
             <span className="text-gray-600 dark:text-gray-400">
-              {new Date(schedule.scheduleDate).toLocaleDateString("es-ES", {
+              {new Date(schedule.scheduleDate).toLocaleDateString(lang === "es" ? "es-ES" : "en-US", {
                 weekday: "short",
                 day: "numeric",
                 month: "short",
@@ -259,10 +260,10 @@ export default function EnrollmentPayment() {
           </svg>
           <div className="flex-1">
             <h4 className="font-semibold text-blue-900 dark:text-blue-300">
-              Información importante
+              {t.importantInfo}
             </h4>
             <p className="mt-1 text-sm text-blue-800 dark:text-blue-400">
-              Tu reserva quedará confirmada una vez que se verifique el pago. Estarás recibiendo un mensaje. 
+              {t.importantInfoDescription}
             </p>
           </div>
         </div>
@@ -281,8 +282,8 @@ export default function EnrollmentPayment() {
           </svg>
           <span>
             {selected
-              ? "Revisa tu selección antes de continuar"
-              : "Selecciona un método de pago para continuar"}
+              ? t.reviewSelection
+              : t.selectPaymentMethod}
           </span>
         </div>
 
@@ -305,7 +306,7 @@ export default function EnrollmentPayment() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Regresar
+            {translations[lang].enrollmentComponents.pages.child.backButton}
           </Button>
 
           <Button
@@ -314,7 +315,7 @@ export default function EnrollmentPayment() {
             onClick={handleContinue}
             className="flex-1 sm:flex-none"
           >
-            Continuar al resumen
+            {t.continueToSummary}
             <svg
               className="ml-2 h-4 w-4"
               fill="none"

@@ -12,6 +12,7 @@ import {
   NoteInput,
   WeekNavigator,
 } from "../../enrollment";
+import translations from "../../../translations";
 
 // Helper
 const startOfWeek = (date) => {
@@ -22,7 +23,8 @@ const startOfWeek = (date) => {
 };
 
 export default function EnrollmentSchedule() {
-  const { token, user } = useAuth?.() ?? { token: null, user: null };
+  const { token, user, lang } = useAuth?.() ?? { token: null, user: null, lang: "es" };
+  const t = translations[lang].enrollmentComponents.pages.schedule;
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -90,10 +92,10 @@ export default function EnrollmentSchedule() {
   const roleText = useMemo(() => {
     const role =
       user?.role?.toLowerCase?.() || user?.roles?.[0]?.toLowerCase?.() || "";
-    if (role.includes("parent")) return "Padre";
-    if (role.includes("student")) return "Estudiante";
-    return "Usuario";
-  }, [user]);
+    if (role.includes("parent")) return translations[lang].enrollmentComponents.pages.enrollment.parent;
+    if (role.includes("student")) return translations[lang].enrollmentComponents.pages.enrollment.student;
+    return translations[lang].enrollmentComponents.pages.enrollment.user;
+  }, [user, lang]);
 
   const canContinue = !!selected;
 
@@ -115,10 +117,10 @@ export default function EnrollmentSchedule() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Inscripción
+          {t.title}
         </h1>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {roleText}: elige un horario para{" "}
+          {roleText}: {t.chooseSchedule}{" "}
           <span className="font-semibold text-indigo-600 dark:text-indigo-400">
             {course?.name}
           </span>
@@ -131,10 +133,10 @@ export default function EnrollmentSchedule() {
       {/* Subtítulo */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Paso {isParent ? 3 : 2}: Elige un horario
+          {isParent ? t.step3Title : t.step2Title}
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Horarios disponibles para{" "}
+          {t.description}{" "}
           <span className="font-medium">{course?.name}</span>
         </p>
       </div>
@@ -179,7 +181,7 @@ export default function EnrollmentSchedule() {
         <>
           {schedules.length === 0 ? (
             <Alert color="warning" className="mb-24">
-              No hay horarios disponibles por el momento.
+              {t.noSchedules}
             </Alert>
           ) : viewMode === "week" ? (
             <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800">
@@ -227,8 +229,8 @@ export default function EnrollmentSchedule() {
               </svg>
               <span>
                 {selected
-                  ? "Revisa tu selección antes de continuar"
-                  : "Selecciona un horario para continuar"}
+                  ? t.reviewSelection
+                  : t.selectSchedule}
               </span>
             </div>
 
@@ -251,7 +253,7 @@ export default function EnrollmentSchedule() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                Regresar
+                {translations[lang].enrollmentComponents.pages.child.backButton}
               </Button>
 
               <Button
@@ -260,7 +262,7 @@ export default function EnrollmentSchedule() {
                 onClick={goToPayment}
                 className="flex-1 sm:flex-none"
               >
-                Continuar a método de pago
+                {t.continueToPayment}
                 <svg
                   className="ml-2 h-4 w-4"
                   fill="none"

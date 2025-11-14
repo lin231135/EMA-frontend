@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveCourses } from "../../../services/app/coursesService";
 import { useAuth } from "../../../contexts/AuthContext";
 import { EnrollmentStepper, CourseSelectionGrid } from "../../enrollment";
+import translations from "../../../translations";
 
 /**
  * Inscripción (Paso 1: Seleccionar curso)
@@ -16,6 +17,8 @@ export default function Enrollment() {
   const auth = useAuth();
   const token = auth?.token;
   const user = auth?.user;
+  const lang = auth?.lang;
+  const t = translations[lang].enrollmentComponents.pages.enrollment;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,7 +34,7 @@ export default function Enrollment() {
     setError("");
 
     if (!token) {
-      setError("Debes iniciar sesión para ver los cursos disponibles");
+      setError(t.loginRequired);
       setLoading(false);
       return;
     }
@@ -60,10 +63,10 @@ export default function Enrollment() {
       user?.role?.toLowerCase?.() ||
       user?.roles?.[0]?.toLowerCase?.() ||
       "";
-    if (role.includes("parent")) return "Padre";
-    if (role.includes("student")) return "Estudiante";
-    return "Usuario";
-  }, [user]);
+    if (role.includes("parent")) return t.parent;
+    if (role.includes("student")) return t.student;
+    return t.user;
+  }, [user, t]);
 
   // Detecta el contexto para construir la ruta del paso 2
   const isParent = location.pathname.startsWith("/parent");
@@ -84,7 +87,7 @@ export default function Enrollment() {
     <div className="w-full">
       {/* Título de la página */}
       <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
-        Inscripción
+        {t.title}
       </h1>
 
       {/* Stepper */}
@@ -93,10 +96,10 @@ export default function Enrollment() {
       {/* Encabezado contextual */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Paso 1: Selecciona un curso
+          {t.step1Title}
         </h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {roleText}: elige el curso al que deseas inscribirte.
+          {roleText}: {t.step1Description}
         </p>
       </div>
 

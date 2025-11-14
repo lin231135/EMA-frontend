@@ -1,4 +1,6 @@
 // src/components/enrollment/ChildSelectionCard.jsx
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * Card de selección de hijo con radio button
@@ -8,6 +10,9 @@
  * @param {Function} onSelect - Callback al seleccionar
  */
 export default function ChildSelectionCard({ child, selected, onSelect }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.childSelection;
+
   // Calcular edad
   const calculateAge = (birthDate) => {
     if (!birthDate) return null;
@@ -56,7 +61,7 @@ export default function ChildSelectionCard({ child, selected, onSelect }) {
         {/* Badge de seleccionado */}
         {selected && (
           <span className="rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white dark:bg-indigo-500">
-            Seleccionado
+            {t.selected}
           </span>
         )}
       </div>
@@ -105,7 +110,7 @@ export default function ChildSelectionCard({ child, selected, onSelect }) {
                   : "text-gray-600 dark:text-gray-400"
               }`}
             >
-              {age} {age === 1 ? "año" : "años"}
+              {age} {age === 1 ? t.year : t.years}
             </p>
           )}
           {child.birth_date && (
@@ -116,7 +121,7 @@ export default function ChildSelectionCard({ child, selected, onSelect }) {
                   : "text-gray-500 dark:text-gray-500"
               }`}
             >
-              Nacimiento: {new Date(child.birth_date).toLocaleDateString("es-ES", {
+              {t.birthDate} {new Date(child.birth_date).toLocaleDateString(lang === "es" ? "es-ES" : "en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

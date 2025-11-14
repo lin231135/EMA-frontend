@@ -5,6 +5,7 @@ import { Alert, Button, Spinner } from "flowbite-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useBooking } from "../../../hooks/useBooking";
 import { EnrollmentStepper, BookingSummaryCard } from "../../enrollment";
+import translations from "../../../translations";
 
 /**
  * Inscripción (Paso 3: Confirmación de reserva)
@@ -13,7 +14,8 @@ import { EnrollmentStepper, BookingSummaryCard } from "../../enrollment";
  * - Si el usuario es Padre, envía kid_id; si es Estudiante, no lo incluye.
  */
 export default function EnrollmentConfirm() {
-  const { user } = useAuth?.() ?? { user: null };
+  const { user, lang } = useAuth?.() ?? { user: null, lang: "es" };
+  const t = translations[lang].enrollmentComponents.pages.confirm;
   const navigate = useNavigate();
   const location = useLocation();
   const { createBooking, operationLoading } = useBooking();
@@ -33,11 +35,10 @@ export default function EnrollmentConfirm() {
       <div className="flex min-h-screen w-full items-center justify-center p-4">
         <div className="w-full max-w-3xl">
           <Alert color="warning" className="mt-8">
-            No se encontraron datos para mostrar. Por favor vuelve al paso
-            anterior.
+            {t.noDataWarning}
             <div className="mt-3">
               <Button color="indigo" onClick={() => navigate(-1)}>
-                Regresar
+                {t.backButton}
               </Button>
             </div>
           </Alert>
@@ -72,7 +73,7 @@ export default function EnrollmentConfirm() {
       <div className="w-full max-w-3xl">
         {/* Título centrado */}
         <h1 className="mb-8 text-center text-3xl font-bold text-gray-900 dark:text-white">
-          Inscripción
+          {t.title}
         </h1>
 
         {/* Stepper */}
@@ -81,7 +82,7 @@ export default function EnrollmentConfirm() {
         {/* Encabezado */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Paso {isParent ? 5 : 4}: Confirmar inscripción
+            {isParent ? t.step5Title : t.step4Title}
           </h2>
         </div>
 
@@ -117,7 +118,7 @@ export default function EnrollmentConfirm() {
               </svg>
             )}
           >
-            <span className="font-semibold">Error:</span> {error}
+            <span className="font-semibold">{t.errorLabel}</span> {error}
           </Alert>
         )}
 
@@ -142,11 +143,10 @@ export default function EnrollmentConfirm() {
               </svg>
             )}
           >
-            <span className="font-semibold">¡Éxito!</span> Reserva creada
-            exitosamente.
+            <span className="font-semibold">{t.successLabel}</span> {t.successMessage}
             {bookingResult?.booking?.id && (
               <span className="ml-1">
-                Código de reserva: #{bookingResult.booking.id}
+                {t.bookingCode} #{bookingResult.booking.id}
               </span>
             )}
           </Alert>
@@ -175,7 +175,7 @@ export default function EnrollmentConfirm() {
                 d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
               />
             </svg>
-            Regresar
+            {t.backButton}
           </Button>
 
           <Button
@@ -188,7 +188,7 @@ export default function EnrollmentConfirm() {
             {operationLoading ? (
               <>
                 <Spinner size="sm" className="mr-2" />
-                Procesando...
+                {t.processing}
               </>
             ) : success ? (
               <>
@@ -206,7 +206,7 @@ export default function EnrollmentConfirm() {
                     d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Confirmado
+                {t.confirmed}
               </>
             ) : (
               <>
@@ -224,7 +224,7 @@ export default function EnrollmentConfirm() {
                     d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Confirmar reserva
+                {t.confirmBooking}
               </>
             )}
           </Button>

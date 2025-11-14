@@ -1,5 +1,7 @@
 // src/components/ui/CourseCard.jsx
 import { Badge } from "flowbite-react";
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * CourseCard (compact + animated)
@@ -14,10 +16,13 @@ export default function CourseCard({
   selected = false,
   onSelect,
 }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.courseCard;
+
   if (!course) return null;
 
-  const cover = pickCover(course);
-  const title = course.name ?? "Curso";
+  const cover = pickCover(course, lang);
+  const title = course.name ?? (lang === "es" ? "Curso" : "Course");
   const modality = (course.modality ?? "").toString();
   const capacity = Number(course.capacity ?? 0);
   const cost = isFinite(Number(course.cost)) ? Number(course.cost).toFixed(2) : "0.00";
@@ -37,7 +42,7 @@ export default function CourseCard({
       ].join(" ")}
       // efecto scale en hover/active (solo si no está seleccionado, para no pelear con la escala del seleccionado)
       style={!selected ? { transform: "translateZ(0)" } : undefined}
-      aria-label={`Seleccionar curso ${title}`}
+      aria-label={`${t.selectCourse} ${title}`}
     >
       {/* Imagen de fondo (más baja: 16:9) con zoom suave en hover */}
       <div
@@ -78,7 +83,7 @@ export default function CourseCard({
                 strokeLinejoin="round"
               />
             </svg>
-            Seleccionado
+            {t.selected}
           </span>
         </div>
       )}
@@ -96,13 +101,13 @@ export default function CourseCard({
           {title}
         </h3>
         <p className="mt-0.5 text-slate-200/90 text-xs md:text-sm">
-          Cap. {capacity} • Q{cost}
+          {t.capacity} {capacity} • Q{cost}
         </p>
 
         {/* Pill inferior (compacta) */}
         <div className="mt-2">
           <span className="inline-flex items-center rounded-full bg-slate-900/70 px-2.5 py-0.5 text-[11px] font-semibold text-white ring-1 ring-white/10 backdrop-blur">
-            {capacity} {capacity === 1 ? "cupo" : "cupos"}
+            {capacity} {capacity === 1 ? t.spot : t.spots}
           </span>
         </div>
       </div>
@@ -134,7 +139,7 @@ function capitalize(s = "") {
  * Selecciona la imagen de portada para un curso
  * basándose en su nombre o propiedades
  */
-function pickCover(course) {
+function pickCover(course, lang = "es") {
   const fromObj =
     course?.coverUrl ||
     course?.image ||
@@ -145,24 +150,56 @@ function pickCover(course) {
 
   const name = (course?.name || "").toLowerCase();
 
+  // Piano (same in both languages)
   if (name.includes("piano")) {
     return "/Service/Piano/fotoPiano.jpg";
   }
-  if (name.includes("canto") || name.includes("vocal") || name.includes("voz")) {
-    return "/Service/Canto/Canto1.jpg";
-  }
-  if (name.includes("estimula") || name.includes("estimulación") || name.includes("musical")) {
-    if (name.includes("n1") || name.includes("nivel 1") || name.includes("nivel1")) {
-      return "/Service/EstMusical/Est1.jpg";
-    } else if (name.includes("n2") || name.includes("nivel 2") || name.includes("nivel2")) {
-      return "/Service/EstMusical/Est2.jpg";
-    } else if (name.includes("n3") || name.includes("nivel 3") || name.includes("nivel3")) {
-      return "/Service/EstMusical/Est3.jpg";
+
+  // Singing/Voice
+  if (lang === "es") {
+    if (name.includes("canto") || name.includes("vocal") || name.includes("voz")) {
+      return "/Service/Canto/Canto1.jpg";
     }
-    return "/Service/EstMusical/Est1.jpg";
+  } else {
+    if (name.includes("singing") || name.includes("voice") || name.includes("vocal")) {
+      return "/Service/Canto/Canto1.jpg";
+    }
   }
-  if (name.includes("inglés") || name.includes("ingles") || name.includes("english")) {
-    return "/Service/Servicio.jpg";
+
+  // Musical Stimulation
+  if (lang === "es") {
+    if (name.includes("estimula") || name.includes("estimulación") || name.includes("musical")) {
+      if (name.includes("n1") || name.includes("nivel 1") || name.includes("nivel1")) {
+        return "/Service/EstMusical/Est1.jpg";
+      } else if (name.includes("n2") || name.includes("nivel 2") || name.includes("nivel2")) {
+        return "/Service/EstMusical/Est2.jpg";
+      } else if (name.includes("n3") || name.includes("nivel 3") || name.includes("nivel3")) {
+        return "/Service/EstMusical/Est3.jpg";
+      }
+      return "/Service/EstMusical/Est1.jpg";
+    }
+  } else {
+    if (name.includes("stimulation") || name.includes("music")) {
+      if (name.includes("n1") || name.includes("level 1") || name.includes("level1")) {
+        return "/Service/EstMusical/Est1.jpg";
+      } else if (name.includes("n2") || name.includes("level 2") || name.includes("level2")) {
+        return "/Service/EstMusical/Est2.jpg";
+      } else if (name.includes("n3") || name.includes("level 3") || name.includes("level3")) {
+        return "/Service/EstMusical/Est3.jpg";
+      }
+      return "/Service/EstMusical/Est1.jpg";
+    }
+  }
+
+  // English
+  if (lang === "es") {
+    if (name.includes("inglés") || name.includes("ingles")) {
+      return "/Service/Servicio.jpg";
+    }
+  } else {
+    if (name.includes("english")) {
+      return "/Service/Servicio.jpg";
+    }
   }
 
   return "/Service/Servicio.jpg";

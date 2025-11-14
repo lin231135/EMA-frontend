@@ -1,4 +1,6 @@
 // src/components/enrollment/EnrollmentStepper.jsx
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * Componente Stepper visual para el proceso de inscripción
@@ -6,11 +8,14 @@
  * @param {boolean} isParent - Si es padre (muestra paso de selección de hijo)
  */
 export default function EnrollmentStepper({ currentStep = 1, isParent = false }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.stepper;
+
   // Pasos base para estudiantes (4 pasos)
   const studentSteps = [
     {
       number: 1,
-      label: "Curso",
+      label: t.course,
       icon: (completed) =>
         completed ? (
           <svg
@@ -40,7 +45,7 @@ export default function EnrollmentStepper({ currentStep = 1, isParent = false })
     },
     {
       number: 2,
-      label: "Horario",
+      label: t.schedule,
       icon: (completed) =>
         completed ? (
           <svg
@@ -70,7 +75,7 @@ export default function EnrollmentStepper({ currentStep = 1, isParent = false })
     },
     {
       number: 3,
-      label: "Pago",
+      label: t.payment,
       icon: (completed) =>
         completed ? (
           <svg
@@ -100,7 +105,7 @@ export default function EnrollmentStepper({ currentStep = 1, isParent = false })
     },
     {
       number: 4,
-      label: "Confirmar",
+      label: t.confirm,
       icon: (active) =>
         active ? (
           <svg
@@ -129,7 +134,7 @@ export default function EnrollmentStepper({ currentStep = 1, isParent = false })
     studentSteps[0], // Curso
     {
       number: 2,
-      label: "Hijo",
+      label: t.child,
       icon: (completed) =>
         completed ? (
           <svg
@@ -159,17 +164,17 @@ export default function EnrollmentStepper({ currentStep = 1, isParent = false })
     },
     {
       number: 3,
-      label: "Horario",
+      label: t.schedule,
       icon: studentSteps[1].icon,
     },
     {
       number: 4,
-      label: "Pago",
+      label: t.payment,
       icon: studentSteps[2].icon,
     },
     {
       number: 5,
-      label: "Confirmar",
+      label: t.confirm,
       icon: studentSteps[3].icon,
     },
   ];

@@ -1,4 +1,6 @@
 // src/components/enrollment/PaymentMethodCard.jsx
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * Tarjeta de selección de método de pago con radio button
@@ -7,6 +9,8 @@
  * @param {Function} onSelect - Callback al seleccionar
  */
 export default function PaymentMethodCard({ method, selected, onSelect }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.paymentMethod;
   const { value, label, icon, description } = method;
 
   return (
@@ -87,7 +91,7 @@ export default function PaymentMethodCard({ method, selected, onSelect }) {
                 d="M5 13l4 4L19 7"
               />
             </svg>
-            Seleccionado
+            {t.selected}
           </span>
         </div>
       )}
