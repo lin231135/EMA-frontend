@@ -3,6 +3,7 @@ import { Card, Button } from "flowbite-react";
 import StudentLayout from "../../layout/student/StudentLayout";
 import AdminLayout from "../../layout/admin/AdminLayout";
 import ParentLayout from "../../layout/parent/ParentLayout";
+import TeacherLayout from "../../layout/teacher/TeacherLayout";
 import { useState, useEffect, Fragment } from "react";
 import PersonalInfoModal from "../../ui/modalProfile/PersonalInfoModalProfile";
 import AddressModalProfile from "../../ui/modalProfile/AddressModalProfile";
@@ -321,6 +322,7 @@ export default function Profile() {
         admin: AdminLayout,
         padre: ParentLayout,
         estudiante: StudentLayout,
+        maestro: TeacherLayout,
     };
     if (!authUser) return null;
     const LayoutComponent = layoutsByRole[authUser.role] || Fragment;
@@ -334,7 +336,7 @@ export default function Profile() {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t.title}</h1>
 
-                    {/* ⬇️ Card principal: SOLO foto + nombre + rol (SIN botones) ⬇️ */}
+                    {/* Card principal ->  foto, nombre y rol  */}
                     <Card className="mb-6 shadow-sm border border-gray-200/80 dark:border-gray-700">
                         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                             {/* Avatar circular (solo lectura) */}

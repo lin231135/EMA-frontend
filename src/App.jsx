@@ -76,6 +76,7 @@ export function AppRoutes() {
       {/* Teacher */}
       <Route path="/teacher/materials" element={<Material />} />
       <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+      <Route path="/teacher/profile" element={<Profile />} />
 
 
       {/* Varios */}
