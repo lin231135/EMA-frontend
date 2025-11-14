@@ -131,13 +131,13 @@ export default function ParentMultiPaymentForm({
       return;
     }
 
-    // Padres DEBEN subir comprobante
+    // Padres/Estudiantes DEBEN subir comprobante
     if (!selectedFile) {
       alert(t.alerts.proof_required);
       return;
     }
 
-    // Subir comprobante (obligatorio para padres)
+    // Subir comprobante (obligatorio para padres/estudiantes)
     let proofUrl = null;
     try {
       setUploadingImage(true);
@@ -153,16 +153,27 @@ export default function ParentMultiPaymentForm({
       setUploadingImage(false);
     }
 
-    // Preparar payload - padres siempre "en revision"
+    // Extraer payment_ids de los bookings seleccionados
+    const paymentIds = [];
+    students.forEach(student => {
+      student.bookings.forEach(booking => {
+        if (selectedBookings.has(booking.booking_id) && booking.payment_id) {
+          paymentIds.push(booking.payment_id);
+        }
+      });
+    });
+
+    // Preparar payload
     const payload = {
       user_id: user.id,
       payment_method: form.method,
       total: calculateTotal(),
       payment_date: form.date,
-      state: "en revision", // Siempre en revisión para padres
+      state: "en revision", // Siempre en revisión cuando se sube comprobante
       reference_pic: proofUrl,
       note: form.notes || null,
-      booking_ids: Array.from(selectedBookings)
+      booking_ids: Array.from(selectedBookings),
+      payment_ids: paymentIds // IDs de los pagos existentes a actualizar
     };
 
     onSubmit(payload);

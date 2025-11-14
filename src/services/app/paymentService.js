@@ -237,8 +237,8 @@ export async function fetchParentPayments({ token, kidId }) {
  * const payments = await fetchStudentPayments({ token: "jwt-token" });
  */
 export async function fetchStudentPayments({ token }) {
-  // Construye URL del endpoint de estudiante
-  const url = `${API_BASE}/student/payments/history`;
+  // Construye URL del endpoint de estudiante (plural para consistencia)
+  const url = `${API_BASE}/students/payments/history`;
   
   // Realiza petición GET con autenticación
   const res = await fetch(url, { headers: authHeaders(token) });

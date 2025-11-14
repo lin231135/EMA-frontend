@@ -143,6 +143,7 @@ export default function StudentHistoryPayments() {
         loading={loading}                     // Estado de carga
         errorMessage={error}                  // Mensaje de error si existe
         clientInfoOverride={clientInfo}       // Info del estudiante para la factura
+        showTotal={false}                     // Ocultar el total al final
       />
     </StudentLayout>
   );

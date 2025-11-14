@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import ParentMultiPaymentForm from "../../forms/ParentMultiPaymentForm";
 import StudentLayout from "../../layout/student/StudentLayout";
 import { useAuth } from "../../../contexts/AuthContext";
-import { createPayment } from "../../../services/admin/adminPaymentsService";
+import { updatePaymentsWithProof } from "../../../services/student/studentPaymentProofService";
 import { getUnpaidBookingsByStudent } from "../../../services/student/studentBookingsService";
 
 /**
@@ -24,29 +24,36 @@ import { getUnpaidBookingsByStudent } from "../../../services/student/studentBoo
  */
 export default function StudentPayment() {
   const navigate = useNavigate();
-  const { lang } = useAuth();
+  const { lang, token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (paymentData) => {
     try {
       setIsLoading(true);
       
-      // El payload ya viene correctamente formateado desde StudentMultiPaymentForm
-      console.log("Enviando pago del estudiante:", paymentData);
-      const result = await createPayment(paymentData);
+      // El comprobante ya fue subido a ImageKit en ParentMultiPaymentForm
+      // Ahora solo actualizamos los pagos con la URL del comprobante
+      console.log("Actualizando pagos con comprobante:", paymentData);
+      
+      const result = await updatePaymentsWithProof(
+        paymentData.payment_ids,
+        paymentData.reference_pic,
+        paymentData.note,
+        token
+      );
       
       alert(
         lang === "es" 
-          ? "Pago registrado exitosamente. El administrador lo revisará pronto." 
-          : "Payment successfully registered. The administrator will review it soon."
+          ? "Comprobante subido exitosamente. El administrador lo revisará pronto." 
+          : "Proof uploaded successfully. The administrator will review it soon."
       );
-      navigate("/student/dashboard");
+      navigate("/student/historyPayments");
     } catch (error) {
-      console.error("Error al crear el pago:", error);
+      console.error("Error al actualizar pagos:", error);
       alert(
         lang === "es"
-          ? "Error al registrar el pago: " + error.message
-          : "Error registering payment: " + error.message
+          ? "Error al actualizar pagos: " + error.message
+          : "Error updating payments: " + error.message
       );
     } finally {
       setIsLoading(false);
