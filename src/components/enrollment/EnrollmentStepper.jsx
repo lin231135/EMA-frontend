@@ -2,12 +2,15 @@
 
 /**
  * Componente Stepper visual para el proceso de inscripción
- * @param {number} currentStep - Paso actual (1, 2, 3 o 4)
+ * @param {number} currentStep - Paso actual (1-5)
+ * @param {boolean} isParent - Si es padre (muestra paso de selección de hijo)
  */
-export default function EnrollmentStepper({ currentStep = 1 }) {
-  const steps = [
+export default function EnrollmentStepper({ currentStep = 1, isParent = false }) {
+  // Pasos base para estudiantes (4 pasos)
+  const studentSteps = [
     {
       number: 1,
+      label: "Curso",
       icon: (completed) =>
         completed ? (
           <svg
@@ -37,6 +40,7 @@ export default function EnrollmentStepper({ currentStep = 1 }) {
     },
     {
       number: 2,
+      label: "Horario",
       icon: (completed) =>
         completed ? (
           <svg
@@ -58,14 +62,15 @@ export default function EnrollmentStepper({ currentStep = 1 }) {
             className="h-4 w-4 text-gray-500 dark:text-gray-100 lg:h-5 lg:w-5"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
-            viewBox="0 0 20 16"
+            viewBox="0 0 20 20"
           >
-            <path d="M18 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2ZM6.5 3a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3.014 13.021l.157-.625A3.427 3.427 0 0 1 6.5 9.571a3.426 3.426 0 0 1 3.322 2.805l.159.622-6.967.023ZM16 12h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Z" />
+            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
           </svg>
         ),
     },
     {
       number: 3,
+      label: "Pago",
       icon: (completed) =>
         completed ? (
           <svg
@@ -95,6 +100,7 @@ export default function EnrollmentStepper({ currentStep = 1 }) {
     },
     {
       number: 4,
+      label: "Confirmar",
       icon: (active) =>
         active ? (
           <svg
@@ -117,6 +123,58 @@ export default function EnrollmentStepper({ currentStep = 1 }) {
         ),
     },
   ];
+
+  // Pasos para padres (5 pasos, incluye selección de hijo)
+  const parentSteps = [
+    studentSteps[0], // Curso
+    {
+      number: 2,
+      label: "Hijo",
+      icon: (completed) =>
+        completed ? (
+          <svg
+            className="h-3.5 w-3.5 text-indigo-700 dark:text-indigo-200 lg:h-4 lg:w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 16 12"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 5.917 5.724 10.5 15 1.5"
+            />
+          </svg>
+        ) : (
+          <svg
+            className="h-4 w-4 text-gray-500 dark:text-gray-100 lg:h-5 lg:w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 18"
+          >
+            <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+          </svg>
+        ),
+    },
+    {
+      number: 3,
+      label: "Horario",
+      icon: studentSteps[1].icon,
+    },
+    {
+      number: 4,
+      label: "Pago",
+      icon: studentSteps[2].icon,
+    },
+    {
+      number: 5,
+      label: "Confirmar",
+      icon: studentSteps[3].icon,
+    },
+  ];
+
+  const steps = isParent ? parentSteps : studentSteps;
 
   return (
     <div className="mb-6 flex w-full justify-center">

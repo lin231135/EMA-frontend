@@ -36,8 +36,10 @@ export default function EnrollmentSchedule() {
     ? "/student/enrollment/payment"
     : "payment";
 
-  // Curso seleccionado
+  // Curso seleccionado, child y kid_id (solo para padres)
   const courseFromState = location.state?.course || null;
+  const child = location.state?.child || null;
+  const kid_id = location.state?.kid_id || null;
   const courseFromQuery = {
     id: Number(searchParams.get("courseId")) || null,
     name: searchParams.get("courseName") || null,
@@ -102,9 +104,11 @@ export default function EnrollmentSchedule() {
         course,
         schedule: selected,
         note: note.trim(),
+        child,
+        kid_id,
       },
     });
-  }, [selected, course, note, navigate, paymentPath]);
+  }, [selected, course, note, child, kid_id, navigate, paymentPath]);
 
   return (
     <div className="w-full">
@@ -122,12 +126,12 @@ export default function EnrollmentSchedule() {
       </div>
 
       {/* Stepper */}
-      <EnrollmentStepper currentStep={2} />
+      <EnrollmentStepper currentStep={isParent ? 3 : 2} isParent={isParent} />
 
       {/* Subtítulo */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Paso 2: Elige un horario
+          Paso {isParent ? 3 : 2}: Elige un horario
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Horarios disponibles para{" "}

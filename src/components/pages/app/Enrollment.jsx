@@ -68,14 +68,16 @@ export default function Enrollment() {
   // Detecta el contexto para construir la ruta del paso 2
   const isParent = location.pathname.startsWith("/parent");
   const isStudent = location.pathname.startsWith("/student");
-  const schedulePath = isParent
-    ? "/parent/enrollment/schedule"
+  
+  // Los padres van a selección de hijo (paso 2), estudiantes directo a horarios (paso 2)
+  const nextPath = isParent
+    ? "/parent/enrollment/child"
     : isStudent
     ? "/student/enrollment/schedule"
     : "schedule";
 
   const handleContinue = () => {
-    navigate(schedulePath, { state: { course: selected } });
+    navigate(nextPath, { state: { course: selected } });
   };
 
   return (
@@ -86,7 +88,7 @@ export default function Enrollment() {
       </h1>
 
       {/* Stepper */}
-      <EnrollmentStepper currentStep={1} />
+      <EnrollmentStepper currentStep={1} isParent={isParent} />
 
       {/* Encabezado contextual */}
       <div className="mb-6">

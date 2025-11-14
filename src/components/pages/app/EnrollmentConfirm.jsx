@@ -18,8 +18,11 @@ export default function EnrollmentConfirm() {
   const location = useLocation();
   const { createBooking, operationLoading } = useBooking();
 
-  // Datos recibidos desde el paso 3 (payment)
-  const { course, schedule, note, kid_id, payment_method } = location.state || {};
+  // Detectar si es padre para ajustar el paso
+  const isParent = location.pathname.startsWith("/parent");
+
+  // Datos recibidos desde el paso anterior (payment)
+  const { course, schedule, note, child, kid_id, payment_method } = location.state || {};
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -73,16 +76,13 @@ export default function EnrollmentConfirm() {
         </h1>
 
         {/* Stepper */}
-        <EnrollmentStepper currentStep={4} />
+        <EnrollmentStepper currentStep={isParent ? 5 : 4} isParent={isParent} />
 
-        {/* Título del paso */}
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Paso 4: Confirmar inscripción
+        {/* Encabezado */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            Paso {isParent ? 5 : 4}: Confirmar inscripción
           </h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Revisa la información antes de confirmar tu reserva
-          </p>
         </div>
 
         {/* Card resumen */}
@@ -90,6 +90,7 @@ export default function EnrollmentConfirm() {
           course={course}
           schedule={schedule}
           note={note}
+          child={child}
           kid_id={kid_id}
           payment_method={payment_method}
         />

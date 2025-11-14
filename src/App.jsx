@@ -28,6 +28,7 @@ import StudentEnrollment from "./components/pages/student/StudentEnrollment";
 import ParentEnrollment from "./components/pages/parent/ParentEnrollment";
 import StudentEnrollmentSchedule from "./components/pages/student/StudentEnrollmentSchedule";
 import ParentEnrollmentSchedule from "./components/pages/parent/ParentEnrollmentSchedule";
+import ParentEnrollmentChild from "./components/pages/parent/ParentEnrollmentChild";
 import StudentEnrollmentPayment from "./components/pages/student/StudentEnrollmentPayment";
 import ParentEnrollmentPayment from "./components/pages/parent/ParentEnrollmentPayment";
 import StudentEnrollmentConfirm from "./components/pages/student/StudentEnrollmentConfirm";
@@ -46,6 +47,7 @@ export function AppRoutes() {
       <Route path="/parent/payment" element={<ParentPayment />} />
       <Route path="/parent/calendar" element={<ParentCalendar />} />
       <Route path="/parent/enrollment" element={<ParentEnrollment />} />
+      <Route path="/parent/enrollment/child" element={<ParentEnrollmentChild />} />
       <Route path="/parent/enrollment/schedule" element={<ParentEnrollmentSchedule />} />
       <Route path="/parent/enrollment/payment" element={<ParentEnrollmentPayment />} />
       <Route path="/parent/enrollment/confirm" element={<ParentEnrollmentConfirm />} />

@@ -16,8 +16,8 @@ export default function EnrollmentPayment() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Datos recibidos desde el paso 2
-  const { course, schedule, note, kid_id } = location.state || {};
+  // Datos recibidos desde el paso anterior
+  const { course, schedule, note, child, kid_id } = location.state || {};
 
   const [selected, setSelected] = useState(null);
 
@@ -127,6 +127,7 @@ export default function EnrollmentPayment() {
         course,
         schedule,
         note,
+        child,
         kid_id,
         payment_method: selected.value,
       },
@@ -141,12 +142,12 @@ export default function EnrollmentPayment() {
       </h1>
 
       {/* Stepper */}
-      <EnrollmentStepper currentStep={3} />
+      <EnrollmentStepper currentStep={isParent ? 4 : 3} isParent={isParent} />
 
       {/* Encabezado contextual */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Paso 3: Selecciona el método de pago
+          Paso {isParent ? 4 : 3}: Selecciona el método de pago
         </h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           {roleText}: elige cómo deseas realizar el pago de{" "}

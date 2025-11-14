@@ -7,10 +7,11 @@ import { formatDate, formatTime } from "../ui/ScheduleCard";
  * @param {Object} course - Curso seleccionado
  * @param {Object} schedule - Horario seleccionado
  * @param {string} note - Nota opcional
+ * @param {Object} child - Objeto del hijo (opcional, solo para padres)
  * @param {number} kid_id - ID del hijo (opcional, solo para padres)
  * @param {string} payment_method - Método de pago seleccionado
  */
-export default function BookingSummaryCard({ course, schedule, note, kid_id, payment_method }) {
+export default function BookingSummaryCard({ course, schedule, note, child, kid_id, payment_method }) {
   return (
     <Card className="mb-6 border-2 border-indigo-200/30 bg-gradient-to-br from-white to-indigo-50/30 shadow-xl dark:border-indigo-800/30 dark:from-slate-800 dark:to-indigo-950/20">
       {/* Encabezado del curso */}
@@ -164,7 +165,7 @@ export default function BookingSummaryCard({ course, schedule, note, kid_id, pay
         )}
 
         {/* Estudiante asignado */}
-        {kid_id && (
+        {(child || kid_id) && (
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
               <svg
@@ -187,7 +188,7 @@ export default function BookingSummaryCard({ course, schedule, note, kid_id, pay
                 Estudiante asignado
               </p>
               <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                ID: {kid_id}
+                {child?.name || `ID: ${kid_id}`}
               </p>
             </div>
           </div>
