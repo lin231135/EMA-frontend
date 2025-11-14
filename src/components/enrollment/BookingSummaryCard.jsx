@@ -1,6 +1,8 @@
 // src/components/enrollment/BookingSummaryCard.jsx
 import { Card, Badge } from "flowbite-react";
 import { formatDate, formatTime } from "../ui/ScheduleCard";
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * Card de resumen para confirmación de booking
@@ -12,6 +14,9 @@ import { formatDate, formatTime } from "../ui/ScheduleCard";
  * @param {string} payment_method - Método de pago seleccionado
  */
 export default function BookingSummaryCard({ course, schedule, note, child, kid_id, payment_method }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.summary;
+
   return (
     <Card className="mb-6 border-2 border-indigo-200/30 bg-gradient-to-br from-white to-indigo-50/30 shadow-xl dark:border-indigo-800/30 dark:from-slate-800 dark:to-indigo-950/20">
       {/* Encabezado del curso */}
@@ -40,7 +45,7 @@ export default function BookingSummaryCard({ course, schedule, note, child, kid_
             <Badge color="indigo" className="capitalize">
               {course.modality}
             </Badge>
-            <Badge color="purple">Cap. {course.capacity}</Badge>
+            <Badge color="purple">{t.capacity} {course.capacity}</Badge>
             <Badge color="success" className="font-semibold">
               Q{Number(course.cost).toFixed(2)}
             </Badge>
@@ -70,7 +75,7 @@ export default function BookingSummaryCard({ course, schedule, note, child, kid_
           </div>
           <div>
             <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
-              Fecha
+              {t.date}
             </p>
             <p className="text-sm font-semibold text-gray-900 dark:text-white">
               {formatDate(schedule.scheduleDate)}
@@ -98,7 +103,7 @@ export default function BookingSummaryCard({ course, schedule, note, child, kid_
           </div>
           <div>
             <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
-              Horario
+              {t.schedule}
             </p>
             <p className="text-sm font-semibold text-gray-900 dark:text-white">
               {formatTime(schedule.startTime)} – {formatTime(schedule.endTime)}
@@ -127,7 +132,7 @@ export default function BookingSummaryCard({ course, schedule, note, child, kid_
             </div>
             <div className="flex-1">
               <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
-                Nota adicional
+                {t.additionalNote}
               </p>
               <p className="text-sm text-gray-700 dark:text-gray-300">{note}</p>
             </div>
@@ -155,7 +160,7 @@ export default function BookingSummaryCard({ course, schedule, note, child, kid_
             </div>
             <div>
               <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
-                Método de pago
+                {t.paymentMethod}
               </p>
               <p className="text-sm font-semibold capitalize text-gray-900 dark:text-white">
                 {payment_method}
@@ -185,7 +190,7 @@ export default function BookingSummaryCard({ course, schedule, note, child, kid_
             </div>
             <div>
               <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">
-                Estudiante asignado
+                {t.assignedStudent}
               </p>
               <p className="text-sm font-semibold text-gray-900 dark:text-white">
                 {child?.name || `ID: ${kid_id}`}

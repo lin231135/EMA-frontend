@@ -33,6 +33,7 @@ import esProfile from "./es/app/Profile";
 import esChildrenManagement from "./es/childrenManagement";
 import esInscription from "./es/app/Inscripcion";
 import esWelcomeModal from "./es/WelcomeModal";
+import esEnrollment from "./es/enrollment";
 
 import enAbout from "./en/about";
 import enCommon from "./en/common";
@@ -69,6 +70,7 @@ import enProfile from "./en/app/Profile";
 import enChildrenManagement from "./en/childrenManagement";
 import enInscription from "./en/app/Inscripcion";
 import enWelcomeModal from "./en/WelcomeModal";
+import enEnrollment from "./en/enrollment";
 
 
 const translations = {
@@ -108,6 +110,7 @@ const translations = {
     childrenManagement: esChildrenManagement,
     enrollment: esInscription,
     welcomeModal: esWelcomeModal,
+    enrollmentComponents: esEnrollment,
   },
   en: {
     about: enAbout,
@@ -145,6 +148,7 @@ const translations = {
     childrenManagement: enChildrenManagement,
     enrollment: enInscription,
     welcomeModal: enWelcomeModal,
+    enrollmentComponents: enEnrollment,
   },
 };
 

@@ -1,5 +1,7 @@
 // src/components/enrollment/WeekCalendarView.jsx
 import { useMemo } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 // Helpers
 const addDays = (date, days) => {
@@ -30,7 +32,8 @@ const formatTime = (hour) => {
 };
 
 const SCHEDULE_HOURS = Array.from({ length: 13 }, (_, i) => 8 + i);
-const DAY_NAMES = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+const DAY_NAMES_ES = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+const DAY_NAMES_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const COLOR_PALETTE = [
   "bg-indigo-500 hover:bg-indigo-600",
   "bg-purple-500 hover:bg-purple-600",
@@ -53,6 +56,10 @@ export default function WeekCalendarView({
   selected,
   onSelect,
 }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.calendar;
+  const DAY_NAMES = lang === "es" ? DAY_NAMES_ES : DAY_NAMES_EN;
+
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   }, [weekStart]);
@@ -80,7 +87,7 @@ export default function WeekCalendarView({
           {/* Columna de horas */}
           <div className="rounded-l-lg bg-gray-50 dark:bg-gray-700/50">
             <div className="flex h-14 items-center justify-center border-b-2 border-gray-300 text-sm font-semibold text-gray-700 dark:border-gray-600 dark:text-gray-300">
-              Hora
+              {lang === "es" ? "Hora" : "Time"}
             </div>
             {SCHEDULE_HOURS.map((hour) => (
               <div
@@ -159,7 +166,7 @@ export default function WeekCalendarView({
                               {schedule.startTime} - {schedule.endTime}
                             </div>
                             <div className="truncate text-[10px] opacity-90">
-                              Cap: {schedule.capacity}
+                              {lang === "es" ? "Cap" : "Cap"}: {schedule.capacity}
                             </div>
                           </button>
                         );
@@ -190,7 +197,7 @@ export default function WeekCalendarView({
               />
             </svg>
             <p className="mt-4 text-gray-500 dark:text-gray-400">
-              No hay horarios disponibles esta semana
+              {t.noSchedules}
             </p>
           </div>
         </div>

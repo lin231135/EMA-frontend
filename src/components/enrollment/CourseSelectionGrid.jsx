@@ -1,6 +1,8 @@
 // src/components/enrollment/CourseSelectionGrid.jsx
 import { Alert, Button, Spinner } from "flowbite-react";
 import CourseCard from "../ui/CourseCard";
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * Grid de selección de cursos con estados de carga y error
@@ -19,13 +21,15 @@ export default function CourseSelectionGrid({
   loading,
   error,
 }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.courseSelection;
   const canContinue = !!selected;
 
   if (loading) {
     return (
       <div className="flex items-center gap-3 text-slate-300">
-        <Spinner aria-label="Cargando cursos" />
-        <span>Cargando cursos...</span>
+        <Spinner aria-label={t.loading} />
+        <span>{t.loading}</span>
       </div>
     );
   }
@@ -33,7 +37,7 @@ export default function CourseSelectionGrid({
   if (error) {
     return (
       <Alert color="failure" className="mb-4">
-        <span className="font-medium">Error:</span> {error}
+        <span className="font-medium">{t.error}</span> {error}
       </Alert>
     );
   }
@@ -41,7 +45,7 @@ export default function CourseSelectionGrid({
   if (courses.length === 0) {
     return (
       <Alert color="warning" className="mb-6">
-        No hay cursos activos disponibles por el momento.
+        {t.noCourses}
       </Alert>
     );
   }
@@ -66,11 +70,11 @@ export default function CourseSelectionGrid({
           onClick={() => onSelect(null)}
           disabled={!selected}
         >
-          Quitar selección
+          {t.removeSelection}
         </Button>
 
         <Button color="cyan" disabled={!canContinue} onClick={onContinue}>
-          Continuar
+          {t.continue}
         </Button>
       </div>
     </>

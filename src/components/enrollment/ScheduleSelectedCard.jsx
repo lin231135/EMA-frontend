@@ -1,10 +1,15 @@
 // src/components/enrollment/ScheduleSelectedCard.jsx
+import { useAuth } from "../../contexts/AuthContext";
+import translations from "../../translations";
 
 /**
  * Card que muestra el horario seleccionado con detalles visuales
  * @param {Object} schedule - Horario seleccionado
  */
 export default function ScheduleSelectedCard({ schedule }) {
+  const { lang } = useAuth();
+  const t = translations[lang].enrollmentComponents.scheduleCard;
+
   if (!schedule) return null;
 
   return (
@@ -27,10 +32,10 @@ export default function ScheduleSelectedCard({ schedule }) {
         </div>
         <div className="flex-1">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-            Horario seleccionado
+            {t.selectedSchedule}
           </h3>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {new Date(schedule.scheduleDate).toLocaleDateString("es-ES", {
+            {new Date(schedule.scheduleDate).toLocaleDateString(lang === "es" ? "es-ES" : "en-US", {
               weekday: "long",
               year: "numeric",
               month: "long",
@@ -56,7 +61,7 @@ export default function ScheduleSelectedCard({ schedule }) {
             />
           </svg>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Inicio</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t.time}</p>
             <p className="font-semibold text-gray-900 dark:text-white">
               {schedule.startTime}
             </p>
@@ -78,7 +83,7 @@ export default function ScheduleSelectedCard({ schedule }) {
             />
           </svg>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Fin</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t.time}</p>
             <p className="font-semibold text-gray-900 dark:text-white">
               {schedule.endTime}
             </p>
@@ -101,10 +106,10 @@ export default function ScheduleSelectedCard({ schedule }) {
           </svg>
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Capacidad
+              {t.date}
             </p>
             <p className="font-semibold text-gray-900 dark:text-white">
-              {schedule.capacity} personas
+              {schedule.capacity} {lang === "es" ? "personas" : "people"}
             </p>
           </div>
         </div>

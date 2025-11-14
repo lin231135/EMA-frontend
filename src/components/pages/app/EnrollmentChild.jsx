@@ -6,6 +6,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useChildren } from "../../../hooks";
 import { EnrollmentStepper } from "../../enrollment";
 import ChildSelectionCard from "../../enrollment/ChildSelectionCard";
+import translations from "../../../translations";
 
 /**
  * Inscripción (Paso 2: Seleccionar hijo - SOLO PADRES)
@@ -13,7 +14,8 @@ import ChildSelectionCard from "../../enrollment/ChildSelectionCard";
  * - Permite seleccionar a cuál hijo inscribir
  */
 export default function EnrollmentChild() {
-  const { user } = useAuth?.() ?? { user: null };
+  const { user, lang } = useAuth?.() ?? { user: null, lang: "es" };
+  const t = translations[lang].enrollmentComponents.pages.child;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,9 +30,9 @@ export default function EnrollmentChild() {
   const roleText = useMemo(() => {
     const role =
       user?.role?.toLowerCase?.() || user?.roles?.[0]?.toLowerCase?.() || "";
-    if (role.includes("parent")) return "Padre";
-    return "Usuario";
-  }, [user]);
+    if (role.includes("parent")) return translations[lang].enrollmentComponents.pages.enrollment.parent;
+    return translations[lang].enrollmentComponents.pages.enrollment.user;
+  }, [user, lang]);
 
   // Detecta el contexto para construir la ruta del paso 3
   const isParent = location.pathname.startsWith("/parent");
@@ -40,10 +42,10 @@ export default function EnrollmentChild() {
     return (
       <div className="w-full">
         <Alert color="warning" className="mb-6">
-          No se encontraron datos del curso. Por favor vuelve al paso anterior.
+          {t.noDataWarning}
           <div className="mt-3">
             <Button color="indigo" onClick={() => navigate(-1)}>
-              Regresar
+              {t.backButton}
             </Button>
           </div>
         </Alert>
@@ -68,7 +70,7 @@ export default function EnrollmentChild() {
     <div className="w-full">
       {/* Título de la página */}
       <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
-        Inscripción
+        {t.title}
       </h1>
 
       {/* Stepper */}
@@ -77,10 +79,10 @@ export default function EnrollmentChild() {
       {/* Encabezado contextual */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Paso 2: Selecciona al estudiante
+          {t.step2Title}
         </h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {roleText}: elige a cuál de tus hijos deseas inscribir en{" "}
+          {roleText}: {t.step2Description}{" "}
           <span className="font-semibold text-indigo-600 dark:text-indigo-400">
             {course.name}
           </span>
@@ -152,12 +154,10 @@ export default function EnrollmentChild() {
                 </svg>
                 <div className="flex-1">
                   <h4 className="font-semibold">
-                    No tienes hijos registrados
+                    {t.noChildren}
                   </h4>
                   <p className="mt-1 text-sm">
-                    Debes agregar al menos un hijo para poder inscribirlo en un
-                    curso. Ve a tu perfil para gestionar los perfiles de tus
-                    hijos.
+                    {t.noChildrenDescription}
                   </p>
                   <div className="mt-4">
                     <Button
@@ -165,7 +165,7 @@ export default function EnrollmentChild() {
                       size="sm"
                       onClick={() => navigate("/parent/profile")}
                     >
-                      Ir al perfil
+                      {t.goToProfile}
                     </Button>
                   </div>
                 </div>
@@ -205,12 +205,10 @@ export default function EnrollmentChild() {
             </svg>
             <div className="flex-1">
               <h4 className="font-semibold text-blue-900 dark:text-blue-300">
-                Información importante
+                {t.importantInfo}
               </h4>
               <p className="mt-1 text-sm text-blue-800 dark:text-blue-400">
-                La inscripción se realizará a nombre del hijo seleccionado. En
-                el siguiente paso podrás elegir el horario que mejor se ajuste
-                a sus necesidades.
+                {t.importantInfoDescription}
               </p>
             </div>
           </div>
@@ -236,8 +234,8 @@ export default function EnrollmentChild() {
             </svg>
             <span>
               {selected
-                ? "Revisa tu selección antes de continuar"
-                : "Selecciona un hijo para continuar"}
+                ? t.reviewSelection
+                : t.selectChild}
             </span>
           </div>
 
@@ -260,7 +258,7 @@ export default function EnrollmentChild() {
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-              Regresar
+              {t.backButton}
             </Button>
 
             <Button
@@ -269,7 +267,7 @@ export default function EnrollmentChild() {
               onClick={handleContinue}
               className="flex-1 sm:flex-none"
             >
-              Continuar a horarios
+              {t.continueToSchedules}
               <svg
                 className="ml-2 h-4 w-4"
                 fill="none"
