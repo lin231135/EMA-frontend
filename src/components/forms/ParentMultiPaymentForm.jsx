@@ -9,7 +9,12 @@ import { uploadPaymentProof } from "../../services/app/uploadService";
 import es from "../../translations/es/form/ParentMultiPaymentForm";
 import en from "../../translations/en/form/ParentMultiPaymentForm";
 
-export default function ParentMultiPaymentForm({ onSubmit, onCancel, isLoading = false }) {
+export default function ParentMultiPaymentForm({ 
+  onSubmit, 
+  onCancel, 
+  isLoading = false,
+  bookingsService = null // Servicio personalizado para cargar bookings
+}) {
   const navigate = useNavigate();
   const { lang, token, user } = useAuth();
   const t = (lang === "es" ? es : en) ?? en;
@@ -41,7 +46,12 @@ export default function ParentMultiPaymentForm({ onSubmit, onCancel, isLoading =
   const loadBookings = async (parentId) => {
     try {
       setLoadingBookings(true);
-      const data = await getUnpaidBookingsByParent(parentId, token);
+      
+      // Usar servicio personalizado si se provee (ej: para estudiantes), sino usar el de padres
+      const data = bookingsService 
+        ? await bookingsService(token)
+        : await getUnpaidBookingsByParent(parentId, token);
+      
       setStudents(data.students || []);
       setSelectedBookings(new Set());
     } catch (error) {
