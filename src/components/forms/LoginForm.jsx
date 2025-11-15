@@ -51,7 +51,7 @@ const Login = () => {
       case "estudiante":
         return `/student/dashboard/${user.id}`;
       case "maestro":
-        return `/teacher/materials/`;
+        return `/teacher/dashboard/`;
       default:
         return "/";
     }

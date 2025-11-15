@@ -35,6 +35,9 @@ import StudentEnrollmentConfirm from "./components/pages/student/StudentEnrollme
 import ParentEnrollmentConfirm from "./components/pages/parent/ParentEnrollmentConfirm";
 import Material from "./components/pages/teacher/Materials.jsx";
 import TeacherDashboard from "./components/pages/teacher/TeacherDashboard.jsx";
+import TeacherDashboard2 from "./components/pages/teacher/TeacherDashboard2.jsx";
+import TeacherCalendar from "./components/pages/teacher/TeacherCalendar.jsx";
+import TeacherStudentsList from "./components/pages/teacher/TeacherStudentsList.jsx";
 
 export function AppRoutes() {
   return (
@@ -75,7 +78,9 @@ export function AppRoutes() {
 
       {/* Teacher */}
       <Route path="/teacher/materials" element={<Material />} />
-      <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+      <Route path="/teacher/dashboard" element={<TeacherDashboard2 />} />
+      <Route path="/teacher/students-list" element={<TeacherStudentsList />} />
+      <Route path="/teacher/calendar" element={<TeacherCalendar />} />
       <Route path="/teacher/profile" element={<Profile />} />
 
 

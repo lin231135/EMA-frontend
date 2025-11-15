@@ -45,6 +45,8 @@ const linkCls = (isActive, collapsed) =>
  */
 const getItems = (t) => [
   { to: "/teacher/dashboard", label: t.dashboard, icon: "grid" },
+  { to: "/teacher/students-list", label: t.studentsList, icon: "grid" },
+  { to: "/teacher/materials", label: t.materials, icon: "calendar" },
   { to: "/teacher/calendar", label: t.calendar, icon: "calendar" },
   { to: "/teacher/profile", label: t.profile, icon: "user" },
 ];
