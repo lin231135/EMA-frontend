@@ -8,6 +8,12 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.js'],
-    pool: 'forks'
+    clearMocks: true,
+    restoreMocks: true,
+    environmentOptions: {
+      jsdom: {
+        url: 'http://localhost:5000',
+      },
+    },
   },
 });

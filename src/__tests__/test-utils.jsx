@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { vi } from 'vitest';
 import { AuthProvider } from '../contexts/AuthContext';
+import { vi } from 'vitest';
 
 // Mock de window.alert para LoginForm
 window.alert = vi.fn();
