@@ -28,6 +28,8 @@ export default function AdminPaymentsManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterState, setFilterState] = useState("");
   const [filterMethod, setFilterMethod] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   
   // Estados para paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,7 +49,11 @@ export default function AdminPaymentsManagement() {
     try {
       setLoading(true);
       setError(null);
-      const data = await getPayments();
+      const params = new URLSearchParams();
+      if (startDate) params.append("startDate", startDate);
+      if (endDate) params.append("endDate", endDate);
+      console.log("Parámetros enviados:", params.toString());
+      const data = await getPayments(params.toString());
       setPayments(data);
     } catch (err) {
       setError(err.message || "Error al cargar los pagos");
@@ -124,6 +130,8 @@ export default function AdminPaymentsManagement() {
     setSearchTerm("");
     setFilterState("");
     setFilterMethod("");
+    setStartDate("");
+    setEndDate("");
     setCurrentPage(1);
   };
 
@@ -260,8 +268,30 @@ export default function AdminPaymentsManagement() {
                   <option value="deposito">{t.methods.deposito}</option>
                 </select>
 
+                {/* Filtros por Fecha */}
+                <div className="flex gap-2">
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-cyan-500 dark:focus:border-cyan-500"
+                      placeholder={t.filters.startDate}
+                    />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-cyan-500 dark:focus:border-cyan-500"
+                      placeholder={t.filters.endDate}
+                    />
+                  </div>
+                </div>
+
                 {/* Botón limpiar filtros */}
-                {(searchTerm || filterState || filterMethod) && (
+                {(searchTerm || filterState || filterMethod || startDate || endDate) && (
                   <button
                     onClick={handleClearFilters}
                     className="inline-flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 transition-colors"

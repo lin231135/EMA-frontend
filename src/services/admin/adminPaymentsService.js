@@ -8,12 +8,14 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 const PAYMENTS_ENDPOINT = `${API_BASE}/admins/payments`;
 
 /**
- * 1. Obtiene todos los pagos
+ * 1. Obtiene todos los pagos con filtros opcionales
  * GET /api/admins/payments
+ * @param {string} queryParams - Parámetros de consulta en formato de cadena
  */
-export async function getPayments() {
+export async function getPayments(queryParams = "") {
   try {
-    const response = await fetch(PAYMENTS_ENDPOINT, {
+    const url = `${PAYMENTS_ENDPOINT}?${queryParams}`;
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

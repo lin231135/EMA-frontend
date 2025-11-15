@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Instala solo lo necesario para pruebas
-RUN npm install \
+RUN npm install --legacy-peer-deps \
   vitest \
   @testing-library/react \
   jsdom \
