@@ -38,6 +38,7 @@ import TeacherDashboard from "./components/pages/teacher/TeacherDashboard.jsx";
 import TeacherDashboard2 from "./components/pages/teacher/TeacherDashboard2.jsx";
 import TeacherCalendar from "./components/pages/teacher/TeacherCalendar.jsx";
 import TeacherStudentsList from "./components/pages/teacher/TeacherStudentsList.jsx";
+import PaymentReportingForm from "./components/pages/teacher/PaymentReportingForm.jsx";
 
 export function AppRoutes() {
   return (
@@ -82,7 +83,7 @@ export function AppRoutes() {
       <Route path="/teacher/students-list" element={<TeacherStudentsList />} />
       <Route path="/teacher/calendar" element={<TeacherCalendar />} />
       <Route path="/teacher/profile" element={<Profile />} />
-
+      <Route path="/teacher/payment-reporting" element={<PaymentReportingForm />} />
 
       {/* Varios */}
       <Route path="/about" element={<About />} />

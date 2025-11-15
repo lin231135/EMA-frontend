@@ -7,4 +7,5 @@ export default {
   profile: "Profile",
   settings: "Settings",
   logout: "Logout",
+  paymentReporting: "Payment Reporting",
 };
